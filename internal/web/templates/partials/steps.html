@@ -1,0 +1,9 @@
+{{/* Numbered steps from a []string. */}}
+<div class="space-y-3">
+    {{range $i, $step := .}}
+    <div class="flex items-start gap-3">
+        <span class="flex-shrink-0 w-6 h-6 rounded-full bg-accent text-white text-xs flex items-center justify-center font-semibold">{{add $i 1}}</span>
+        <p class="text-sm text-secondary">{{$step}}</p>
+    </div>
+    {{end}}
+</div>

@@ -31,6 +31,9 @@ var templateFuncs = template.FuncMap{
 		return code
 	},
 	"icon":        icon,
+	"card":        card,
+	"endcard":     func() template.HTML { return "</div>" },
+	"dict":        dict,
 	"profileForm": profileFormFor,
 	"spinner":     spinner,
 	"add":         func(a, b int) int { return a + b },

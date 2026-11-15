@@ -162,7 +162,8 @@ func (s *Server) handleTaskDetail(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		return
 	}
-	s.renderWithCSRF(w, r, "task-detail.html", map[string]interface{}{"Title": "Task Detail", "Task": task})
+	note, steps := taskInstructions(*task)
+	s.renderWithCSRF(w, r, "task-detail.html", map[string]interface{}{"Title": "Task Detail", "Task": task, "Note": note, "Steps": steps})
 }
 
 func (s *Server) handleTaskComplete(w http.ResponseWriter, r *http.Request) {
@@ -234,4 +235,43 @@ func (s *Server) handleTaskHelper(w http.ResponseWriter, r *http.Request) {
 		"ProfileData":    profile,
 		"OrderedProfile": ordered,
 	})
+}
+
+// taskInstructions is what the detail page tells a person to do: numbered
+// steps for a task still open, and a plain note when there are none to give.
+func taskInstructions(t history.PendingTask) (note string, steps []string) {
+	if t.Status == "completed" {
+		return "This task is complete. Review the saved notes and screenshot for its outcome. A submitted request does not by itself confirm that your data was removed.", nil
+	}
+	switch t.TaskType {
+	case history.TaskCaptcha:
+		return "", []string{
+			`Click "Open Form" to navigate to the data broker's opt-out form.`,
+			"Your information may already be filled in. Verify it's correct.",
+			"Solve the CAPTCHA challenge (reCAPTCHA, hCaptcha, etc.).",
+			"Submit the form and return here to mark the task complete.",
+		}
+	case history.TaskManualForm:
+		return "", []string{
+			`Click "Open Form" to navigate to the opt-out form.`,
+			"Fill in your personal information as required.",
+			"Submit the form to complete your opt-out request.",
+			"Return here and mark the task as complete.",
+		}
+	case history.TaskReview:
+		return "", []string{
+			"Review the broker's response in your email inbox.",
+			"Determine if action is needed (form, confirmation, etc.).",
+			"Take appropriate action based on the response.",
+			"Mark this task complete after reviewing.",
+		}
+	case "confirmation":
+		return "", []string{
+			"Check your email for a confirmation message from the broker.",
+			"Click the confirmation link in the email.",
+			"Wait for the confirmation page to load.",
+			"Return here and mark the task as complete.",
+		}
+	}
+	return "Review the task details and take appropriate action.", nil
 }

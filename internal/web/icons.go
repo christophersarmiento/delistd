@@ -70,3 +70,34 @@ func spinner(id, class string) template.HTML {
 		`<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`,
 		html.EscapeString(id), html.EscapeString(class)))
 }
+
+// card opens a card, with a heading when title is not empty; {{endcard}}
+// closes it. A card is the page's basic block: a bordered panel with padding.
+func card(title string, class ...string) template.HTML {
+	pad := "p-6"
+	if len(class) > 0 {
+		pad = class[0]
+	}
+	open := `<div class="card ` + html.EscapeString(pad) + `">`
+	if title != "" {
+		open += `<h2 class="font-display text-lg font-semibold text-primary mb-4">` + html.EscapeString(title) + `</h2>`
+	}
+	return template.HTML(open)
+}
+
+// dict builds a map from alternating keys and values, so a partial can take
+// several named arguments: {{template "partials/x.html" (dict "A" 1 "B" 2)}}.
+func dict(pairs ...any) (map[string]any, error) {
+	if len(pairs)%2 != 0 {
+		return nil, fmt.Errorf("dict: odd number of arguments")
+	}
+	m := make(map[string]any, len(pairs)/2)
+	for i := 0; i < len(pairs); i += 2 {
+		key, ok := pairs[i].(string)
+		if !ok {
+			return nil, fmt.Errorf("dict: key %v is not a string", pairs[i])
+		}
+		m[key] = pairs[i+1]
+	}
+	return m, nil
+}
