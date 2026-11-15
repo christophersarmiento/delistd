@@ -89,23 +89,16 @@
         </div>
     </div>
 
-    <div class="card p-6">
-        <h2 class="font-display text-lg font-semibold text-primary mb-4">How to Complete Tasks</h2>
+    {{card "How to Complete Tasks"}}
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {{range .HowTo}}
             <div class="p-4 rounded-lg" style="background: var(--bg-elevated);">
-                <h3 class="text-sm font-semibold text-primary mb-1">Opt-Out Forms</h3>
-                <p class="text-xs text-secondary">Some brokers require filling out an online form. Click "Open Form", enter your details, and submit.</p>
+                <h3 class="text-sm font-semibold text-primary mb-1">{{.Title}}</h3>
+                <p class="text-xs text-secondary">{{.Text}}</p>
             </div>
-            <div class="p-4 rounded-lg" style="background: var(--bg-elevated);">
-                <h3 class="text-sm font-semibold text-primary mb-1">CAPTCHA Forms</h3>
-                <p class="text-xs text-secondary">Click "Solve CAPTCHA" for a helper page with copy buttons for your info. Complete the CAPTCHA, then paste your details.</p>
-            </div>
-            <div class="p-4 rounded-lg" style="background: var(--bg-elevated);">
-                <h3 class="text-sm font-semibold text-primary mb-1">Email Confirmations</h3>
-                <p class="text-xs text-secondary">Check your email for confirmation links from brokers. Click the link to verify your removal request.</p>
-            </div>
+            {{end}}
         </div>
-    </div>
+    {{endcard}}
 </div>
 
 <style>

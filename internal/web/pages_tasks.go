@@ -102,6 +102,7 @@ func (s *Server) handleTasks(w http.ResponseWriter, r *http.Request) {
 	completedCount := completedTasks + filled
 	s.renderWithCSRF(w, r, "tasks.html", map[string]interface{}{
 		"Title":      "Action Needed",
+		"HowTo":      taskHowTo,
 		"Items":      items,
 		"HasPending": hasPending,
 		"Figures": []taskFigure{
@@ -274,4 +275,11 @@ func taskInstructions(t history.PendingTask) (note string, steps []string) {
 		}
 	}
 	return "Review the task details and take appropriate action.", nil
+}
+
+// taskHowTo is the short guide under the list of tasks.
+var taskHowTo = []struct{ Title, Text string }{
+	{"Opt-Out Forms", `Some brokers require filling out an online form. Click "Open Form", enter your details, and submit.`},
+	{"CAPTCHA Forms", `Click "Solve CAPTCHA" for a helper page with copy buttons for your info. Complete the CAPTCHA, then paste your details.`},
+	{"Email Confirmations", "Check your email for confirmation links from brokers. Click the link to verify your removal request."},
 }
