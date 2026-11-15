@@ -385,12 +385,6 @@ func TestTestEmailPatterns(t *testing.T) {
 			expected: ResponseSuccess,
 		},
 		{
-			name:     "pre-rename Eraser Test Email in subject",
-			subject:  "Eraser Test Email",
-			body:     "",
-			expected: ResponseSuccess,
-		},
-		{
 			name:     "Test email in body",
 			subject:  "Re: Test",
 			body:     "This is a test email from Delistd to verify your email configuration.",

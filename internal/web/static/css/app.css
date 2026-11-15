@@ -19,15 +19,6 @@ button:active, .btn:active { transform: translateY(1px); }
 .notice-dismiss { flex: none; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); background: transparent; border: 0; border-radius: var(--radius-control); cursor: pointer; transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out); }
 .notice-dismiss:hover { background: var(--bg-elevated); color: var(--text-primary); }
 
-.whatsnew { padding: 24px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow); }
-.whatsnew-head { display: flex; align-items: flex-start; gap: 14px; }
-.whatsnew-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 20px; }
-@media (min-width: 720px) { .whatsnew-grid { grid-template-columns: 1fr 1fr; } }
-.whatsnew-item { padding: 14px 16px; background: var(--bg-elevated); border-radius: var(--radius-control); }
-.whatsnew-item h3 { margin: 0; font-size: 15px; font-weight: 600; color: var(--text-primary); }
-.whatsnew-item p { margin: 4px 0 0; font-size: 14px; line-height: 1.5; color: var(--text-secondary); }
-.whatsnew-item code { font-size: 12.5px; color: var(--text-primary); }
-.whatsnew-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-top: 18px; }
 
 /* ---- Surfaces ---- */
 .card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow); }

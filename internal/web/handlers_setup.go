@@ -266,8 +266,6 @@ func (s *Server) handleSetupComplete(w http.ResponseWriter, r *http.Request) {
 	}
 
 	s.config.Store(cfg)
-	// Someone who just finished setup has nothing to be told about 2.0.
-	config.MarkWhatsNewSeen(s.configPath)
 
 	// Clear session - credentials are now saved to config file
 	s.clearSession(w, r)
@@ -285,7 +283,7 @@ func (s *Server) handleSetupComplete(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) getOrCreateSession(w http.ResponseWriter, r *http.Request) *Session {
 	// Check for existing session
-	cookie, err := r.Cookie("eraser_session")
+	cookie, err := r.Cookie("delistd_session")
 	if err == nil && cookie.Value != "" {
 		session := s.sessions.Get(cookie.Value)
 		if session != nil {
@@ -300,7 +298,7 @@ func (s *Server) getOrCreateSession(w http.ResponseWriter, r *http.Request) *Ses
 
 	// Set secure session cookie (ID only, no credentials)
 	http.SetCookie(w, &http.Cookie{
-		Name:     "eraser_session",
+		Name:     "delistd_session",
 		Value:    sessionID,
 		Path:     "/",
 		MaxAge:   1800, // 30 minutes
@@ -313,13 +311,13 @@ func (s *Server) getOrCreateSession(w http.ResponseWriter, r *http.Request) *Ses
 	// updateSession(r) right after this, and on a fresh install r has no
 	// session cookie yet - without this the profile never persists and the
 	// wizard loops back to step one.
-	r.AddCookie(&http.Cookie{Name: "eraser_session", Value: sessionID})
+	r.AddCookie(&http.Cookie{Name: "delistd_session", Value: sessionID})
 
 	return s.sessions.Get(sessionID)
 }
 
 func (s *Server) getSession(r *http.Request) *Session {
-	cookie, err := r.Cookie("eraser_session")
+	cookie, err := r.Cookie("delistd_session")
 	if err != nil || cookie.Value == "" {
 		return nil
 	}
@@ -327,7 +325,7 @@ func (s *Server) getSession(r *http.Request) *Session {
 }
 
 func (s *Server) updateSession(r *http.Request, updateFn func(*Session)) bool {
-	cookie, err := r.Cookie("eraser_session")
+	cookie, err := r.Cookie("delistd_session")
 	if err != nil || cookie.Value == "" {
 		return false
 	}
@@ -335,13 +333,13 @@ func (s *Server) updateSession(r *http.Request, updateFn func(*Session)) bool {
 }
 
 func (s *Server) clearSession(w http.ResponseWriter, r *http.Request) {
-	cookie, err := r.Cookie("eraser_session")
+	cookie, err := r.Cookie("delistd_session")
 	if err == nil && cookie.Value != "" {
 		s.sessions.Delete(cookie.Value)
 	}
 
 	http.SetCookie(w, &http.Cookie{
-		Name:     "eraser_session",
+		Name:     "delistd_session",
 		Value:    "",
 		Path:     "/",
 		MaxAge:   -1,

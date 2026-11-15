@@ -155,7 +155,7 @@ func TestClearReportsSaveFailures(t *testing.T) {
 
 	// The user's own entries can't be written: their folder is read-only.
 	home := t.TempDir()
-	delistdDir := filepath.Join(home, ".eraser")
+	delistdDir := filepath.Join(home, ".delistd")
 	if err := os.MkdirAll(delistdDir, 0o500); err != nil {
 		t.Fatal(err)
 	}

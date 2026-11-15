@@ -31,7 +31,7 @@ func sessionRequest(t *testing.T, s *Server, method, target string, fill func(*S
 		t.Fatal(err)
 	}
 	s.sessions.Update(id, fill)
-	req.AddCookie(&http.Cookie{Name: "eraser_session", Value: id})
+	req.AddCookie(&http.Cookie{Name: "delistd_session", Value: id})
 	return req
 }
 

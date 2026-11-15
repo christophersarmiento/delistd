@@ -158,7 +158,6 @@ func runInit() error {
 	if err := config.Save(configPath, cfg); err != nil {
 		return fmt.Errorf("failed to save config: %w", err)
 	}
-	config.MarkWhatsNewSeen(configPath) // a fresh setup has nothing to be told about 2.0
 
 	fmt.Println()
 	if updating {

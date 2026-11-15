@@ -158,9 +158,8 @@ var (
 
 	// Test email patterns (should be skipped from review)
 	testEmailPatterns = []*regexp.Regexp{
-		// "eraser" is the pre-rename name: test mails already sitting in inboxes still say it
-		regexp.MustCompile(`(?i)(?:delistd|eraser)\s+test\s+email`),
-		regexp.MustCompile(`(?i)test\s+email\s+from\s+(?:delistd|eraser)`),
+		regexp.MustCompile(`(?i)delistd\s+test\s+email`),
+		regexp.MustCompile(`(?i)test\s+email\s+from\s+delistd`),
 		regexp.MustCompile(`(?i)this\s+is\s+a\s+test\s+email`),
 	}
 

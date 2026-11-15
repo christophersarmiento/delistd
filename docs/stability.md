@@ -1,6 +1,6 @@
 # Stability and versioning
 
-Delistd follows [semantic versioning](https://semver.org/) from 1.0.0 onward (2.0.0 was the first major bump; see [upgrading-to-2.0.md](upgrading-to-2.0.md)). A change that could break a working setup needs a major version (2.0). New features come in minor versions (1.x), and fixes and broker-list updates come in patch versions.
+Delistd follows [semantic versioning](https://semver.org/) from 1.0.0 onward. A change that could break a working setup needs a major version (2.0). New features come in minor versions (1.x), and fixes and broker-list updates come in patch versions.
 
 This page defines what counts as "a working setup".
 
@@ -35,9 +35,4 @@ The project was renamed from Eraser to Delistd in 2.3. Every old name kept worki
 
 The old Go module path `github.com/drumandbytes/eraser/cmd/eraser@latest` never worked for 2.x (Go ignores v2+ tags without a `/v2` module suffix) and under the old path it quietly installed v1.8.0. Use `@main`, Homebrew, Docker or a release download. There is no redirect for Go module paths.
 
-Unchanged on purpose, because renaming them would orphan existing data: the `~/.eraser` data directory (`config.yaml`, `history.db`), the `eraser-data` Docker volume, the launchd label `com.drumandbytes.eraser.auto` and systemd unit `eraser-auto`, and the encryption key derivation for stored passwords. An OS schedule installed before 2.4 that was never migrated needs `delistd schedule install` once (see [upgrading-to-3.0.md](upgrading-to-3.0.md)).
-
-
-## Before you upgrade
-
-Release notes in [CHANGELOG.md](../CHANGELOG.md) list every change. A major version's notes include the steps for any manual migration.
+What changed names and how existing setups carry over is in [upgrading-to-3.0.md](upgrading-to-3.0.md#renamed-data-and-schedule-names).

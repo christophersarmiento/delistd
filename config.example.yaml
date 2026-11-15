@@ -1,5 +1,5 @@
 # Delistd Configuration Example
-# Copy this file to ~/.eraser/config.yaml and fill in your details
+# Copy this file to ~/.delistd/config.yaml and fill in your details
 
 # Mail passwords are stored encrypted (enc:v1:...). `delistd passphrase set` adds a passphrase
 # on top and sets `passphrase_protected: true` here; do not edit that by hand.
@@ -89,7 +89,7 @@ options:
 
   # Use your own broker list instead of a built-in one (optional). Same effect
   # as the global --brokers flag, which still wins if both are set.
-  # broker_file: /home/you/.eraser/my-brokers.yaml
+  # broker_file: /home/you/.delistd/my-brokers.yaml
 
   # Only send to brokers in these regions (optional)
   # regions:

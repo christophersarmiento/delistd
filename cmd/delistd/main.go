@@ -83,12 +83,11 @@ send through any SMTP provider (Gmail, Proton Mail Bridge, Fastmail, ...).`,
 	rootCmd.SetVersionTemplate("delistd {{.Version}}\nMIT licensed - https://github.com/drumandbytes/delistd/blob/main/LICENSE\n")
 
 	// Global flags
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.eraser/config.yaml)")
-	rootCmd.PersistentFlags().StringVar(&brokerFile, "brokers", "", "broker list file (default: ~/.eraser/brokers.yaml if `update-brokers` has written one, else the list built into the binary)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.delistd/config.yaml)")
+	rootCmd.PersistentFlags().StringVar(&brokerFile, "brokers", "", "broker list file (default: ~/.delistd/brokers.yaml if `update-brokers` has written one, else the list built into the binary)")
 	rootCmd.PersistentFlags().StringVar(&profileFlag, "profile", "", "Profile ID to operate as (default: the only configured profile; required if you've configured more than one via 'delistd profile add')")
 
 	rootCmd.PersistentPreRun = func(cmd *cobra.Command, args []string) {
-		announceTwoPointZero(cmd)
 	}
 
 	rootCmd.AddCommand(initCmd())

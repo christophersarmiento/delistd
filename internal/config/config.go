@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"github.com/drumandbytes/delistd/internal/datadir"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -222,7 +223,7 @@ type InboxConfig struct {
 	ClientID      string `yaml:"client_id,omitempty"` // OAuth app (client) id; empty = the shared default (DefaultOAuthClientID)
 	Folder        string `yaml:"folder"`              // Folder to monitor (default: "INBOX")
 	AutoArchive   bool   `yaml:"auto_archive"`        // Automatically move processed emails to archive folder
-	ArchiveFolder string `yaml:"archive_folder"`      // Folder to archive emails to (default: "Eraser")
+	ArchiveFolder string `yaml:"archive_folder"`      // Folder to archive emails to (default: "Delistd")
 }
 
 // Pipeline holds settings for the automation pipeline
@@ -347,7 +348,7 @@ func DefaultConfigPath() string {
 	if err != nil {
 		return "config.yaml"
 	}
-	return filepath.Join(home, ".eraser", "config.yaml")
+	return filepath.Join(datadir.Of(home), "config.yaml")
 }
 
 func Load(path string) (*Config, error) {
@@ -504,7 +505,7 @@ func applyInboxDefaults(inbox *InboxConfig) {
 		inbox.Folder = "INBOX"
 	}
 	if inbox.ArchiveFolder == "" {
-		inbox.ArchiveFolder = "Eraser"
+		inbox.ArchiveFolder = "Delistd"
 	}
 	if inbox.Server != "" {
 		return

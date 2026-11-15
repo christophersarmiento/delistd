@@ -67,8 +67,14 @@ func randomBytes(n int) []byte {
 	return b
 }
 
-func machineKey() cipher.AEAD {
-	key, _ := hkdf.Key(sha256.New, machineSecret(), []byte("eraser/config-secret/v1"), "aes-256-gcm", 32)
+func machineKey() cipher.AEAD { return machineKeyFor("delistd/config-secret/v1") }
+
+// legacyMachineKey opens passwords stored before the rename; they are
+// re-encrypted under machineKey the next time the config is saved.
+func legacyMachineKey() cipher.AEAD { return machineKeyFor("eraser/config-secret/v1") }
+
+func machineKeyFor(info string) cipher.AEAD {
+	key, _ := hkdf.Key(sha256.New, machineSecret(), []byte(info), "aes-256-gcm", 32)
 	return aeadFor(key)
 }
 
@@ -100,6 +106,9 @@ func decryptSecret(s string) (string, error) {
 		return "", errors.New("corrupt encrypted password")
 	}
 	plain, err := gcm.Open(nil, raw[:gcm.NonceSize()], raw[gcm.NonceSize():], nil)
+	if err != nil {
+		plain, err = legacyMachineKey().Open(nil, raw[:gcm.NonceSize()], raw[gcm.NonceSize():], nil)
+	}
 	if err != nil {
 		return "", errors.New("can't decrypt the stored password on this machine")
 	}

@@ -94,6 +94,6 @@ homebrew_casks:
         end
       end
     caveats: |
-      Config lives at ~/.eraser/config.yaml (unchanged). Start with:
+      Config lives at ~/.delistd/config.yaml (unchanged). Start with:
         delistd serve      # web UI at http://localhost:8080
       `delistd fill` / `delistd confirm` also need Chrome installed.

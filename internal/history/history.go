@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"github.com/drumandbytes/delistd/internal/datadir"
 	"log"
 	"net/url"
 	"os"
@@ -681,9 +682,9 @@ func (s *Store) DeleteAllHistory(profileID string) (int64, error) {
 func DefaultDBPath() string {
 	home, err := os.UserHomeDir()
 	if err != nil {
-		return "eraser_history.db"
+		return "history.db"
 	}
-	return filepath.Join(home, ".eraser", "history.db")
+	return filepath.Join(datadir.Of(home), "history.db")
 }
 
 // DBPathFor returns history.db next to configPath, so an alternate --config

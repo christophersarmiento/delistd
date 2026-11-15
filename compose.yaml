@@ -28,7 +28,7 @@ services:
     ports:
       - "127.0.0.1:8080:8080"
     volumes:
-      - eraser-data:/home/nonroot/.eraser
+      - delistd-data:/home/nonroot/.delistd
     environment:
       TZ: UTC # set your own, e.g. Europe/Berlin, so times in the UI match your clock
       DELISTD_CHROME_URL: http://chrome:9222
@@ -53,7 +53,7 @@ services:
     restart: unless-stopped
 
 volumes:
-  eraser-data:
-    # a fixed name, so `docker run -v eraser-data:...` (backups, mcp) reaches
+  delistd-data:
+    # a fixed name, so `docker run -v delistd-data:...` (backups, mcp) reaches
     # the same data as compose instead of a new, empty volume
-    name: eraser-data
+    name: delistd-data

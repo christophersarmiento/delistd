@@ -1,9 +1,18 @@
 package web
 
 import (
+	"net/http"
+	"net/http/httptest"
 	"strings"
 	"testing"
 )
+
+func dashboard(t *testing.T, s *Server) string {
+	t.Helper()
+	rec := httptest.NewRecorder()
+	s.setupRouter().ServeHTTP(rec, loopbackRequest(http.MethodGet, "/", nil))
+	return rec.Body.String()
+}
 
 // The nav-link rule (display: inline-flex) outranks .hidden, so without its own
 // override the job pill is visible on every page even when nothing is sending.

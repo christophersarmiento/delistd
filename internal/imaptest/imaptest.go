@@ -23,7 +23,7 @@ import (
 )
 
 type Server struct {
-	// Inbox connects to this server's INBOX, archiving to "Eraser".
+	// Inbox connects to this server's INBOX, archiving to "Delistd".
 	Inbox   config.InboxConfig
 	backend *memory.Backend
 }
@@ -48,7 +48,7 @@ func Start(t testing.TB, move bool) *Server {
 	t.Cleanup(func() { _ = srv.Close() })
 
 	s.Inbox = config.InboxConfig{Enabled: true, Server: "127.0.0.1", Port: ln.Addr().(*net.TCPAddr).Port,
-		Email: "username", Password: "password", Folder: "INBOX", ArchiveFolder: "Eraser"}
+		Email: "username", Password: "password", Folder: "INBOX", ArchiveFolder: "Delistd"}
 	return s
 }
 

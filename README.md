@@ -22,9 +22,7 @@ You know those sites like Spokeo, BeenVerified, and Whitepages that have your ho
 
 **New here and not technical? Start with the [step-by-step setup guide](docs/getting-started.md).** It covers downloading Delistd, creating a Gmail app password, and the setup wizard, with a fix for every common error.
 
-> Formerly Eraser. Upgrading from 2.x? The old `eraser` command, `ERASER_*` variables and `ghcr.io/drumandbytes/eraser` image are gone in 3.0: see [docs/upgrading-to-3.0.md](docs/upgrading-to-3.0.md). Your `~/.eraser` data is unchanged.
-
-> **Upgrading from 1.x?** 2.0 stores your profile's country as an ISO code, encrypts your mail passwords (with an optional passphrase), skips country-specific brokers that don't apply to you, and removes a few old settings. Your config is upgraded automatically on first run and the original is kept as `config.yaml.1x.bak`. See the [upgrade guide](docs/upgrading-to-2.0.md).
+> Formerly Eraser. Upgrading from 2.x? The old `eraser` command, `ERASER_*` variables and `ghcr.io/drumandbytes/eraser` image are gone in 3.0: see [docs/upgrading-to-3.0.md](docs/upgrading-to-3.0.md). Your data is unchanged.
 
 ### What to Expect
 
@@ -179,7 +177,7 @@ Your provider isn't listed or doesn't work? [Open a mail provider issue](https:/
 
 **Daily sending limits:** Delistd caps itself at 450 emails per rolling 24 hours by default (`options.daily_send_limit`), just under Gmail's ~500/day. Other providers have different (sometimes lower) caps, so check yours and lower the limit if needed. Delistd resumes where it left off on the next run, so it's safe to just re-run `delistd send` until it reports nothing left to send.
 
-**Automating it:** `delistd schedule install` has your OS run Delistd every 6 hours. Each run sends to whichever brokers are due (each broker is re-sent 25 days after its last request, within the daily cap) and checks your inbox for replies. Everything stays on your machine; `delistd schedule status` shows the last run, `delistd schedule remove` undoes it. The web UI's **Settings → Automation** card does all of this with buttons, including a "run while this app is open" option for systems without launchd/systemd; on the CLI, `delistd auto` loops in the foreground instead. A schedule you set up before the rename ran the old `eraser` command; from 2.4 Delistd moves it to `delistd` on its own the next time it runs, so there is nothing to redo.
+**Automating it:** `delistd schedule install` has your OS run Delistd every 6 hours. Each run sends to whichever brokers are due (each broker is re-sent 25 days after its last request, within the daily cap) and checks your inbox for replies. Everything stays on your machine; `delistd schedule status` shows the last run, `delistd schedule remove` undoes it. The web UI's **Settings → Automation** card does all of this with buttons, including a "run while this app is open" option for systems without launchd/systemd; on the CLI, `delistd auto` loops in the foreground instead.
 
 ### Prefer not to give any tool your email password?
 
@@ -282,7 +280,7 @@ Everything in the web interface has a command-line twin and the other way round,
 
 ### Configuration File
 
-Your config lives at `~/.eraser/config.yaml`. Here's the full schema:
+Your config lives at `~/.delistd/config.yaml`. Here's the full schema:
 
 ```yaml
 profiles:
@@ -354,7 +352,7 @@ The generic template is a good default if you're not sure. EU residents should p
 
 ### Adding Brokers
 
-The broker database is at `data/brokers.yaml` and is compiled into the binary, so a downloaded `delistd` is self-contained. `delistd update-brokers` pulls a fresh copy from this repo into `~/.eraser/brokers.yaml` (a small conditional download — the app itself isn't touched). To add one by hand:
+The broker database is at `data/brokers.yaml` and is compiled into the binary, so a downloaded `delistd` is self-contained. `delistd update-brokers` pulls a fresh copy from this repo into `~/.delistd/brokers.yaml` (a small conditional download — the app itself isn't touched). To add one by hand:
 
 ```yaml
 - id: example-broker

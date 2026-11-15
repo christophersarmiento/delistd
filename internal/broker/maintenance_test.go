@@ -88,11 +88,11 @@ func TestUpdate(t *testing.T) {
 	}
 }
 
-// ~/.eraser exists as a file: the list can't be written there.
+// ~/.delistd exists as a file: the list can't be written there.
 func TestUpdateUnwritableHome(t *testing.T) {
 	home := t.TempDir()
 	testenv.SetHome(t, home)
-	if err := os.WriteFile(filepath.Join(home, ".eraser"), nil, 0o600); err != nil {
+	if err := os.WriteFile(filepath.Join(home, ".delistd"), nil, 0o600); err != nil {
 		t.Fatal(err)
 	}
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -100,7 +100,7 @@ func TestUpdateUnwritableHome(t *testing.T) {
 	}))
 	defer srv.Close()
 	if _, err := Update(context.Background(), srv.URL, false); err == nil {
-		t.Error("expected an error when ~/.eraser is a file")
+		t.Error("expected an error when ~/.delistd is a file")
 	}
 }
 
@@ -207,7 +207,7 @@ func TestLoadErrors(t *testing.T) {
 
 	home := t.TempDir()
 	testenv.SetHome(t, home)
-	if err := os.MkdirAll(filepath.Join(home, ".eraser"), 0o700); err != nil {
+	if err := os.MkdirAll(filepath.Join(home, ".delistd"), 0o700); err != nil {
 		t.Fatal(err)
 	}
 	if err := os.WriteFile(LocalPath(), []byte("brokers: [not: valid: yaml"), 0o600); err != nil {
@@ -240,7 +240,7 @@ func TestNoHomeDirectory(t *testing.T) {
 func TestCurrentCountBrokenUserList(t *testing.T) {
 	home := t.TempDir()
 	testenv.SetHome(t, home)
-	if err := os.MkdirAll(filepath.Join(home, ".eraser"), 0o700); err != nil {
+	if err := os.MkdirAll(filepath.Join(home, ".delistd"), 0o700); err != nil {
 		t.Fatal(err)
 	}
 	if err := os.WriteFile(UserBrokersPath(), []byte("brokers: [oops"), 0o600); err != nil {

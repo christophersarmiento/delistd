@@ -19,7 +19,7 @@ docker compose up -d
 
 Open <http://localhost:8080> and follow the setup wizard, the same as the
 desktop app ([getting-started.md](getting-started.md)). Stop it with
-`docker compose down`; your data stays in the `eraser-data` volume.
+`docker compose down`; your data stays in the `delistd-data` volume.
 
 Any CLI command runs the same way:
 
@@ -33,14 +33,14 @@ docker compose exec delistd delistd mcp pending        # while the web UI is run
 Interactive commands (`init`, `profile add`, `passphrase set`, `mcp approve`)
 work too: `docker compose run --rm delistd init`.
 
-Commands run in the data volume (`/home/nonroot/.eraser`), so files they write
+Commands run in the data volume (`/home/nonroot/.delistd`), so files they write
 to the current directory, like `export`'s `delistd-evidence-*.html`, are kept
 there after a `run --rm` container exits. Copy one out with
-`docker cp delistd:/home/nonroot/.eraser/<file> .` while the web UI container is
+`docker cp delistd:/home/nonroot/.delistd/<file> .` while the web UI container is
 running, or pass `-o` with a path you can reach.
 
 Without compose, `compose.yaml` is the reference for the flags: a private
-network, the loopback-only port, the `eraser-data` volume, and for the browser
+network, the loopback-only port, the `delistd-data` volume, and for the browser
 `--shm-size=1g` plus `-e DELISTD_CHROME_URL=http://chrome:9222`.
 
 ## Security: keep the port on 127.0.0.1
@@ -74,8 +74,8 @@ shares.
 
 ## Where your data lives
 
-Everything is in `/home/nonroot/.eraser` inside the container, which is the
-`eraser-data` named volume:
+Everything is in `/home/nonroot/.delistd` inside the container, which is the
+`delistd-data` named volume:
 
 | File | What |
 |---|---|
@@ -92,7 +92,7 @@ archive doesn't end up next to the source. It holds your config, history and
 
 ```bash
 docker compose -f /path/to/delistd/compose.yaml stop
-docker run --rm -v eraser-data:/data -v "$PWD":/backup debian:trixie-slim \
+docker run --rm -v delistd-data:/data -v "$PWD":/backup debian:trixie-slim \
   sh -c 'umask 077 && tar czf /backup/delistd-backup.tgz -C /data .'
 docker compose -f /path/to/delistd/compose.yaml start
 ```
@@ -182,7 +182,7 @@ the browser container:
 
 ```bash
 docker run -i --rm --network delistd_default -e DELISTD_CHROME_URL=http://chrome:9222 \
-  -v eraser-data:/home/nonroot/.eraser "${DELISTD_IMAGE:-delistd:local}" mcp
+  -v delistd-data:/home/nonroot/.delistd "${DELISTD_IMAGE:-delistd:local}" mcp
 ```
 
 Approve batches in the web UI's Automation page (with `docker compose up`

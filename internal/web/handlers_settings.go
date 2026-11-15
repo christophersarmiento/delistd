@@ -334,7 +334,7 @@ func inboxFormView(cfg *config.Config) mailFormView {
 }
 
 // handleSettingsBrokersUpdate is `delistd update-brokers`: fetch the published
-// list into ~/.eraser/brokers.yaml, then reload the list this server uses.
+// list into ~/.delistd/brokers.yaml, then reload the list this server uses.
 func (s *Server) handleSettingsBrokersUpdate(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), 45*time.Second)
 	defer cancel()

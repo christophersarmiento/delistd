@@ -48,7 +48,7 @@ func TestSetupCompleteManual(t *testing.T) {
 	})
 
 	req := httptest.NewRequest(http.MethodGet, "/setup/complete", nil)
-	req.AddCookie(&http.Cookie{Name: "eraser_session", Value: id})
+	req.AddCookie(&http.Cookie{Name: "delistd_session", Value: id})
 	w := httptest.NewRecorder()
 	s.handleSetupComplete(w, req)
 

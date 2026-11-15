@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/drumandbytes/delistd/internal/country"
+	"github.com/drumandbytes/delistd/internal/datadir"
 	"os"
 	"path/filepath"
 	"strings"
@@ -73,7 +74,7 @@ Examples:
 	cmd.Flags().StringVar(&formURL, "url", "", "Direct URL to the opt-out form")
 	cmd.Flags().BoolVar(&headless, "headless", true, "Run browser in headless mode (default: your config's pipeline.browser_headless, or true if unset)")
 	cmd.Flags().BoolVar(&autoSubmit, "submit", false, "Automatically submit the form after filling")
-	cmd.Flags().StringVar(&screenshotDir, "screenshots", "", "Directory to save screenshots (default: ~/.eraser/screenshots)")
+	cmd.Flags().StringVar(&screenshotDir, "screenshots", "", "Directory to save screenshots (default: ~/.delistd/screenshots)")
 	cmd.Flags().BoolVar(&pending, "pending", false, "Fill all pending forms from the pipeline")
 	cmd.Flags().BoolVar(&waitForCaptcha, "wait", false, "Wait for user to solve CAPTCHA before continuing (use with --headless=false)")
 
@@ -114,7 +115,7 @@ func runFill(brokerID, formURL string, headless, headlessFlagSet, autoSubmit boo
 
 	if screenshotDir == "" {
 		home, _ := os.UserHomeDir()
-		screenshotDir = filepath.Join(home, ".eraser", "screenshots")
+		screenshotDir = filepath.Join(datadir.Of(home), "screenshots")
 	}
 
 	store, err := openHistoryStore(history.DBPathFor(resolveConfigPath()))

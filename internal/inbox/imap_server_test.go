@@ -153,14 +153,14 @@ func TestNotConnectedErrors(t *testing.T) {
 func TestEnsureFolderExists(t *testing.T) {
 	f := newIMAPFixture(t, false)
 	m := f.connect(t)
-	if err := m.EnsureFolderExists("Eraser"); err != nil {
+	if err := m.EnsureFolderExists("Delistd"); err != nil {
 		t.Fatal(err)
 	}
-	if err := m.EnsureFolderExists("eraser"); err != nil { // case-insensitive match, no duplicate
+	if err := m.EnsureFolderExists("delistd"); err != nil { // case-insensitive match, no duplicate
 		t.Fatal(err)
 	}
 	if boxes := f.MailboxNames(t); len(boxes) != 2 {
-		t.Errorf("mailboxes = %d, want INBOX + Eraser", len(boxes))
+		t.Errorf("mailboxes = %d, want INBOX + Delistd", len(boxes))
 	}
 }
 
@@ -193,8 +193,8 @@ func TestScanAndStoreArchives(t *testing.T) {
 			if res.Summary.Total != 2 || len(res.New) != 2 || res.Archived != 2 || res.Summary.Success != 1 || res.Summary.FormRequired != 1 {
 				t.Fatalf("result = %+v", res)
 			}
-			if f.Count(t, "INBOX") != before-2 || f.Count(t, "Eraser") != 2 {
-				t.Errorf("INBOX %d (was %d), Eraser %d", f.Count(t, "INBOX"), before, f.Count(t, "Eraser"))
+			if f.Count(t, "INBOX") != before-2 || f.Count(t, "Delistd") != 2 {
+				t.Errorf("INBOX %d (was %d), Delistd %d", f.Count(t, "INBOX"), before, f.Count(t, "Delistd"))
 			}
 			if jane, _ := store.GetBrokerResponses("jane", "", false, 10); len(jane) != 1 || jane[0].BrokerID != "acme" {
 				t.Errorf("acme reply not attributed to jane: %+v", jane)
@@ -223,7 +223,7 @@ func TestScanAndStoreFetchError(t *testing.T) {
 func TestArchiveEmailsNothingToDo(t *testing.T) {
 	f := newIMAPFixture(t, false)
 	m := f.connect(t)
-	if err := m.ArchiveEmails(nil, "Eraser"); err != nil {
+	if err := m.ArchiveEmails(nil, "Delistd"); err != nil {
 		t.Errorf("empty archive: %v", err)
 	}
 	if err := m.ArchiveEmails([]uint32{6}, "NoSuchFolder"); err == nil {
@@ -239,7 +239,7 @@ func TestArchiveEmailsWarnsWhenOtherMailIsAlreadyFlaggedDeleted(t *testing.T) {
 	f := newIMAPFixture(t, false) // no MOVE: COPY + \Deleted + EXPUNGE
 	f.Deliver(t, "INBOX", "privacy@acme.example", "Re: first", "first")
 	f.Deliver(t, "INBOX", "privacy@acme.example", "Re: second", "second")
-	f.Mailbox(t, "Eraser") // the archive folder must exist for COPY
+	f.Mailbox(t, "Delistd") // the archive folder must exist for COPY
 
 	inbox := f.Mailbox(t, "INBOX")
 	n := len(inbox.Messages)
@@ -252,7 +252,7 @@ func TestArchiveEmailsWarnsWhenOtherMailIsAlreadyFlaggedDeleted(t *testing.T) {
 	t.Cleanup(func() { log.SetOutput(os.Stderr) })
 
 	m := f.connect(t)
-	if err := m.ArchiveEmails([]uint32{ours.Uid}, "Eraser"); err != nil {
+	if err := m.ArchiveEmails([]uint32{ours.Uid}, "Delistd"); err != nil {
 		t.Fatal(err)
 	}
 	out := logs.String()
@@ -274,7 +274,7 @@ func TestArchiveEmailsWarnsWhenOtherMailIsAlreadyFlaggedDeleted(t *testing.T) {
 func TestArchiveEmailsWithoutStrayFlagsDoesNotWarn(t *testing.T) {
 	f := newIMAPFixture(t, false)
 	f.Deliver(t, "INBOX", "privacy@acme.example", "Re: only", "only")
-	f.Mailbox(t, "Eraser")
+	f.Mailbox(t, "Delistd")
 	inbox := f.Mailbox(t, "INBOX")
 	ours := inbox.Messages[len(inbox.Messages)-1]
 
@@ -282,7 +282,7 @@ func TestArchiveEmailsWithoutStrayFlagsDoesNotWarn(t *testing.T) {
 	log.SetOutput(&logs)
 	t.Cleanup(func() { log.SetOutput(os.Stderr) })
 
-	if err := f.connect(t).ArchiveEmails([]uint32{ours.Uid}, "Eraser"); err != nil {
+	if err := f.connect(t).ArchiveEmails([]uint32{ours.Uid}, "Delistd"); err != nil {
 		t.Fatal(err)
 	}
 	if strings.Contains(logs.String(), "WARNING") {

@@ -94,7 +94,7 @@ explicitly resolved owner. See [mcp.md](mcp.md) for operational limits.
 
 ### Broker
 `data/brokers.yaml` is compiled into the binary (`data/embed.go`, `//go:embed`).
-`broker.Load(override)` resolves it from `--brokers`, then `~/.eraser/brokers.yaml`
+`broker.Load(override)` resolves it from `--brokers`, then `~/.delistd/brokers.yaml`
 (written by `delistd update-brokers`, a conditional download), then the embedded
 copy - no implicit `./data` scanning. `add-broker`/`cleanup-bounces` write to a
 real path via `resolveBrokerWritePath()`.
@@ -104,7 +104,7 @@ public registries and authoritative privacy notices, where every entry is a
 confirmed data broker with a current first-party privacy email or rights portal.
 The send-family commands (`send`, `draft`, `mark-sent`, `serve`) call
 `broker.LoadList(flag, cfg.Options.BrokerFile, cfg.Options.BrokerList)` instead of
-`broker.Load`, adding two steps ahead of the `~/.eraser` fallback: an
+`broker.Load`, adding two steps ahead of the `~/.delistd` fallback: an
 `options.broker_file` path, then the verified list when `options.broker_list`
 (or `send --list`) is `verified`. Everything else stays on the full list. Grow
 the verified list with `scripts/import-registries` - see
@@ -151,7 +151,7 @@ component class with a sizing utility (this happened once already - see the comm
 above the `<link>` in `layout.html`).
 
 ### Flow
-1. Load user config from `~/.eraser/config.yaml`, resolve the active profile (see [multi-profile.md](multi-profile.md))
+1. Load user config from `~/.delistd/config.yaml`, resolve the active profile (see [multi-profile.md](multi-profile.md))
 2. Load brokers from `data/brokers.yaml`
 3. Filter by region and exclusions (`broker.Filter`)
 4. For each broker, render email template with profile + broker data

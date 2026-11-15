@@ -99,8 +99,8 @@ func responseWhere(profileID string, q ResponseQuery) (string, []any) {
 	}
 	if search := strings.TrimSpace(q.Search); search != "" {
 		// Match Unicode case-insensitively, with %, _ and backslashes treated literally.
-		where += ` AND (eraser_contains(broker_name, ?) OR eraser_contains(broker_id, ?) OR
-			eraser_contains(email_from, ?) OR eraser_contains(email_subject, ?) OR eraser_contains(email_body, ?))`
+		where += ` AND (delistd_contains(broker_name, ?) OR delistd_contains(broker_id, ?) OR
+			delistd_contains(email_from, ?) OR delistd_contains(email_subject, ?) OR delistd_contains(email_body, ?))`
 		for range 5 {
 			args = append(args, search)
 		}

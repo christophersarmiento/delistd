@@ -2,6 +2,7 @@ package broker
 
 import (
 	"fmt"
+	"github.com/drumandbytes/delistd/internal/datadir"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -201,11 +202,11 @@ func UserBrokersPath() string {
 	if err != nil {
 		return ""
 	}
-	return filepath.Join(home, ".eraser", "brokers.yaml")
+	return filepath.Join(datadir.Of(home), "brokers.yaml")
 }
 
 // Load resolves the broker database from, in order: overridePath (the
-// --brokers flag) when set, then ~/.eraser/brokers.yaml when it exists, then
+// --brokers flag) when set, then ~/.delistd/brokers.yaml when it exists, then
 // the copy embedded in the binary. Except for an explicit --brokers file, the
 // user's own entries (LocalPath) are merged on top. There is no implicit ./data or
 // <exe-dir>/data scanning any more.

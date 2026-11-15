@@ -30,13 +30,13 @@ RUN --mount=type=cache,target=/go/pkg/mod \
     CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -trimpath -ldflags "-s -w -X main.version=${VERSION}" -o /out/delistd ./cmd/delistd
 # The data directory, pre-created so a new named volume inherits its owner
 # (distroless has no shell to mkdir or chown with).
-RUN install -d -m 0700 -o 65532 -g 65532 /rootfs/home/nonroot/.eraser
+RUN install -d -m 0700 -o 65532 -g 65532 /rootfs/home/nonroot/.delistd
 
 
 FROM gcr.io/distroless/static-debian13:nonroot AS delistd
 COPY --from=build /out/delistd /usr/local/bin/delistd
 COPY --from=build --chown=65532:65532 /rootfs/home /home
-# ~/.eraser holds config.yaml, history.db, screenshots and the downloaded
+# ~/.delistd holds config.yaml, history.db, screenshots and the downloaded
 # broker list: mount a volume there. WORKDIR is the volume so files commands
 # write to the current directory (export's delistd-evidence-*.html) outlive a
 # `run --rm` container.
@@ -48,10 +48,10 @@ COPY --from=build --chown=65532:65532 /rootfs/home /home
 # a public hostname, which is what DNS rebinding needs; set it to * to accept anything.
 ENV HOME=/home/nonroot \
     DELISTD_CONTAINER=1 \
-    DELISTD_MACHINE_ID_FILE=/home/nonroot/.eraser/machine-id \
+    DELISTD_MACHINE_ID_FILE=/home/nonroot/.delistd/machine-id \
     DELISTD_ALLOWED_HOSTS="lan,local"
-WORKDIR /home/nonroot/.eraser
-VOLUME ["/home/nonroot/.eraser"]
+WORKDIR /home/nonroot/.delistd
+VOLUME ["/home/nonroot/.delistd"]
 EXPOSE 8080
 ENTRYPOINT ["/usr/local/bin/delistd"]
 # 0.0.0.0 inside the container only; publish it as 127.0.0.1:8080:8080.

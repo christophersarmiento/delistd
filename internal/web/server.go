@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"embed"
 	"fmt"
+	"github.com/drumandbytes/delistd/internal/datadir"
 	"html/template"
 	"io/fs"
 	"net"
@@ -140,7 +141,7 @@ func NewServer(port int, cfg *config.Config, configPath string, brokerDB *broker
 	dataDir := filepath.Dir(configPath)
 	if configPath == "" {
 		home, _ := os.UserHomeDir()
-		dataDir = filepath.Join(home, ".eraser")
+		dataDir = datadir.Of(home)
 	}
 
 	s := &Server{
@@ -417,7 +418,6 @@ func (s *Server) setupRouter() *chi.Mux {
 	r.Get("/export/drafts.zip", s.handleDraftsZip)
 	r.Get("/unlock", s.handleUnlock)
 	r.Post("/upgrade-notice/dismiss", s.handleDismissUpgradeNotice)
-	r.Post("/whats-new/dismiss", s.handleDismissWhatsNew)
 	r.Post("/unlock", s.handleUnlock)
 	r.Get("/settings", s.handleSettings)
 	r.Post("/settings/passphrase", s.handleSettingsPassphrase)
@@ -719,7 +719,7 @@ func browserCommand(goos, url string) (string, []string) {
 
 // activeProfileCookie holds the web UI's profile choice. Not HttpOnly/Secure:
 // no secret, and it's validated against the config (bad value = first profile).
-const activeProfileCookie = "eraser_profile"
+const activeProfileCookie = "delistd_profile"
 
 // activeProfile is the request's profile: the cookie if it names a configured
 // one, else the first. Unlike --profile, never ambiguous. Use this, not

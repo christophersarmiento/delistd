@@ -1,6 +1,6 @@
 # Upgrading to 3.0
 
-3.0 removes the old Eraser names that [stability.md](stability.md) kept working since the rename in 2.3. If you already use the `delistd` command, the `DELISTD_*` variables and the `ghcr.io/drumandbytes/delistd` image, there is nothing to do. Your data is untouched: `~/.eraser`, the `eraser-data` volume and the encrypted mail passwords all keep working as they are.
+3.0 removes the old Eraser names that [stability.md](stability.md) kept working since the rename in 2.3. If you already use the `delistd` command, the `DELISTD_*` variables and the `ghcr.io/drumandbytes/delistd` image, there is nothing to do. Your data is untouched: a `~/.eraser` directory is still found, and your encrypted mail passwords keep working.
 
 ## What was removed
 
@@ -24,12 +24,22 @@ It rewrites the schedule to run `delistd`. Check it with `delistd schedule statu
 
 ## Docker
 
-The image sets `DELISTD_CONTAINER` and `DELISTD_MACHINE_ID_FILE` itself. If your compose file or manifest overrode the old `ERASER_*` names, rename them. The volume is still called `eraser-data` and the data directory is still `/home/nonroot/.eraser`: both stay, on purpose, so nothing is orphaned.
+The image sets `DELISTD_CONTAINER` and `DELISTD_MACHINE_ID_FILE` itself, and keeps its data in `/home/nonroot/.delistd`. If your compose file or manifest overrode the old `ERASER_*` names, rename them. The compose file and the Kubernetes manifest now name the volume `delistd-data` and mount it at `/home/nonroot/.delistd`. To keep your data, either keep your old volume's name and change only the mount path (the machine ID that decrypts your stored passwords lives inside it), or copy it across once:
+
+```bash
+docker run --rm -v eraser-data:/from -v delistd-data:/to debian:trixie-slim cp -a /from/. /to/
+```
 
 ## Homebrew
 
 `brew upgrade` installs only `delistd` now. The old `eraser` binary is removed from the cask.
 
-## What did not change
+## Renamed data and schedule names
 
-The data directory `~/.eraser`, the `eraser-data` volume, the launchd label and systemd unit names, the session cookie names and the encryption key derivation. Renaming them would make existing configs and histories unreadable, so they stay. The `eraser.drumandbytes.dev` redirect to delistd.dev stays too.
+- **Data directory:** `~/.delistd` for new setups. A `~/.eraser` that holds your `config.yaml` or `history.db` is still found and used; nothing is moved (`mv ~/.eraser ~/.delistd` if you like).
+- **OS schedule:** the launchd label and systemd unit are now `com.drumandbytes.delistd.auto` and `delistd-auto`. `delistd schedule install` replaces a job under the old names; so does `schedule remove`.
+- **Mail archive folder:** the default is `Delistd`. If you rely on the old default folder, set `inbox.archive_folder` to its name in your config to keep scanning it.
+- **Stored passwords** keep working: they are re-encrypted under the new key the next time the config is saved.
+- **Web UI:** the session cookies are renamed, so open tabs sign you out once.
+
+The `eraser.drumandbytes.dev` redirect to delistd.dev stays.

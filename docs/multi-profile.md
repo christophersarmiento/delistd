@@ -86,7 +86,7 @@ replies fall back to the shared inbox.
 
 ## Web UI (`internal/web/`, `templates/layout.html`)
 
-- Active profile is tracked via a plain (non-secret) cookie, `eraser_profile` - **not** the `SessionStore` in `internal/web/session.go`, which is purpose-built for the ephemeral setup-wizard flow only
+- Active profile is tracked via a plain (non-secret) cookie, `delistd_profile` - **not** the `SessionStore` in `internal/web/session.go`, which is purpose-built for the ephemeral setup-wizard flow only
 - `Server.activeProfile(r *http.Request) config.NamedProfile` (in `server.go`) reads/validates the cookie against `config.GetProfiles()`, falling back to the first configured profile
 - `POST /api/profile` (`handleAPISwitchProfile`, in `handlers_profile.go`) validates `profile_id`, sets the cookie, and redirects to a same-origin `redirect` form value
 - `renderWithCSRF` injects `Profiles`/`ActiveProfile`/`CurrentPath` into every page's template data, so `layout.html`'s nav can render the switcher unconditionally without every handler wiring it manually
