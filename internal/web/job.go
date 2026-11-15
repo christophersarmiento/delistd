@@ -8,18 +8,23 @@ import (
 	"time"
 )
 
-// JobStatus represents the status of a background job
 type JobStatus string
 
 const (
 	JobStatusRunning   JobStatus = "running"
 	JobStatusCompleted JobStatus = "completed"
 	JobStatusCancelled JobStatus = "cancelled"
-	JobStatusPaused    JobStatus = "paused" // Paused due to daily limit
-	JobStatusError     JobStatus = "error"  // Stopped due to auth/config error
+	JobStatusPaused    JobStatus = "paused" // the daily limit was reached
+	JobStatusError     JobStatus = "error"  // stopped on an auth or config error
 )
 
-// Job represents a background email sending job
+// maxAuthFailures in a row stop a send: the account or password is wrong and
+// every further attempt would only add to the provider's lockout counter.
+const maxAuthFailures = 3
+
+// Job is one background send over a list of brokers. Everything but the
+// immutable fields is guarded by mu; other code goes through the methods, and
+// JSON encoding takes a consistent snapshot.
 type Job struct {
 	ID              string    `json:"id"`
 	ProfileID       string    `json:"profile_id"`
@@ -33,268 +38,195 @@ type Job struct {
 	StartedAt       time.Time `json:"started_at"`
 	CompletedAt     time.Time `json:"completed_at,omitempty"`
 	Error           string    `json:"error,omitempty"`
-	ErrorType       string    `json:"error_type,omitempty"`  // "auth", "rate_limit", etc.
-	DailyLimit      int       `json:"daily_limit,omitempty"` // Max emails per day
-	DaySent         int       `json:"day_sent,omitempty"`    // Emails sent today
+	ErrorType       string    `json:"error_type,omitempty"`  // "auth", "rate_limit", ...
+	DailyLimit      int       `json:"daily_limit,omitempty"` // emails allowed per day
+	DaySent         int       `json:"day_sent,omitempty"`    // emails sent today
 
-	ctx                  context.Context
-	cancelFunc           context.CancelFunc
-	mu                   sync.Mutex
-	consecutiveAuthFails int // Track consecutive auth failures
+	ctx        context.Context
+	cancelFunc context.CancelFunc
+	mu         sync.Mutex
+	authFails  int // consecutive
 }
 
-// Update updates the job progress. currentBrokerID is used by the brokers
-// page to refresh only the one row that just changed (see
-// internal/web/templates/brokers.html's refreshBrokerRow) instead of
-// re-fetching the entire broker table on every poll tick.
+// do runs change with the job locked.
+func (j *Job) do(change func()) {
+	j.mu.Lock()
+	defer j.mu.Unlock()
+	change()
+}
+
+func (j *Job) idle() { j.CurrentBroker, j.CurrentBrokerID = "", "" }
+
+// Update records progress. The broker ID lets the brokers page refresh just
+// the row that changed instead of the whole list on every poll.
 func (j *Job) Update(sent, failed int, currentBroker, currentBrokerID string) {
-	j.mu.Lock()
-	defer j.mu.Unlock()
-
-	j.Sent = sent
-	j.Failed = failed
-	j.CurrentBroker = currentBroker
-	j.CurrentBrokerID = currentBrokerID
-	if j.Total > 0 {
-		j.Progress = ((sent + failed) * 100) / j.Total
-	}
+	j.do(func() {
+		j.Sent, j.Failed = sent, failed
+		j.CurrentBroker, j.CurrentBrokerID = currentBroker, currentBrokerID
+		if j.Total > 0 {
+			j.Progress = (sent + failed) * 100 / j.Total
+		}
+	})
 }
 
-// Complete marks the job as completed
 func (j *Job) Complete() {
-	j.mu.Lock()
-	defer j.mu.Unlock()
-
-	j.Status = JobStatusCompleted
-	j.CompletedAt = time.Now()
-	j.Progress = 100
-	j.CurrentBroker = ""
-	j.CurrentBrokerID = ""
+	j.do(func() {
+		j.Status, j.CompletedAt, j.Progress = JobStatusCompleted, time.Now(), 100
+		j.idle()
+	})
 }
 
-// StopWithError stops the job due to an error
-func (j *Job) StopWithError(errorType, errorMsg string) {
-	j.mu.Lock()
-	defer j.mu.Unlock()
-
-	j.Status = JobStatusCompleted
-	j.CompletedAt = time.Now()
-	j.Error = errorMsg
-	j.ErrorType = errorType
-	j.CurrentBroker = ""
-	j.CurrentBrokerID = ""
+// StopWithError ends the job early and keeps why. The status stays
+// "completed"; the page tells the two apart by ErrorType.
+func (j *Job) StopWithError(errorType, message string) {
+	j.do(func() {
+		j.Status, j.CompletedAt = JobStatusCompleted, time.Now()
+		j.Error, j.ErrorType = message, errorType
+		j.idle()
+	})
 }
 
-// Pause marks the job paused (daily send limit reached) with the given
-// day-sent count and message, all under one lock - processSendJob used to
-// set these three fields directly, racing with any concurrent read (e.g. a
-// status poll marshalling the job).
-func (j *Job) Pause(daySent int, errorMsg string) {
-	j.mu.Lock()
-	defer j.mu.Unlock()
-
-	j.DaySent = daySent
-	j.Status = JobStatusPaused
-	j.Error = errorMsg
+// Pause marks the job as stopped by the daily limit.
+func (j *Job) Pause(daySent int, message string) {
+	j.do(func() { j.DaySent, j.Status, j.Error = daySent, JobStatusPaused, message })
 }
 
-// RecordAuthFailure records an auth failure and returns true if job should stop
-func (j *Job) RecordAuthFailure() bool {
-	j.mu.Lock()
-	defer j.mu.Unlock()
-	j.consecutiveAuthFails++
-	return j.consecutiveAuthFails >= 3
+// RecordAuthFailure counts one more login failure in a row and reports
+// whether the job should stop.
+func (j *Job) RecordAuthFailure() (stop bool) {
+	j.do(func() {
+		j.authFails++
+		stop = j.authFails >= maxAuthFailures
+	})
+	return stop
 }
 
-// ResetAuthFailures resets the consecutive auth failure counter
-func (j *Job) ResetAuthFailures() {
-	j.mu.Lock()
-	defer j.mu.Unlock()
-	j.consecutiveAuthFails = 0
-}
+func (j *Job) ResetAuthFailures() { j.do(func() { j.authFails = 0 }) }
 
-// SetDailyLimit sets the job's daily send limit under lock.
-func (j *Job) SetDailyLimit(limit int) {
-	j.mu.Lock()
-	defer j.mu.Unlock()
-	j.DailyLimit = limit
-}
+func (j *Job) SetDailyLimit(limit int) { j.do(func() { j.DailyLimit = limit }) }
 
-// Cancel cancels the job
+// Cancel stops a running job and cancels its context; any other status is
+// left as it is.
 func (j *Job) Cancel() {
-	j.mu.Lock()
-	defer j.mu.Unlock()
-
-	if j.Status == JobStatusRunning {
-		j.Status = JobStatusCancelled
-		j.CompletedAt = time.Now()
+	j.do(func() {
+		if j.Status != JobStatusRunning {
+			return
+		}
+		j.Status, j.CompletedAt = JobStatusCancelled, time.Now()
 		if j.cancelFunc != nil {
 			j.cancelFunc()
 		}
-	}
+	})
 }
 
-// IsCancelled returns true if the job was cancelled
-func (j *Job) IsCancelled() bool {
-	j.mu.Lock()
-	defer j.mu.Unlock()
-	return j.Status == JobStatusCancelled
+func (j *Job) GetStatus() (status JobStatus) {
+	j.do(func() { status = j.Status })
+	return status
 }
 
-// GetStatus returns the job's current status. Status is mutated under j.mu
-// by Update/Complete/Cancel/StopWithError, so reading the field directly
-// (as GetActive and Cleanup used to) is a data race - go through this.
-func (j *Job) GetStatus() JobStatus {
-	j.mu.Lock()
-	defer j.mu.Unlock()
-	return j.Status
+func (j *Job) IsCancelled() bool { return j.GetStatus() == JobStatusCancelled }
+
+// finishedBefore reports a job that is no longer running and ended before
+// cutoff.
+func (j *Job) finishedBefore(cutoff time.Time) (old bool) {
+	j.do(func() { old = j.Status != JobStatusRunning && j.CompletedAt.Before(cutoff) })
+	return old
 }
 
-// finishedBefore reports whether the job is no longer running and finished
-// before the given cutoff - the exact check JobManager.Cleanup needs,
-// taken under j.mu so it can't race with a concurrent Update/Complete.
-func (j *Job) finishedBefore(cutoff time.Time) bool {
-	j.mu.Lock()
-	defer j.mu.Unlock()
-	return j.Status != JobStatusRunning && j.CompletedAt.Before(cutoff)
-}
+func (j *Job) Context() context.Context { return j.ctx }
 
-// Context returns the job's context
-func (j *Job) Context() context.Context {
-	return j.ctx
-}
-
-// MarshalJSON snapshots the job under the lock, so a status poll can't read a
-// half-updated Job while processSendJob is mid-Update. The exported fields'
-// json tags do the rest.
+// MarshalJSON encodes a snapshot, so a status poll never sees a job halfway
+// through an Update.
 func (j *Job) MarshalJSON() ([]byte, error) {
 	j.mu.Lock()
 	defer j.mu.Unlock()
-	type alias Job // no MarshalJSON method -> plain struct marshal, no recursion
-	return json.Marshal((*alias)(j))
+	type plain Job // without the method, so this does not recurse
+	return json.Marshal((*plain)(j))
 }
 
-// JobManager manages background jobs
-type JobManager struct {
-	jobs map[string]*Job
-	mu   sync.RWMutex
-}
-
-// jobRetention controls how long a completed job stays in memory before
-// Cleanup evicts it. Jobs aren't persisted anywhere else, so this is purely
-// about not letting `jm.jobs` grow unbounded across a long-running `serve`
-// process - a week is plenty of time to check a completed send's results.
+// jobRetention is how long a finished job stays in memory. Jobs are not
+// stored anywhere else; a week is plenty to look back at a send.
 const jobRetention = 7 * 24 * time.Hour
 
-// NewJobManager creates a new job manager and starts its background
-// cleanup loop, which evicts completed jobs older than jobRetention.
-func NewJobManager() *JobManager {
-	jm := &JobManager{
-		jobs: make(map[string]*Job),
-	}
-	go jm.cleanupLoop()
-	return jm
+// JobManager keeps the jobs of one server process. Finished ones older than
+// jobRetention are dropped whenever a new job is created, so there is no
+// background goroutine to leak.
+type JobManager struct {
+	mu   sync.RWMutex
+	jobs map[string]*Job
 }
 
-// cleanupLoop periodically evicts old completed jobs so long-running
-// `serve` processes don't accumulate job state forever.
-func (jm *JobManager) cleanupLoop() {
-	ticker := time.NewTicker(time.Hour)
-	defer ticker.Stop()
+func NewJobManager() *JobManager { return &JobManager{jobs: map[string]*Job{}} }
 
-	for range ticker.C {
-		jm.Cleanup(jobRetention)
-	}
-}
-
-// Create creates a new job with the given total count, scoped to profileID.
-// Does not check for an already-active job for that profile - callers that
-// need "only one job per profile" must use CreateIfNoActive instead, or
-// they reopen the TOCTOU window CreateIfNoActive exists to close.
+// Create starts a job for profileID. It does not look for a running one: use
+// CreateIfNoActive when only one job per profile may run.
 func (jm *JobManager) Create(total int, profileID string) *Job {
 	jm.mu.Lock()
 	defer jm.mu.Unlock()
-	return jm.createLocked(total, profileID)
+	return jm.add(total, profileID)
 }
 
-// createLocked is Create's body, factored out so CreateIfNoActive can check
-// for an active job and insert the new one under the same lock acquisition.
-func (jm *JobManager) createLocked(total int, profileID string) *Job {
+// add inserts a new job; the caller holds jm.mu.
+func (jm *JobManager) add(total int, profileID string) *Job {
+	jm.evict(jobRetention)
 	ctx, cancel := context.WithCancel(context.Background())
-
-	job := &Job{
-		ID:         rand.Text(),
-		ProfileID:  profileID,
-		Status:     JobStatusRunning,
-		Progress:   0,
-		Sent:       0,
-		Failed:     0,
-		Total:      total,
-		StartedAt:  time.Now(),
-		ctx:        ctx,
-		cancelFunc: cancel,
-	}
-
+	job := &Job{ID: rand.Text(), ProfileID: profileID, Status: JobStatusRunning, Total: total, StartedAt: time.Now(), ctx: ctx, cancelFunc: cancel}
 	jm.jobs[job.ID] = job
 	return job
 }
 
-// CreateIfNoActive creates a job for profileID only if none is running, under
-// one lock, so two concurrent requests can't double-send. Returns
-// (existing, false) or (new, true).
+// CreateIfNoActive starts a job unless profileID already has one running,
+// deciding under a single lock so two requests cannot both send. It returns
+// the running job and false, or the new job and true.
 func (jm *JobManager) CreateIfNoActive(total int, profileID string) (*Job, bool) {
 	jm.mu.Lock()
 	defer jm.mu.Unlock()
-
-	for _, job := range jm.jobs {
-		if job.GetStatus() == JobStatusRunning && job.ProfileID == profileID {
-			return job, false
-		}
+	if running := jm.running(profileID); running != nil {
+		return running, false
 	}
-	return jm.createLocked(total, profileID), true
+	return jm.add(total, profileID), true
 }
 
-// Get returns a job by ID, or nil if not found
-func (jm *JobManager) Get(id string) *Job {
-	jm.mu.RLock()
-	defer jm.mu.RUnlock()
-
-	return jm.jobs[id]
-}
-
-// GetActive returns the currently running job for the given profile, or nil
-// if none. Scoped per-profile so switching profiles in the web UI doesn't
-// report a false "job already running" - two profiles can send
-// concurrently, each against its own daily limit and history.
-func (jm *JobManager) GetActive(profileID string) *Job {
-	jm.mu.RLock()
-	defer jm.mu.RUnlock()
-
+// running returns a running job for profileID (any profile when empty); the
+// caller holds jm.mu.
+func (jm *JobManager) running(profileID string) *Job {
 	for _, job := range jm.jobs {
-		if job.GetStatus() == JobStatusRunning && job.ProfileID == profileID {
+		if job.GetStatus() == JobStatusRunning && (profileID == "" || job.ProfileID == profileID) {
 			return job
 		}
 	}
 	return nil
 }
 
-// AnyActive reports whether any profile has a send job running.
+func (jm *JobManager) Get(id string) *Job {
+	jm.mu.RLock()
+	defer jm.mu.RUnlock()
+	return jm.jobs[id]
+}
+
+// GetActive returns the running job of one profile, or nil. It is per profile
+// so that two profiles can send at the same time, each within its own daily
+// limit and history.
+func (jm *JobManager) GetActive(profileID string) *Job {
+	jm.mu.RLock()
+	defer jm.mu.RUnlock()
+	return jm.running(profileID)
+}
+
 func (jm *JobManager) AnyActive() bool {
 	jm.mu.RLock()
 	defer jm.mu.RUnlock()
-	for _, job := range jm.jobs {
-		if job.GetStatus() == JobStatusRunning {
-			return true
-		}
-	}
-	return false
+	return jm.running("") != nil
 }
 
-// Cleanup removes completed jobs older than the specified duration
+// Cleanup drops finished jobs older than maxAge.
 func (jm *JobManager) Cleanup(maxAge time.Duration) {
 	jm.mu.Lock()
 	defer jm.mu.Unlock()
+	jm.evict(maxAge)
+}
 
+func (jm *JobManager) evict(maxAge time.Duration) {
 	cutoff := time.Now().Add(-maxAge)
 	for id, job := range jm.jobs {
 		if job.finishedBefore(cutoff) {
