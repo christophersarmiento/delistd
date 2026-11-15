@@ -16,100 +16,29 @@
         </div>
     </div>
 
-    <!-- Filter Tabs -->
     <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
         <div class="flex gap-2">
-            <a href="/history" class="btn {{if not .StatusFilter}}btn-primary{{else}}btn-secondary{{end}}"{{if not .StatusFilter}} aria-current="page"{{end}}>All</a>
-            <a href="/history?status=sent" class="btn {{if eq .StatusFilter "sent"}}btn-primary{{else}}btn-secondary{{end}}"{{if eq .StatusFilter "sent"}} aria-current="page"{{end}}>Sent</a>
-            <a href="/history?status=failed" class="btn {{if eq .StatusFilter "failed"}}btn-primary{{else}}btn-secondary{{end}}"{{if eq .StatusFilter "failed"}} aria-current="page"{{end}}>Failed</a>
+            {{range .Tabs}}
+            <a href="{{.Href}}" class="btn {{if eq $.StatusFilter .Key}}btn-primary{{else}}btn-secondary{{end}}"{{if eq $.StatusFilter .Key}} aria-current="page"{{end}}>{{.Label}}</a>
+            {{end}}
         </div>
-        <button
-            id="clear-failed-btn"
-            onclick="clearFailedRecords()"
-            class="btn btn-danger"
-        >
+        <button id="clear-failed-btn" class="btn btn-danger">
             {{icon "trash" "w-4 h-4"}}
             Clear Failed
         </button>
     </div>
 
-    <!-- Clear result message -->
     <div id="clear-result" class="mb-4"></div>
 
-    <script>
-    async function clearFailedRecords() {
-        if (!confirm('Delete all failed records? This cannot be undone.')) return;
-
-        const btn = document.getElementById('clear-failed-btn');
-        btn.disabled = true;
-        btn.innerHTML = '<span class="animate-spin">⏳</span> Clearing...';
-
-        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
-
-        try {
-            const resp = await fetch('/api/history/failed', {
-                method: 'DELETE',
-                headers: { 'X-CSRF-Token': csrfToken }
-            });
-            const data = await resp.json();
-
-            if (resp.ok) {
-                document.getElementById('clear-result').innerHTML = `
-                    <div class="alert alert-success">
-                        ${data.message}. <a href="/history" class="underline">Refresh page</a>
-                    </div>
-                `;
-            } else {
-                throw new Error(data.error || 'Failed to clear records');
-            }
-        } catch (err) {
-            document.getElementById('clear-result').innerHTML = `
-                <div class="alert alert-error">
-                    Error: ${err.message}
-                </div>
-            `;
-        }
-
-        btn.disabled = false;
-        btn.innerHTML = `
-            {{icon "trash" "w-4 h-4"}}
-            Clear Failed
-        `;
-    }
-    </script>
-
     {{if .History}}
-    <!-- Stats Summary -->
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+        {{range .Figures}}
         <div class="card p-4 text-center">
-            <p class="num text-2xl text-primary">{{len .History}}</p>
-            <p class="text-sm text-muted">Total Requests</p>
+            <p class="num text-2xl {{.Class}}">{{.Value}}</p>
+            <p class="text-sm text-muted">{{.Label}}</p>
         </div>
-        <div class="card p-4 text-center">
-            <p class="num text-2xl text-success" id="sent-count">0</p>
-            <p class="text-sm text-muted">Successful</p>
-        </div>
-        <div class="card p-4 text-center">
-            <p class="num text-2xl text-error" id="failed-count">0</p>
-            <p class="text-sm text-muted">Failed</p>
-        </div>
-        <div class="card p-4 text-center">
-            <p class="num text-2xl text-primary" id="success-rate">0%</p>
-            <p class="text-sm text-muted">Success Rate</p>
-        </div>
+        {{end}}
     </div>
-    <script>
-        (function() {
-            let sent = 0, failed = 0;
-            {{range .History}}
-            {{if eq .Status "sent"}}sent++;{{else}}failed++;{{end}}
-            {{end}}
-            document.getElementById('sent-count').textContent = sent;
-            document.getElementById('failed-count').textContent = failed;
-            const total = sent + failed;
-            document.getElementById('success-rate').textContent = total > 0 ? Math.round(sent / total * 100) + '%' : '0%';
-        })();
-    </script>
 
     <!-- History Timeline -->
     <div class="card overflow-hidden">
@@ -173,6 +102,10 @@
     </div>
     {{end}}
 </div>
+<script>
+window.clearFailedLabel = `{{icon "trash" "w-4 h-4"}} Clear Failed`;
+</script>
+<script src="/static/js/history.js"></script>
 {{end}}
 
 {{template "layout" .}}

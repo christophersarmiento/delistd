@@ -125,6 +125,11 @@ func (s *Server) handleBrokers(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// figure is one headline number: the card's label, its value and the colour class of the value.
+type figure struct {
+	Label, Value, Class string
+}
+
 func (s *Server) handleHistory(w http.ResponseWriter, r *http.Request) {
 	filter := r.URL.Query().Get("status")
 	records := s.getRecentHistory(s.activeProfile(r).ID, 1000)
@@ -137,10 +142,31 @@ func (s *Server) handleHistory(w http.ResponseWriter, r *http.Request) {
 		}
 		records = kept
 	}
+
+	sent := 0
+	for _, rec := range records {
+		if rec.Status == history.StatusSent {
+			sent++
+		}
+	}
+	failed := len(records) - sent
+	rate := 0
+	if len(records) > 0 {
+		rate = (sent*100 + len(records)/2) / len(records) // rounded
+	}
+
+	tabs := []struct{ Label, Href, Key string }{{"All", "/history", ""}, {"Sent", "/history?status=sent", "sent"}, {"Failed", "/history?status=failed", "failed"}}
 	s.renderWithCSRF(w, r, "history.html", map[string]interface{}{
 		"Title":        "History",
 		"History":      records,
 		"StatusFilter": filter,
+		"Tabs":         tabs,
+		"Figures": []figure{
+			{"Total Requests", strconv.Itoa(len(records)), "text-primary"},
+			{"Successful", strconv.Itoa(sent), "text-success"},
+			{"Failed", strconv.Itoa(failed), "text-error"},
+			{"Success Rate", strconv.Itoa(rate) + "%", "text-primary"},
+		},
 	})
 }
 
