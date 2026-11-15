@@ -103,7 +103,21 @@ func fingerprint(rec *httptest.ResponseRecorder) pageFingerprint {
 	}
 	doc, err := html.Parse(strings.NewReader(body))
 	if err == nil {
-		walk(doc, false, "")
+		// the page's own content: the nav, theme switch and footer belong to
+		// the layout and change with it
+		root := doc
+		var find func(n *html.Node)
+		find = func(n *html.Node) {
+			if n.Type == html.ElementNode && n.Data == "main" {
+				root = n
+				return
+			}
+			for c := n.FirstChild; c != nil && root == doc; c = c.NextSibling {
+				find(c)
+			}
+		}
+		find(doc)
+		walk(root, false, "")
 	}
 	fp.Text = undate(strings.Join(text, " | "))
 	for l := range links {
