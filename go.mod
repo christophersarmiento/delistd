@@ -2,7 +2,7 @@ module github.com/drumandbytes/delistd
 
 go 1.26.0
 
-toolchain go1.26.9
+toolchain go1.26.11
 
 require (
 	filippo.io/csrf v0.2.1

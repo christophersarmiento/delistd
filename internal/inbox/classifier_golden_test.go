@@ -3,9 +3,12 @@ package inbox
 import (
 	"compress/gzip"
 	"encoding/json"
+	"fmt"
 	"math"
 	"os"
+	"runtime"
 	"slices"
+	"sync"
 	"testing"
 )
 
@@ -45,42 +48,61 @@ func TestClassifierMatchesGolden(t *testing.T) {
 	if err := json.NewDecoder(zr).Decode(&cases); err != nil {
 		t.Fatal(err)
 	}
+	// the cases are independent; spread them over the CPUs, which matters
+	// under -race where this is the slowest test in the package
+	workers := runtime.GOMAXPROCS(0)
+	failures := make([][]string, workers)
+	var wg sync.WaitGroup
+	for w := 0; w < workers; w++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			for i := w; i < len(cases); i += workers {
+				failures[w] = append(failures[w], checkGoldenCase(i, cases[i])...)
+			}
+		}()
+	}
+	wg.Wait()
 	bad := 0
-	for i, c := range cases {
-		in := c.In
-		got := ClassifyResponse(&Email{From: in.From, FromName: in.FromName, FromDomain: in.FromDomain, Subject: in.Subject, Body: in.Body, HTMLBody: in.HTMLBody})
-		fail := func(format string, args ...any) {
+	for _, fs := range failures {
+		for _, f := range fs {
 			if bad++; bad <= 15 {
-				t.Errorf("case %d (%q / %q): "+format, append([]any{i, in.Subject, in.Body}, args...)...)
+				t.Error(f)
 			}
-		}
-		subject, content := emailText(&Email{Subject: in.Subject, Body: in.Body, HTMLBody: in.HTMLBody})
-		pts := scoreReply(subject, content, got.URLs)
-		_, top, runnerUp := pts.top()
-		viaScoring := slices.Contains(scored[:], got.Type) && got.Confidence < 1 // not a test email
-		if viaScoring && top > 0 && top == runnerUp {
-			if !got.NeedsReview {
-				fail("tie on %d points not sent to review (type %s)", top, got.Type)
-			}
-		} else if !slices.Contains(c.Out.Types, string(got.Type)) {
-			fail("type %s, golden %v", got.Type, c.Out.Types)
-		} else if len(c.Out.Types) == 1 {
-			o := c.Out
-			if !near(got.Confidence, o.Confidence) || got.NeedsReview != o.NeedsReview || got.Reason != o.Reason ||
-				got.FormURL != o.FormURL || got.ConfirmURL != o.ConfirmURL || got.BouncedRecipient != o.Bounced {
-				fail("got conf %v review %v reason %q form %q confirm %q bounced %q; golden conf %v review %v reason %q form %q confirm %q bounced %q",
-					got.Confidence, got.NeedsReview, got.Reason, got.FormURL, got.ConfirmURL, got.BouncedRecipient,
-					o.Confidence, o.NeedsReview, o.Reason, o.FormURL, o.ConfirmURL, o.Bounced)
-			}
-		}
-		ty, cf, rv := ClassifyBySubjectOnly(in.Subject)
-		if !slices.Contains(c.Out.SubjTypes, string(ty)) || (len(c.Out.SubjTypes) == 1 && (!near(cf, c.Out.SubjConf) || rv != c.Out.SubjReview)) {
-			fail("subject-only %s %v %v, golden %v %v %v", ty, cf, rv, c.Out.SubjTypes, c.Out.SubjConf, c.Out.SubjReview)
 		}
 	}
 	if bad > 0 {
-		t.Fatalf("%d of %d cases differ from the golden file", bad, len(cases))
+		t.Fatalf("%d cases differ from the golden file (of %d)", bad, len(cases))
 	}
+}
+
+func checkGoldenCase(i int, c goldenCase) (problems []string) {
+	in := c.In
+	fail := func(format string, args ...any) {
+		problems = append(problems, fmt.Sprintf("case %d (%q / %q): "+format, append([]any{i, in.Subject, in.Body}, args...)...))
+	}
+	got := ClassifyResponse(&Email{From: in.From, FromName: in.FromName, FromDomain: in.FromDomain, Subject: in.Subject, Body: in.Body, HTMLBody: in.HTMLBody})
+	subject, content := emailText(&Email{Subject: in.Subject, Body: in.Body, HTMLBody: in.HTMLBody})
+	_, top, runnerUp := scoreReply(subject, content, got.URLs).top()
+	viaScoring := slices.Contains(scored[:], got.Type) && got.Confidence < 1 // not a test email
+	switch o := c.Out; {
+	case viaScoring && top > 0 && top == runnerUp:
+		if !got.NeedsReview {
+			fail("tie on %d points not sent to review (type %s)", top, got.Type)
+		}
+	case !slices.Contains(o.Types, string(got.Type)):
+		fail("type %s, golden %v", got.Type, o.Types)
+	case len(o.Types) == 1 && (!near(got.Confidence, o.Confidence) || got.NeedsReview != o.NeedsReview || got.Reason != o.Reason ||
+		got.FormURL != o.FormURL || got.ConfirmURL != o.ConfirmURL || got.BouncedRecipient != o.Bounced):
+		fail("got conf %v review %v reason %q form %q confirm %q bounced %q; golden conf %v review %v reason %q form %q confirm %q bounced %q",
+			got.Confidence, got.NeedsReview, got.Reason, got.FormURL, got.ConfirmURL, got.BouncedRecipient,
+			o.Confidence, o.NeedsReview, o.Reason, o.FormURL, o.ConfirmURL, o.Bounced)
+	}
+	ty, cf, rv := ClassifyBySubjectOnly(in.Subject)
+	if o := c.Out; !slices.Contains(o.SubjTypes, string(ty)) || (len(o.SubjTypes) == 1 && (!near(cf, o.SubjConf) || rv != o.SubjReview)) {
+		fail("subject-only %s %v %v, golden %v %v %v", ty, cf, rv, o.SubjTypes, o.SubjConf, o.SubjReview)
+	}
+	return problems
 }
 
 // near: fused multiply-add on arm64 makes the last bit of a float differ from amd64.
