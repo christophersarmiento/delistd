@@ -9,28 +9,14 @@
         <a href="/brokers" class="btn btn-primary">Send Removal Requests</a>
     </div>
 
-    <!-- Figures: one sheet, no icon tiles -->
     <ul class="figures mb-8">
-        <li><a href="/brokers" class="figure-link">
-            <span class="figure-label">Total Brokers</span>
-            <span class="figure-value num">{{.Stats.TotalBrokers}}</span>
-            <span class="figure-hint">View all brokers</span>
+        {{range .Figures}}
+        <li><a href="{{.Href}}" class="figure-link">
+            <span class="figure-label">{{.Label}}</span>
+            <span class="figure-value num{{if .Class}} {{.Class}}{{end}}">{{.Value}}</span>
+            <span class="figure-hint">{{.Hint}}</span>
         </a></li>
-        <li><a href="/history?status=sent" class="figure-link">
-            <span class="figure-label">Requests Sent</span>
-            <span class="figure-value num">{{.Stats.Sent}}</span>
-            <span class="figure-hint">View sent requests</span>
-        </a></li>
-        <li><a href="/history?status=failed" class="figure-link">
-            <span class="figure-label">Failed</span>
-            <span class="figure-value num{{if gt .Stats.Failed 0}} text-error{{end}}">{{.Stats.Failed}}</span>
-            <span class="figure-hint">View failed requests</span>
-        </a></li>
-        <li><a href="/brokers?status=pending" class="figure-link">
-            <span class="figure-label">Pending</span>
-            <span class="figure-value num">{{.Stats.Pending}}</span>
-            <span class="figure-hint">View pending brokers</span>
-        </a></li>
+        {{end}}
     </ul>
 
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-8">
@@ -51,11 +37,7 @@
             </a>
             {{end}}
             <ul class="ledger-rows mt-4">
-                <li><a href="/pipeline?status=awaiting_response"><span>Waiting for Reply</span><span class="num">{{.PipelineStats.AwaitingResponse}}</span></a></li>
-                <li><a href="/pipeline?status=confirmed"><span>Removal Confirmed</span><span class="num{{if gt .PipelineStats.Confirmed 0}} text-success{{end}}">{{.PipelineStats.Confirmed}}</span></a></li>
-                <li><a href="/pipeline?status=rejected"><span>Request Rejected</span><span class="num{{if gt .PipelineStats.Rejected 0}} text-error{{end}}">{{.PipelineStats.Rejected}}</span></a></li>
-                <li><a href="/pipeline?status=no_data_held"><span>No data held</span><span class="num">{{.PipelineStats.NoData}}</span></a></li>
-                <li><a href="/pipeline?view=actions"><span>Action Needed</span><span class="num{{if gt .PipelineStats.PendingTasks 0}} text-warning{{end}}">{{.PipelineStats.PendingTasks}}</span></a></li>
+                {{range .Ledger}}<li><a href="{{.Href}}"><span>{{.Label}}</span><span class="num{{if .Class}} {{.Class}}{{end}}">{{.Value}}</span></a></li>{{end}}
             </ul>
         </div>
         {{end}}
@@ -66,37 +48,19 @@
             <h2 class="font-display text-lg font-semibold text-primary mb-6">Coverage Progress</h2>
             <div class="flex items-center gap-8">
                 <div class="relative">
-                    <svg class="progress-ring w-32 h-32" viewBox="0 0 100 100">
+                    <svg class="progress-ring w-32 h-32" viewBox="0 0 100 100" role="img" aria-label="{{.Percent}}% of brokers contacted">
                         <circle class="progress-ring-bg" cx="50" cy="50" r="45" fill="none" stroke-width="8"/>
-                        <circle class="progress-ring-fill" cx="50" cy="50" r="45" fill="none" stroke-width="8"
-                            stroke-dasharray="283"
-                            id="progress-circle"/>
+                        <circle class="progress-ring-fill" cx="50" cy="50" r="45" fill="none" stroke-width="8" stroke-dasharray="283" style="stroke-dashoffset: {{.Offset}}"/>
                     </svg>
                     <div class="absolute inset-0 flex flex-col items-center justify-center">
-                        <span class="num text-2xl font-medium text-primary" id="progress-percent">0%</span>
+                        <span class="num text-2xl font-medium text-primary">{{.Percent}}%</span>
                         <span class="text-xs text-muted">complete</span>
                     </div>
                 </div>
                 <ul class="ledger-rows flex-1">
-                    <li><span>Sent</span><span class="num">{{.Stats.Sent}}</span></li>
-                    <li><span>Pending</span><span class="num">{{.Stats.Pending}}</span></li>
-                    <li><span>Failed</span><span class="num">{{.Stats.Failed}}</span></li>
+                    {{range .Coverage}}<li><span>{{.Label}}</span><span class="num">{{.Value}}</span></li>{{end}}
                 </ul>
             </div>
-            <script>
-                (function() {
-                    const sent = {{.Stats.Sent}};
-                    const total = {{.Stats.TotalBrokers}};
-                    const percent = total > 0 ? (sent / total * 100).toFixed(0) : 0;
-                    const circle = document.getElementById('progress-circle');
-                    const percentEl = document.getElementById('progress-percent');
-
-                    // Calculate stroke-dashoffset (283 is circumference of r=45)
-                    const offset = 283 - (283 * percent / 100);
-                    circle.style.strokeDashoffset = offset;
-                    percentEl.textContent = percent + '%';
-                })();
-            </script>
         </div>
         {{end}}
     </div>

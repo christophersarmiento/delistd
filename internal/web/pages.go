@@ -27,19 +27,65 @@ func (s *Server) store(w http.ResponseWriter, message string) *history.Store {
 	return s.historyStore
 }
 
+// dashFigure is a headline number that links to the list behind it.
+type dashFigure struct {
+	Href, Label, Hint string
+	Value             int
+	Class             string // colour class for the value, if any
+}
+
+// ledgerRow is a label and a count on the dashboard's ledgers; a Href makes it a link.
+type ledgerRow struct {
+	Href, Label, Class string
+	Value              int
+}
+
+// ringCircumference is that of the coverage ring's r=45 circle.
+const ringCircumference = 283
+
 func (s *Server) handleDashboard(w http.ResponseWriter, r *http.Request) {
 	if cfg := s.getConfig(); cfg == nil || !cfg.HasProfile() {
 		http.Redirect(w, r, "/setup", http.StatusFound)
 		return
 	}
 	active := s.activeProfile(r)
+	stats := s.getStats(active.ID)
+	pipe := s.getPipelineStats(active.ID)
+
+	// a count gets a colour only when it is not zero
+	tint := func(n int, class string) string {
+		if n > 0 {
+			return class
+		}
+		return ""
+	}
+	percent := 0
+	if stats.TotalBrokers > 0 {
+		percent = int(float64(stats.Sent)/float64(stats.TotalBrokers)*100 + 0.5)
+	}
+
 	s.renderWithCSRF(w, r, "dashboard.html", map[string]interface{}{
 		"Title":         "Dashboard",
 		"Profile":       active.Profile,
-		"BrokerCount":   len(s.brokers().Brokers),
 		"RecentHistory": s.getRecentHistory(active.ID, 10),
-		"Stats":         s.getStats(active.ID),
-		"PipelineStats": s.getPipelineStats(active.ID),
+		"Stats":         stats,
+		"PipelineStats": pipe,
+		"Figures": []dashFigure{
+			{"/brokers", "Total Brokers", "View all brokers", stats.TotalBrokers, ""},
+			{"/history?status=sent", "Requests Sent", "View sent requests", stats.Sent, ""},
+			{"/history?status=failed", "Failed", "View failed requests", stats.Failed, tint(stats.Failed, "text-error")},
+			{"/brokers?status=pending", "Pending", "View pending brokers", stats.Pending, ""},
+		},
+		"Ledger": []ledgerRow{
+			{"/pipeline?status=awaiting_response", "Waiting for Reply", "", pipe.AwaitingResponse},
+			{"/pipeline?status=confirmed", "Removal Confirmed", tint(pipe.Confirmed, "text-success"), pipe.Confirmed},
+			{"/pipeline?status=rejected", "Request Rejected", tint(pipe.Rejected, "text-error"), pipe.Rejected},
+			{"/pipeline?status=no_data_held", "No data held", "", pipe.NoData},
+			{"/pipeline?view=actions", "Action Needed", tint(pipe.PendingTasks, "text-warning"), pipe.PendingTasks},
+		},
+		"Coverage": []ledgerRow{{"", "Sent", "", stats.Sent}, {"", "Pending", "", stats.Pending}, {"", "Failed", "", stats.Failed}},
+		"Percent":  percent,
+		"Offset":   ringCircumference - ringCircumference*percent/100,
 	})
 }
 

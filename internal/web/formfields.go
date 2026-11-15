@@ -59,8 +59,6 @@ func lines(items []string) string {
 	return strings.Join(items, "\n") + "\n"
 }
 
-func errOf(errs map[string]string, name string) string { return errs[name] }
-
 // profileForm lays out the profile fields for a form, filled from p and
 // flagged with errs (field name to message). errs may be nil.
 func profileForm(p config.Profile, errs map[string]string) []formBlock {
