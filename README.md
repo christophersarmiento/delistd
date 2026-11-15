@@ -497,6 +497,10 @@ See [docs/architecture.md](docs/architecture.md) for the full breakdown, includi
 
 MIT — do whatever you want with it.
 
+## Credits
+
+Delistd started as a fork of [digisamroc/eraser](https://github.com/digisamroc/eraser), which is MIT-licensed; see [LICENSE](LICENSE).
+
 ---
 
 ## Disclaimer
