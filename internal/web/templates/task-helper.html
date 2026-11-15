@@ -1,40 +1,22 @@
 {{define "content"}}
 <div class="max-w-4xl mx-auto">
-    <!-- Header -->
     <div class="mb-6">
         <a href="/tasks" class="text-sm text-accent hover:underline">&larr; Back to Action Needed</a>
         <h1 class="font-display text-2xl font-bold text-primary mt-2">CAPTCHA Task: {{.Task.BrokerName}}</h1>
         <p class="text-secondary mt-1">Complete this form manually after solving the CAPTCHA</p>
     </div>
 
-    <!-- Timestamps -->
     <div class="rounded-lg p-4 mb-6" style="background: var(--bg-elevated);">
         <div class="flex flex-wrap gap-6 text-sm">
-            <div>
-                <span class="text-muted">Created:</span>
-                <span class="font-medium text-primary">{{.Task.CreatedAt.Format "Jan 2, 2006 3:04 PM"}}</span>
-            </div>
-            {{if .Task.OpenedAt.Valid}}
-            <div>
-                <span class="text-muted">First Opened:</span>
-                <span class="font-medium text-primary">{{.Task.OpenedAt.Time.Format "Jan 2, 2006 3:04 PM"}}</span>
-            </div>
-            {{end}}
-            {{if .Task.CompletedAt.Valid}}
-            <div>
-                <span class="text-muted">Completed:</span>
-                <span class="font-medium text-success">{{.Task.CompletedAt.Time.Format "Jan 2, 2006 3:04 PM"}}</span>
-            </div>
-            {{end}}
+            <div><span class="text-muted">Created:</span> <span class="font-medium text-primary">{{formatTime .Task.CreatedAt}}</span></div>
+            {{if .Task.OpenedAt.Valid}}<div><span class="text-muted">First Opened:</span> <span class="font-medium text-primary">{{formatTime .Task.OpenedAt.Time}}</span></div>{{end}}
+            {{if .Task.CompletedAt.Valid}}<div><span class="text-muted">Completed:</span> <span class="font-medium text-success">{{formatTime .Task.CompletedAt.Time}}</span></div>{{end}}
         </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Profile Data Section -->
-        <div class="card p-6">
-            <h2 class="font-display text-lg font-semibold text-primary mb-4">Your Information</h2>
+        {{card "Your Information"}}
             <p class="text-sm text-muted mb-4">Click any field to copy it to your clipboard</p>
-
             <div class="space-y-3">
                 {{range .OrderedProfile}}
                 <div class="copy-field flex items-center justify-between p-3 rounded-lg transition-colors cursor-pointer" data-value="{{.value}}" style="background: var(--bg-elevated);">
@@ -42,98 +24,62 @@
                         <span class="text-xs text-muted uppercase tracking-wide">{{.key}}</span>
                         <p class="font-medium text-primary">{{.value}}</p>
                     </div>
-                    <button class="text-accent hover:bg-[var(--accent-muted)] p-2 rounded-md transition-colors" title="Copy to clipboard">
-                        {{icon "clipboard-copy" "w-5 h-5"}}
-                    </button>
+                    <button class="text-accent hover:bg-[var(--accent-muted)] p-2 rounded-md transition-colors" title="Copy to clipboard">{{icon "clipboard-copy" "w-5 h-5"}}</button>
                 </div>
                 {{end}}
             </div>
-
-            <!-- Open Form Button -->
             <div class="mt-6">
-                <a href="{{.Task.FormURL}}" target="_blank" rel="noopener noreferrer"
-                   class="btn btn-primary w-full justify-center">
-                    Open Form in New Tab
-                </a>
+                <a href="{{.Task.FormURL}}" target="_blank" rel="noopener noreferrer" class="btn btn-primary w-full justify-center">Open Form in New Tab</a>
             </div>
-        </div>
+        {{endcard}}
 
-        <!-- Instructions & Screenshot Section -->
         <div class="space-y-6">
-            <!-- Instructions -->
-            <div class="card p-6">
-                <h2 class="font-display text-lg font-semibold text-primary mb-4">Instructions</h2>
+            {{card "Instructions"}}
                 <ol class="list-decimal list-inside space-y-2 text-secondary">
-                    <li>Click <strong>"Open Form in New Tab"</strong> on the left</li>
+                    <li>Click <strong>"Open Form in New Tab"</strong> under your information</li>
                     <li>Solve the CAPTCHA on the form</li>
                     <li>Use the copy buttons above to fill in your information</li>
                     <li>Submit the form on the broker's website</li>
                     <li>Return here and click <strong>"Mark Complete"</strong></li>
                 </ol>
-            </div>
+            {{endcard}}
 
-            <!-- Screenshot -->
             {{if .Task.ScreenshotPath}}
-            <div class="card p-6">
-                <h2 class="font-display text-lg font-semibold text-primary mb-4">Form Screenshot</h2>
+            {{card "Form Screenshot"}}
                 <img src="/tasks/{{.Task.ID}}/screenshot" alt="Form screenshot" class="w-full rounded-lg border-[var(--border)]" style="border-width: 1px;">
-            </div>
+            {{endcard}}
             {{end}}
 
-            <!-- Actions -->
-            <div class="card p-6">
-                <h2 class="font-display text-lg font-semibold text-primary mb-4">Actions</h2>
+            {{card "Actions"}}
                 {{if eq .Task.Status "pending"}}
                 <div class="flex flex-wrap gap-3">
-                    <form action="/tasks/{{.Task.ID}}/complete" method="POST" class="inline">
-                        {{.CSRFField}}
-                        <button type="submit" class="btn btn-primary">
-                            Mark Complete
-                        </button>
-                    </form>
-                    <form action="/tasks/{{.Task.ID}}/skip" method="POST" class="inline">
-                        {{.CSRFField}}
-                        <button type="submit" class="btn btn-secondary">
-                            Skip
-                        </button>
-                    </form>
+                    <form action="/tasks/{{.Task.ID}}/complete" method="POST" class="inline">{{.CSRFField}}<button type="submit" class="btn btn-primary">Mark Complete</button></form>
+                    <form action="/tasks/{{.Task.ID}}/skip" method="POST" class="inline">{{.CSRFField}}<button type="submit" class="btn btn-secondary">Skip</button></form>
                 </div>
                 {{else if eq .Task.Status "completed"}}
-                <div class="flex items-center gap-2 text-success">
-                    {{icon "check" "w-5 h-5"}}
-                    <span class="font-medium">This task has been completed</span>
-                </div>
+                <div class="flex items-center gap-2 text-success">{{icon "check" "w-5 h-5"}} <span class="font-medium">This task has been completed</span></div>
                 {{else if eq .Task.Status "skipped"}}
-                <div class="flex items-center gap-2 text-muted">
-                    {{icon "chevron-double-right" "w-5 h-5"}}
-                    <span class="font-medium">This task has been skipped</span>
-                </div>
+                <div class="flex items-center gap-2 text-muted">{{icon "chevron-double-right" "w-5 h-5"}} <span class="font-medium">This task has been skipped</span></div>
                 {{end}}
-            </div>
+            {{endcard}}
         </div>
     </div>
 
-    <!-- Notes Section -->
     {{if .Task.Notes}}
-    <div class="card p-6 mt-6">
-        <h2 class="font-display text-lg font-semibold text-primary mb-4">Notes</h2>
+    {{card "Notes" "p-6 mt-6"}}
         <p class="text-secondary whitespace-pre-wrap">{{.Task.Notes}}</p>
-    </div>
+    {{endcard}}
     {{end}}
 </div>
 
-<!-- Copy to Clipboard Script -->
 <script>
+// clicking a field copies its value and tints it briefly
 document.querySelectorAll('.copy-field').forEach(field => {
     field.addEventListener('click', async () => {
-        const value = field.dataset.value;
         try {
-            await navigator.clipboard.writeText(value);
-            // Show feedback by briefly tinting the field with the success color
+            await navigator.clipboard.writeText(field.dataset.value);
             field.style.background = 'rgba(34, 197, 94, 0.15)';
-            setTimeout(() => {
-                field.style.background = 'var(--bg-elevated)';
-            }, 500);
+            setTimeout(() => { field.style.background = 'var(--bg-elevated)'; }, 500);
         } catch (err) {
             console.error('Failed to copy:', err);
         }
@@ -141,3 +87,5 @@ document.querySelectorAll('.copy-field').forEach(field => {
 });
 </script>
 {{end}}
+
+{{template "layout" .}}
