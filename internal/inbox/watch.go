@@ -43,21 +43,24 @@ func (m *Monitor) WatchForNewEmails(ctx context.Context, callback func(Email)) e
 		go func() { idleDone <- m.client.Idle(stop, nil) }()
 		return stop
 	}
+	// halt ends IDLE and waits for it, so the connection is free to use
+	halt := func(stop chan struct{}) {
+		close(stop)
+		if err := <-idleDone; err != nil {
+			log.Printf("IDLE ended with: %v", err)
+		}
+	}
 	stop := idle()
 	log.Printf("Watching for new emails (press Ctrl+C to stop)...")
 
 	for {
 		select {
 		case <-ctx.Done():
-			// wait for the IDLE goroutine to end, so the caller never uses
-			// the connection while it is still in use here
-			close(stop)
-			_ = <-idleDone // the stop error is not interesting
+			halt(stop) // the caller must not use the connection while IDLE still holds it
 			return ctx.Err()
 		case <-newMail:
 			log.Printf("New mail detected")
-			close(stop)
-			_ = <-idleDone // the stop error is not interesting
+			halt(stop)
 
 			emails, err := m.FetchBrokerEmails(ctx, 1)
 			if err != nil {
