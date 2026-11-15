@@ -124,6 +124,7 @@ func (f *FormFiller) Fill(ctx context.Context) *FillResult {
 type candidate struct {
 	Selector string `json:"selector"`
 	Tag      string `json:"tag"`
+	Type     string `json:"type"`
 }
 
 // findCandidates asks the page, in one round trip, which of the field's
@@ -135,13 +136,13 @@ const findCandidatesJS = `(function(spec) {
 	function visible(sel) {
 		try {
 			var el = document.querySelector(sel);
-			return el !== null && el.offsetParent !== null ? el.tagName.toLowerCase() : "";
-		} catch (e) { return ""; }
+			return el !== null && el.offsetParent !== null ? {tag: el.tagName.toLowerCase(), type: (el.type || '').toLowerCase()} : null;
+		} catch (e) { return null; }
 	}
 	var found = [];
 	spec.selectors.forEach(function(sel) {
-		var tag = visible(sel);
-		if (tag) found.push({selector: sel, tag: tag});
+		var v = visible(sel);
+		if (v) found.push({selector: sel, tag: v.tag, type: v.type});
 	});
 	var inputs = document.querySelectorAll('input, select, textarea');
 	for (var i = 0; i < inputs.length; i++) {
@@ -154,8 +155,8 @@ const findCandidatesJS = `(function(spec) {
 		var hit = spec.patterns.some(function(p) { return text.some(function(t) { return t.includes(p); }); });
 		if (!hit || el.offsetParent === null) continue;
 		var sel = el.tagName.toLowerCase() + (el.id ? '#' + el.id : (el.name ? '[name="' + el.name + '"]' : ''));
-		var tag = visible(sel);
-		if (tag) found.push({selector: sel, tag: tag});
+		var v = visible(sel);
+		if (v) found.push({selector: sel, tag: v.tag, type: v.type});
 		break;
 	}
 	return found;
@@ -188,9 +189,12 @@ func (f *FormFiller) fillField(ctx context.Context, m FieldMapping) (bool, error
 		}
 		tried[c.Selector] = true
 		var ok bool
-		if c.Tag == "select" {
+		switch {
+		case c.Tag == "select":
 			ok, err = f.chooseOption(ctx, c.Selector, m.ProfileValue)
-		} else {
+		case c.Type == "date":
+			ok, err = f.setValue(ctx, c.Selector, m.ProfileValue)
+		default:
 			ok, err = f.typeInto(ctx, c.Selector, singleLine(c.Tag, m.ProfileValue))
 		}
 		if err != nil {
@@ -239,6 +243,30 @@ func (f *FormFiller) chooseOption(ctx context.Context, selector, value string) (
 		return el.value === opt.value;
 	})(document.querySelector(%s), %s)`, sel, want)
 
+	var ok bool
+	if err := chromedp.Run(ctx, chromedp.Evaluate(js, &ok)); err != nil {
+		if isContextErr(err) {
+			return false, err
+		}
+		return false, nil
+	}
+	return ok, nil
+}
+
+// setValue sets the value directly and fires the events a keystroke would. A
+// date input has to be filled this way: typed keys are read in the browser's
+// own date order (month first in en-US, day first elsewhere), so an ISO date
+// typed into it ends up as a different date from machine to machine.
+func (f *FormFiller) setValue(ctx context.Context, selector, value string) (bool, error) {
+	sel, _ := json.Marshal(selector)
+	want, _ := json.Marshal(value)
+	js := fmt.Sprintf(`(function(el, value) {
+		if (!el) return false;
+		el.value = value;
+		el.dispatchEvent(new Event('input', {bubbles: true}));
+		el.dispatchEvent(new Event('change', {bubbles: true}));
+		return el.value === value;
+	})(document.querySelector(%s), %s)`, sel, want)
 	var ok bool
 	if err := chromedp.Run(ctx, chromedp.Evaluate(js, &ok)); err != nil {
 		if isContextErr(err) {

@@ -3,6 +3,7 @@ package broker
 import (
 	"fmt"
 	"github.com/drumandbytes/delistd/internal/datadir"
+	"github.com/drumandbytes/delistd/internal/fsutil"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -386,7 +387,7 @@ func (db *BrokerDatabase) Save(path string) error {
 	if err != nil {
 		return fmt.Errorf("failed to serialize brokers: %w", err)
 	}
-	return os.WriteFile(path, data, 0644)
+	return fsutil.WriteFileAtomic(path, data, 0o644)
 }
 
 func (db *BrokerDatabase) Add(broker Broker) error {

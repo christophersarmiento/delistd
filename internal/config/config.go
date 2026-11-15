@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"github.com/drumandbytes/delistd/internal/datadir"
+	"github.com/drumandbytes/delistd/internal/fsutil"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -545,7 +546,7 @@ func Save(path string, cfg *Config) error {
 	if err != nil {
 		return fmt.Errorf("failed to serialize config: %w", err)
 	}
-	return os.WriteFile(path, data, 0600)
+	return fsutil.WriteFileAtomic(path, data, 0o600)
 }
 
 func (c *Config) Validate() error {
