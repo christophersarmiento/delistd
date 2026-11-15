@@ -5,15 +5,19 @@ import (
 	"crypto/rand"
 	"crypto/tls"
 	"fmt"
+	"mime"
+	"mime/quotedprintable"
 	"net"
 	"net/mail"
 	"net/smtp"
 	"strings"
+	"time"
 
 	"github.com/drumandbytes/delistd/internal/config"
 	"github.com/drumandbytes/delistd/internal/oauth"
 )
 
+// SMTPSender sends mail through the configured account.
 type SMTPSender struct {
 	config config.SMTPConfig
 	from   string
@@ -23,68 +27,107 @@ func NewSMTPSender(cfg config.SMTPConfig, from string) *SMTPSender {
 	return &SMTPSender{config: cfg, from: from}
 }
 
+// Send delivers msg and reports the Message-ID it went out under.
 func (s *SMTPSender) Send(ctx context.Context, msg Message) Result {
+	fail := func(err error) Result { return Result{Success: false, Error: err} }
 	if err := validateMessage(msg); err != nil {
-		return Result{Success: false, Error: err}
+		return fail(err)
 	}
-	// Reject headers with CRLF to prevent injection
-	if strings.ContainsAny(msg.Subject, "\r\n") {
-		return Result{Success: false, Error: fmt.Errorf("subject contains invalid characters")}
+	if strings.ContainsAny(msg.Subject, "\r\n") { // header injection
+		return fail(fmt.Errorf("subject contains invalid characters"))
 	}
 
-	addr := fmt.Sprintf("%s:%d", s.config.Host, s.config.Port)
+	auth, err := s.authenticator(ctx)
+	if err != nil {
+		return fail(err)
+	}
+	if auth == nil && s.config.Username != "" {
+		return fail(fmt.Errorf("SMTP auth requires TLS"))
+	}
 
-	// Our own Message-ID, so the one recorded in history is the one the
-	// broker actually receives (and quotes back in In-Reply-To).
+	// our own Message-ID, so the one recorded in history is the one the
+	// broker receives and quotes back in In-Reply-To
 	domain := "localhost"
 	if from, err := mail.ParseAddress(msg.From); err == nil {
 		domain = from.Address[strings.LastIndex(from.Address, "@")+1:]
 	}
 	messageID := "<" + rand.Text() + "@" + domain + ">"
 
-	var message strings.Builder
-	fmt.Fprintf(&message, "Message-ID: %s\r\n", messageID)
-	fmt.Fprintf(&message, "From: %s\r\n", msg.From)
-	fmt.Fprintf(&message, "To: %s\r\n", msg.To)
-	fmt.Fprintf(&message, "Subject: %s\r\n", msg.Subject)
-	message.WriteString("MIME-Version: 1.0\r\n")
-	message.WriteString("Content-Type: text/plain; charset=utf-8\r\n")
-	message.WriteString("\r\n")
-	message.WriteString(msg.Body)
-
-	var auth smtp.Auth
-	if s.config.TLS() {
-		password, err := config.Reveal(s.config.Password)
-		if err != nil {
-			return Result{Success: false, Error: err}
-		}
-		if s.config.Auth == config.AuthOAuth2 {
-			token, err := oauth.AccessFor(ctx, config.OAuthClientID(s.config.ClientID), password)
-			if err != nil {
-				return Result{Success: false, Error: err}
-			}
-			auth = oauth.SMTPAuth(s.config.Username, token)
-		} else {
-			auth = smtp.PlainAuth("", s.config.Username, password, s.config.Host)
-		}
-	} else if s.config.Username != "" {
-		return Result{Success: false, Error: fmt.Errorf("SMTP auth requires TLS")}
+	addr := fmt.Sprintf("%s:%d", s.config.Host, s.config.Port)
+	raw := []byte(formatMessage(msg, messageID, time.Now()))
+	if err := s.send(ctx, addr, auth, msg.From, msg.To, raw, s.config.TLS()); err != nil {
+		return fail(sanitizeSMTPError(err))
 	}
+	return Result{Success: true, MessageID: messageID}
+}
 
-	var err error
-	if s.config.TLS() {
-		err = s.send(ctx, addr, auth, msg.From, msg.To, []byte(message.String()), true)
-	} else {
-		err = s.send(ctx, addr, nil, msg.From, msg.To, []byte(message.String()), false)
+// authenticator is the login for the configured account: a password or an
+// OAuth token. It is nil when the connection is not TLS, since credentials
+// must never cross in plaintext.
+func (s *SMTPSender) authenticator(ctx context.Context) (smtp.Auth, error) {
+	if !s.config.TLS() {
+		return nil, nil
 	}
+	secret, err := config.Reveal(s.config.Password)
 	if err != nil {
-		return Result{Success: false, Error: sanitizeSMTPError(err)}
+		return nil, err
 	}
+	if s.config.Auth != config.AuthOAuth2 {
+		return smtp.PlainAuth("", s.config.Username, secret, s.config.Host), nil
+	}
+	token, err := oauth.AccessFor(ctx, config.OAuthClientID(s.config.ClientID), secret)
+	if err != nil {
+		return nil, err
+	}
+	return oauth.SMTPAuth(s.config.Username, token), nil
+}
 
-	return Result{
-		Success:   true,
-		MessageID: messageID,
+// formatMessage builds the RFC 5322 message. A non-ASCII subject is encoded
+// as an RFC 2047 word, and a body that is not plain 7-bit text (accented
+// names, very long lines) is sent quoted-printable, so no server on the way
+// has to support 8-bit mail. Date is required by the RFC and its absence
+// counts against a message in spam scoring.
+func formatMessage(msg Message, messageID string, now time.Time) string {
+	var b strings.Builder
+	header := func(name, value string) { b.WriteString(name + ": " + value + "\r\n") }
+	header("Message-ID", messageID)
+	header("Date", now.Format(time.RFC1123Z))
+	header("From", msg.From)
+	header("To", msg.To)
+	header("Subject", mime.QEncoding.Encode("utf-8", msg.Subject))
+	header("MIME-Version", "1.0")
+	header("Content-Type", "text/plain; charset=utf-8")
+	if plainEnough(msg.Body) {
+		header("Content-Transfer-Encoding", "7bit")
+		b.WriteString("\r\n" + msg.Body)
+		return b.String()
 	}
+	header("Content-Transfer-Encoding", "quoted-printable")
+	b.WriteString("\r\n")
+	w := quotedprintable.NewWriter(&b)
+	_, _ = w.Write([]byte(msg.Body))
+	_ = w.Close()
+	return b.String()
+}
+
+// plainEnough reports whether text can go out as 7bit: ASCII only, lines no
+// longer than the 998 octets RFC 5322 allows.
+func plainEnough(text string) bool {
+	line := 0
+	for i := 0; i < len(text); i++ {
+		c := text[i]
+		if c >= 0x80 || c == 0 {
+			return false
+		}
+		if c == '\n' {
+			line = 0
+			continue
+		}
+		if line++; line > 998 {
+			return false
+		}
+	}
+	return true
 }
 
 func sanitizeSMTPError(err error) error {
@@ -173,19 +216,9 @@ func (s *SMTPSender) VerifyLogin(ctx context.Context) error {
 	if !s.config.TLS() {
 		return fmt.Errorf("SMTP login needs TLS")
 	}
-	password, err := config.Reveal(s.config.Password)
+	auth, err := s.authenticator(ctx)
 	if err != nil {
 		return err
-	}
-	var auth smtp.Auth
-	if s.config.Auth == config.AuthOAuth2 {
-		token, err := oauth.AccessFor(ctx, config.OAuthClientID(s.config.ClientID), password)
-		if err != nil {
-			return err
-		}
-		auth = oauth.SMTPAuth(s.config.Username, token)
-	} else {
-		auth = smtp.PlainAuth("", s.config.Username, password, s.config.Host)
 	}
 	client, stop, err := s.connect(ctx, fmt.Sprintf("%s:%d", s.config.Host, s.config.Port), true)
 	if err != nil {
