@@ -31,20 +31,12 @@ This page defines what counts as "a working setup".
 
 ## The Eraser → Delistd rename
 
-The project was renamed from Eraser to Delistd in 2.3. It's a minor release because every old name still works:
+The project was renamed from Eraser to Delistd in 2.3. Every old name kept working through 2.x. 3.0 removed the `eraser` command, the `ERASER_*` environment variables and the `ghcr.io/drumandbytes/eraser` image tag; [upgrading-to-3.0.md](upgrading-to-3.0.md) lists what to change. Two redirects remain: `eraser.drumandbytes.dev` to `delistd.dev` (path preserved) and the `eraser` Homebrew cask, which the tap renames to `delistd`.
 
-| Old | New | Status |
-|---|---|---|
-| `eraser` command | `delistd` | Ships beside it, prints a rename notice on every run. Not available for Windows |
-| `ERASER_*` environment variables | `DELISTD_*` | Still read when the `DELISTD_*` one is unset |
-| `ghcr.io/drumandbytes/eraser` image | `ghcr.io/drumandbytes/delistd` | Both names get every release |
-| `eraser` Homebrew cask | `delistd` | The tap renames it, so `brew upgrade` moves you over |
-| `eraser.drumandbytes.dev` | `delistd.dev` | Redirects, path preserved |
-| `go install github.com/drumandbytes/eraser/cmd/eraser@latest` | `go install github.com/drumandbytes/delistd/cmd/delistd@main` | `@latest` never worked for 2.x under either path (Go ignores v2+ tags without a `/v2` module suffix); under the old path it quietly installed v1.8.0. Use `@main`, Homebrew, Docker or a release download. There is no redirect for Go module paths |
+The old Go module path `github.com/drumandbytes/eraser/cmd/eraser@latest` never worked for 2.x (Go ignores v2+ tags without a `/v2` module suffix) and under the old path it quietly installed v1.8.0. Use `@main`, Homebrew, Docker or a release download. There is no redirect for Go module paths.
 
-Unchanged on purpose, because renaming them would orphan existing data: the `~/.eraser` data directory (`config.yaml`, `history.db`), the `eraser-data` Docker volume, the launchd label `com.drumandbytes.eraser.auto` and systemd unit `eraser-auto`, and the encryption key derivation for stored passwords. An OS schedule installed before the rename ran the `eraser` alias. From 2.4, any `delistd` command or the scheduled run itself rewrites it to run `delistd` (see `schedule` in [commands.md](commands.md)); on 2.3 and earlier, re-run `delistd schedule install`.
+Unchanged on purpose, because renaming them would orphan existing data: the `~/.eraser` data directory (`config.yaml`, `history.db`), the `eraser-data` Docker volume, the launchd label `com.drumandbytes.eraser.auto` and systemd unit `eraser-auto`, and the encryption key derivation for stored passwords. An OS schedule installed before 2.4 that was never migrated needs `delistd schedule install` once (see [upgrading-to-3.0.md](upgrading-to-3.0.md)).
 
-The next major release (3.0) removes the `eraser` command, the `ERASER_*` fallbacks and the old image name.
 
 ## Before you upgrade
 

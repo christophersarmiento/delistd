@@ -38,17 +38,6 @@
         </div>
     </section>
     {{end}}
-    {{if .RenameNotice}}
-    <section class="whatsnew mb-8" aria-labelledby="renamed-title">
-        <div class="whatsnew-head">
-            <div class="notice-body">
-                <h2 id="renamed-title" class="notice-title" style="font-size: 18px;">Eraser is now Delistd</h2>
-                <p class="notice-text">Same app, new name. Your settings and history are untouched and the <code>eraser</code> command keeps working for now. Use <code>delistd</code> from here on, and re-run <code>delistd schedule install</code> if you set up an OS schedule. <a href="https://delistd.dev/" target="_blank" rel="noopener">Details</a></p>
-            </div>
-            <form method="POST" action="/renamed/dismiss"><button type="submit" class="btn btn-primary">Got it</button></form>
-        </div>
-    </section>
-    {{end}}
     <!-- Hero Section -->
     <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-10">
         <div class="flex items-center gap-4">

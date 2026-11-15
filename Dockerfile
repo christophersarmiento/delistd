@@ -43,14 +43,12 @@ COPY --from=build --chown=65532:65532 /rootfs/home /home
 #
 # The machine ID, which keys the encrypted mail passwords, lives in the volume
 # too: a container has no /etc/machine-id and a new hostname on every recreate.
-# The ERASER_* names are the pre-rename ones, kept here on purpose: the app reads DELISTD_*
-# first and falls back to them, so a user's own DELISTD_* setting overrides these defaults.
 # DELISTD_ALLOWED_HOSTS: Host headers the web UI accepts besides localhost. This default lets a
 # LAN reach it by private IP or a local name (192.168.1.5, tower, tower.local) but still refuses
 # a public hostname, which is what DNS rebinding needs; set it to * to accept anything.
 ENV HOME=/home/nonroot \
-    ERASER_CONTAINER=1 \
-    ERASER_MACHINE_ID_FILE=/home/nonroot/.eraser/machine-id \
+    DELISTD_CONTAINER=1 \
+    DELISTD_MACHINE_ID_FILE=/home/nonroot/.eraser/machine-id \
     DELISTD_ALLOWED_HOSTS="lan,local"
 WORKDIR /home/nonroot/.eraser
 VOLUME ["/home/nonroot/.eraser"]

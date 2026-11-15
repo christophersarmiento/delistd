@@ -20,6 +20,7 @@ This file is intentionally slim. Read the doc(s) relevant to what you're touchin
 - [docs/mcp.md](docs/mcp.md) - the experimental `delistd mcp` agent server: batch approval, shared-platform host scope, and what it may and may not do
 - [docs/code-patterns.md](docs/code-patterns.md) - conventions to follow, plus known quirks/gotchas worth reading before touching related code
 - [docs/auditing.md](docs/auditing.md) - how to re-run the dead-code/security sweep, and what's already been removed
+- [docs/upgrading-to-3.0.md](docs/upgrading-to-3.0.md) - what 3.0 removed (the Eraser names) and what to change
 - [docs/stability.md](docs/stability.md) - what 1.x promises not to break (config keys, CLI flags, history.db, brokers.yaml, export JSON) - check before renaming or removing any of them
 
 ## Quick Start

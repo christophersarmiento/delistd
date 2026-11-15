@@ -268,7 +268,6 @@ func (s *Server) handleSetupComplete(w http.ResponseWriter, r *http.Request) {
 	s.config.Store(cfg)
 	// Someone who just finished setup has nothing to be told about 2.0.
 	config.MarkWhatsNewSeen(s.configPath)
-	config.MarkRenameNoticeSeen(s.configPath) // they never knew the old name
 
 	// Clear session - credentials are now saved to config file
 	s.clearSession(w, r)

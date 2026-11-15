@@ -88,9 +88,7 @@ send through any SMTP provider (Gmail, Proton Mail Bridge, Fastmail, ...).`,
 	rootCmd.PersistentFlags().StringVar(&profileFlag, "profile", "", "Profile ID to operate as (default: the only configured profile; required if you've configured more than one via 'delistd profile add')")
 
 	rootCmd.PersistentPreRun = func(cmd *cobra.Command, args []string) {
-		announceRename(cmd)
 		announceTwoPointZero(cmd)
-		migrateSchedule(cmd)
 	}
 
 	rootCmd.AddCommand(initCmd())

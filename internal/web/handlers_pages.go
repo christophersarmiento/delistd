@@ -29,7 +29,6 @@ func (s *Server) handleDashboard(w http.ResponseWriter, r *http.Request) {
 		"RecentHistory": s.getRecentHistory(active.ID, 10),
 		"Stats":         s.getStats(active.ID),
 		"WhatsNew":      s.whatsNew(),
-		"RenameNotice":  s.renameNotice(),
 		"PipelineStats": s.getPipelineStats(active.ID),
 	}
 

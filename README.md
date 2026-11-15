@@ -22,7 +22,7 @@ You know those sites like Spokeo, BeenVerified, and Whitepages that have your ho
 
 **New here and not technical? Start with the [step-by-step setup guide](docs/getting-started.md).** It covers downloading Delistd, creating a Gmail app password, and the setup wizard, with a fix for every common error.
 
-> **Eraser is now Delistd.** Same project, new name (the old one was too generic to find). Nothing breaks: the `eraser` command, the `ERASER_*` environment variables, the `ghcr.io/drumandbytes/eraser` image and your `~/.eraser` data all keep working for now, with a notice. `brew upgrade` moves you to the `delistd` cask. The old names go away in the next major release; see [docs/stability.md](docs/stability.md#the-eraser--delistd-rename).
+> Formerly Eraser. Upgrading from 2.x? The old `eraser` command, `ERASER_*` variables and `ghcr.io/drumandbytes/eraser` image are gone in 3.0: see [docs/upgrading-to-3.0.md](docs/upgrading-to-3.0.md). Your `~/.eraser` data is unchanged.
 
 > **Upgrading from 1.x?** 2.0 stores your profile's country as an ISO code, encrypts your mail passwords (with an optional passphrase), skips country-specific brokers that don't apply to you, and removes a few old settings. Your config is upgraded automatically on first run and the original is kept as `config.yaml.1x.bak`. See the [upgrade guide](docs/upgrading-to-2.0.md).
 
