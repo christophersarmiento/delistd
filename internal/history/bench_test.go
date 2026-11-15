@@ -59,6 +59,9 @@ func BenchmarkStore(b *testing.B) {
 	run("GetRecentRequests", func() error { _, err := s.GetRecentRequests("default", 5); return err })
 	run("GetBrokerResponses", func() error { _, err := s.GetBrokerResponses("default", "", false, 50); return err })
 	run("GetActionItems", func() error { _, err := s.GetActionItems("default"); return err })
-	run("QueryBrokerResponses", func() error { _, _, err := s.QueryBrokerResponses("default", ResponseQuery{Search: "ticket"}); return err })
+	run("QueryBrokerResponses", func() error {
+		_, _, err := s.QueryBrokerResponses("default", ResponseQuery{Search: "ticket"})
+		return err
+	})
 	run("CountSentSince", func() error { _, err := s.CountSentSince("default", time.Now().Add(-24*time.Hour)); return err })
 }
