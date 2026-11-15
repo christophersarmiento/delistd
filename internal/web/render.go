@@ -30,8 +30,9 @@ var templateFuncs = template.FuncMap{
 		code, _ := country.Code(name)
 		return code
 	},
-	"add": func(a, b int) int { return a + b },
-	"sub": func(a, b int) int { return a - b },
+	"icon": icon,
+	"add":  func(a, b int) int { return a + b },
+	"sub":  func(a, b int) int { return a - b },
 	// percent shows a 0..1 confidence as a whole-number percentage
 	"percent": func(f float64) string { return fmt.Sprintf("%.0f%%", f*100) },
 }

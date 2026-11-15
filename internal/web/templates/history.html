@@ -9,9 +9,7 @@
         <!-- Same report as `delistd export`: for a complaint to a data protection authority -->
         <div class="flex items-center gap-2">
             <a href="/export?format=html" class="btn btn-secondary" title="Every request and reply, response deadlines and your supervisory authority - printable, for a complaint">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                </svg>
+                {{icon "download" "w-4 h-4"}}
                 Export evidence
             </a>
             <a href="/export?format=json" class="btn btn-ghost text-sm" title="The same report as JSON">JSON</a>
@@ -30,9 +28,7 @@
             onclick="clearFailedRecords()"
             class="btn btn-danger"
         >
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-            </svg>
+            {{icon "trash" "w-4 h-4"}}
             Clear Failed
         </button>
     </div>
@@ -76,9 +72,7 @@
 
         btn.disabled = false;
         btn.innerHTML = `
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-            </svg>
+            {{icon "trash" "w-4 h-4"}}
             Clear Failed
         `;
     }
@@ -143,9 +137,7 @@
                         <!-- Template Badge -->
                         <div class="mt-2">
                             <span class="badge badge-neutral text-xs">
-                                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                </svg>
+                                {{icon "document-text" "w-3 h-3"}}
                                 {{.Template}} template
                             </span>
                         </div>
@@ -154,9 +146,7 @@
                         {{if .Error}}
                         <div class="mt-3 p-3 rounded-lg" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2);">
                             <div class="flex items-start gap-2">
-                                <svg class="w-4 h-4 text-error flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
+                                {{icon "exclamation-circle" "w-4 h-4 text-error flex-shrink-0 mt-0.5"}}
                                 <p class="text-sm text-error">{{.Error}}</p>
                             </div>
                         </div>
@@ -172,16 +162,12 @@
     <!-- Empty State -->
     <div class="card p-12 text-center">
         <div class="w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-6" style="background: var(--bg-elevated);">
-            <svg class="w-10 h-10 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-            </svg>
+            {{icon "clipboard" "w-10 h-10 text-muted"}}
         </div>
         <h2 class="font-display text-xl font-semibold text-primary mb-2">No History Yet</h2>
         <p class="text-secondary mb-6 max-w-md mx-auto">Start sending removal requests to data brokers and track your progress here.</p>
         <a href="/brokers" class="btn btn-primary">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
-            </svg>
+            {{icon "send" "w-5 h-5"}}
             Browse Data Brokers
         </a>
     </div>

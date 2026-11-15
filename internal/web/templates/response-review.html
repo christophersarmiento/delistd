@@ -3,9 +3,7 @@
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div class="flex items-center gap-4">
             <a href="/tasks" class="btn btn-ghost p-2">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                </svg>
+                {{icon "arrow-left" "w-5 h-5"}}
             </a>
             <div>
                 <h1 class="font-display text-2xl font-bold text-primary">Review Response</h1>
@@ -15,9 +13,7 @@
         {{if .Response.NeedsReview}}
         <form action="/api/pipeline/responses/{{.Response.ID}}/reviewed" method="POST">
             <button type="submit" class="btn btn-primary">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                </svg>
+                {{icon "check" "w-4 h-4"}}
                 Mark Reviewed
             </button>
         </form>

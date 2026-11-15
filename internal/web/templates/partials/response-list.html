@@ -43,18 +43,14 @@
             {{if .FormURL}}
             <a href="{{.FormURL}}" target="_blank" rel="noopener noreferrer"
                class="chip chip-info inline-flex items-center gap-1">
-                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                </svg>
+                {{icon "external-link" "w-3 h-3"}}
                 Open Form
             </a>
             {{end}}
             {{if .ConfirmURL}}
             <a href="{{.ConfirmURL}}" target="_blank" rel="noopener noreferrer"
                class="chip chip-info inline-flex items-center gap-1">
-                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101"/>
-                </svg>
+                {{icon "link" "w-3 h-3"}}
                 Confirm Link
             </a>
             {{end}}
@@ -62,9 +58,7 @@
         {{end}}
         {{if .NeedsReview}}
         <div class="mt-2 text-xs text-warning flex items-center gap-1">
-            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-            </svg>
+            {{icon "warning" "w-3 h-3"}}
             Confidence: {{percent .Confidence}} - Manual review recommended
         </div>
         {{end}}
@@ -74,9 +68,7 @@
 {{else}}
 <div class="text-center py-8">
     <div class="w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4" style="background: var(--bg-elevated);">
-        <svg class="w-8 h-8 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-        </svg>
+        {{icon "mail" "w-8 h-8 text-muted"}}
     </div>
     <p class="text-secondary mb-1">{{if .Filtered}}No matching results{{else}}No responses yet{{end}}</p>
     <p class="text-sm text-muted">Run <code class="px-1 py-0.5 rounded" style="background: var(--bg-elevated);">delistd monitor</code> to check for broker responses</p>
