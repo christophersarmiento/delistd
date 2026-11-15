@@ -145,6 +145,7 @@ func (s *Server) renderPartial(w http.ResponseWriter, name string, data any) {
 func (s *Server) renderWithCSRF(w http.ResponseWriter, r *http.Request, name string, data map[string]interface{}) {
 	// the CSRF check is Sec-Fetch-Site based and uses no tokens; the keys stay
 	// so a template mentioning {{.CSRFField}} still renders
+	data["Nav"] = navItems
 	data["CSRFToken"] = ""
 	data["CSRFField"] = template.HTML("")
 
@@ -166,4 +167,14 @@ func (s *Server) renderWithCSRF(w http.ResponseWriter, r *http.Request, name str
 		return
 	}
 	writeHTML(w, t, "layout", data)
+}
+
+// navItems are the main navigation links. Title is the page title that marks
+// a link as the current one.
+var navItems = []struct{ Href, Label, Title string }{
+	{"/", "Dashboard", "Dashboard"},
+	{"/brokers", "Brokers", "Data Brokers"},
+	{"/pipeline", "Pipeline", "Pipeline"},
+	{"/history", "History", "History"},
+	{"/settings", "Settings", "Settings"},
 }

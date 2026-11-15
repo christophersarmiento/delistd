@@ -1,6 +1,110 @@
 /* Delistd app components, built on the tokens in tokens.css. Loaded before
    utilities.css so a utility like .w-auto wins over a component class. */
 
+/* ---- Base: type, body, motion ---- */
+/* ============================================
+   DELISTD DESIGN SYSTEM - "Ops Console"
+   Dense, dark-first, monospace accents for data.
+   Colour / elevation / type tokens: static/css/tokens.css
+   Layout / spacing / sizing utilities: static/css/utilities.css
+   ============================================ */
+
+/* ============================================
+   BASE STYLES
+   ============================================ */
+
+* {
+    font-family: var(--font-body);
+}
+
+h1, h2, h3, h4, h5, h6, .font-display {
+    font-family: var(--font-display);
+    letter-spacing: -0.015em;
+}
+
+.font-mono {
+    font-family: var(--font-mono);
+}
+
+body {
+    background: var(--bg-base);
+    color: var(--text-secondary);
+    min-height: 100vh;
+    position: relative;
+    font-size: 15px;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 20px var(--accent-glow); }
+    50% { box-shadow: 0 0 30px var(--accent-glow), 0 0 40px var(--accent-glow); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.fade-in {
+    animation: fadeIn 0.4s ease-out;
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+.float {
+    animation: float 3s ease-in-out infinite;
+}
+
+/* Staggered animations for children */
+.stagger > * {
+    opacity: 0;
+    animation: fadeInUp 0.5s ease-out forwards;
+}
+.stagger > *:nth-child(1) { animation-delay: 0.1s; }
+.stagger > *:nth-child(2) { animation-delay: 0.2s; }
+.stagger > *:nth-child(3) { animation-delay: 0.3s; }
+.stagger > *:nth-child(4) { animation-delay: 0.4s; }
+.stagger > *:nth-child(5) { animation-delay: 0.5s; }
+.stagger > *:nth-child(6) { animation-delay: 0.6s; }
+
+/* HTMX indicators */
+.htmx-indicator { display: none; }
+.htmx-request .htmx-indicator { display: inline-flex; }
+.htmx-request.htmx-indicator { display: inline-flex; }
+
+    
+
 @font-face { font-family: "Figtree"; font-style: normal; font-weight: 300 900; font-display: swap; src: url("/static/fonts/figtree-latin-wght-normal.woff2") format("woff2-variations"); }
 @font-face { font-family: "Geist Mono"; font-style: normal; font-weight: 400; font-display: swap; src: url("/static/fonts/geist-mono-latin-400-normal.woff2") format("woff2"); }
 @font-face { font-family: "Geist Mono"; font-style: normal; font-weight: 500; font-display: swap; src: url("/static/fonts/geist-mono-latin-500-normal.woff2") format("woff2"); }
