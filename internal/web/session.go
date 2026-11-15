@@ -9,139 +9,95 @@ import (
 	"github.com/drumandbytes/delistd/internal/config"
 )
 
-// SessionStore manages secure server-side sessions
-// Credentials are never sent to the client - only an opaque session ID
-type SessionStore struct {
-	sessions map[string]*Session
-	mu       sync.RWMutex
-	ttl      time.Duration
-}
-
-// Session holds wizard state securely on the server
+// Session is the setup wizard's state. It lives on the server so the mail
+// password never goes to the browser, which only holds an opaque id.
 type Session struct {
 	ID         string
 	Step       string
 	Profile    config.Profile
 	Email      config.Email
-	ManualSend bool // user chose to send removal emails by hand - no SMTP
+	ManualSend bool // sending by hand, so no SMTP account
 	CreatedAt  time.Time
 	ExpiresAt  time.Time
 }
 
-// NewSessionStore creates a new session store with automatic cleanup
+// SessionStore holds sessions in memory until they have been idle for ttl.
+// Expired ones are dropped when they are looked up and whenever a new one is
+// created, so no background goroutine is needed.
+type SessionStore struct {
+	mu       sync.Mutex
+	sessions map[string]*Session
+	ttl      time.Duration
+}
+
 func NewSessionStore(ttl time.Duration) *SessionStore {
-	store := &SessionStore{
-		sessions: make(map[string]*Session),
-		ttl:      ttl,
-	}
-
-	go store.cleanupLoop()
-
-	return store
+	return &SessionStore{sessions: map[string]*Session{}, ttl: ttl}
 }
 
-// generateSessionID creates a cryptographically secure session ID
-func generateSessionID() (string, error) {
-	bytes := make([]byte, 32) // 256 bits
-	if _, err := rand.Read(bytes); err != nil {
-		return "", err
-	}
-	return hex.EncodeToString(bytes), nil
-}
-
-// Create creates a new session and returns its ID
+// Create starts an empty session and returns its id: 256 random bits.
 func (s *SessionStore) Create() (string, error) {
-	id, err := generateSessionID()
-	if err != nil {
+	raw := make([]byte, 32)
+	if _, err := rand.Read(raw); err != nil {
 		return "", err
 	}
-
+	id := hex.EncodeToString(raw)
 	now := time.Now()
-	session := &Session{
-		ID:        id,
-		CreatedAt: now,
-		ExpiresAt: now.Add(s.ttl),
-	}
 
 	s.mu.Lock()
-	s.sessions[id] = session
-	s.mu.Unlock()
-
+	defer s.mu.Unlock()
+	for k, sess := range s.sessions {
+		if now.After(sess.ExpiresAt) {
+			delete(s.sessions, k)
+		}
+	}
+	s.sessions[id] = &Session{ID: id, CreatedAt: now, ExpiresAt: now.Add(s.ttl)}
 	return id, nil
 }
 
-// Get retrieves a session by ID, returns nil if not found or expired
-func (s *SessionStore) Get(id string) *Session {
-	if id == "" {
+// live returns the unexpired session for id, dropping it if it has expired.
+// The caller holds s.mu.
+func (s *SessionStore) live(id string) *Session {
+	sess := s.sessions[id]
+	if sess == nil {
 		return nil
 	}
-
-	s.mu.RLock()
-	session, exists := s.sessions[id]
-	s.mu.RUnlock()
-
-	if !exists {
+	if time.Now().After(sess.ExpiresAt) {
+		delete(s.sessions, id)
 		return nil
 	}
-
-	if time.Now().After(session.ExpiresAt) {
-		s.Delete(id)
-		return nil
-	}
-
-	return session
+	return sess
 }
 
-// Update updates a session's data and extends its expiry
-func (s *SessionStore) Update(id string, updateFn func(*Session)) bool {
+// Get returns a snapshot of the session, or nil when there is none or it has
+// expired. It is a copy: changes go through Update, so a reader never sees a
+// session another request is halfway through changing.
+func (s *SessionStore) Get(id string) *Session {
 	s.mu.Lock()
 	defer s.mu.Unlock()
+	sess := s.live(id)
+	if sess == nil {
+		return nil
+	}
+	snapshot := *sess
+	return &snapshot
+}
 
-	session, exists := s.sessions[id]
-	if !exists {
+// Update applies change to the session and restarts its idle timer. It
+// reports false when there is no live session.
+func (s *SessionStore) Update(id string, change func(*Session)) bool {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	sess := s.live(id)
+	if sess == nil {
 		return false
 	}
-
-	if time.Now().After(session.ExpiresAt) {
-		delete(s.sessions, id)
-		return false
-	}
-
-	updateFn(session)
-
-	// Extend expiry
-	session.ExpiresAt = time.Now().Add(s.ttl)
-
+	change(sess)
+	sess.ExpiresAt = time.Now().Add(s.ttl)
 	return true
 }
 
-// Delete removes a session
 func (s *SessionStore) Delete(id string) {
 	s.mu.Lock()
 	delete(s.sessions, id)
 	s.mu.Unlock()
-}
-
-// cleanupLoop periodically removes expired sessions
-func (s *SessionStore) cleanupLoop() {
-	ticker := time.NewTicker(time.Minute)
-	defer ticker.Stop()
-
-	for range ticker.C {
-		s.cleanup()
-	}
-}
-
-// cleanup removes all expired sessions
-func (s *SessionStore) cleanup() {
-	now := time.Now()
-
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	for id, session := range s.sessions {
-		if now.After(session.ExpiresAt) {
-			delete(s.sessions, id)
-		}
-	}
 }
