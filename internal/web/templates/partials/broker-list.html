@@ -91,7 +91,7 @@
     <button type="button" class="btn btn-secondary"
         hx-get="/api/brokers" hx-target="#broker-list" hx-swap="innerHTML"
         hx-vals='{"limit": {{add .Limit 50}}}'
-        hx-include="#broker-search,[name='status'],[name='category'],[name='region'],[name='missing_email'],[name='show_excluded']">
+        hx-include="#broker-filters">
         Show {{if gt (sub .Filtered (len .Brokers)) 50}}50{{else}}{{sub .Filtered (len .Brokers)}}{{end}} more
     </button>
 </div>

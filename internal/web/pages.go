@@ -67,6 +67,36 @@ func brokerQueryFrom(r *http.Request) brokerQuery {
 	}
 }
 
+// filterOption and filterSelect describe one drop-down of the brokers filter bar.
+type filterOption struct {
+	Value, Label string
+	Selected     bool
+}
+
+type filterSelect struct {
+	Name, Label, AllLabel, MinWidth string
+	Options                         []filterOption
+}
+
+func options(values []string, current string) []filterOption {
+	out := make([]filterOption, len(values))
+	for i, v := range values {
+		out[i] = filterOption{v, v, v == current}
+	}
+	return out
+}
+
+// brokerFilters is the status, category and region drop-downs, set to the
+// query's current values.
+func (s *Server) brokerFilters(q brokerQuery) []filterSelect {
+	return []filterSelect{
+		{Name: "status", Label: "Status", AllLabel: "All Statuses", MinWidth: "120px", Options: []filterOption{
+			{"pending", "Pending", q.Status == "pending"}, {"sent", "Sent", q.Status == "sent"}, {"failed", "Failed", q.Status == "failed"}}},
+		{Name: "category", Label: "Category", AllLabel: "All Categories", MinWidth: "140px", Options: options(s.getUniqueCategories(), q.Category)},
+		{Name: "region", Label: "Region", AllLabel: "All Regions", MinWidth: "120px", Options: options(s.getUniqueRegions(), q.Region)},
+	}
+}
+
 func (s *Server) handleBrokers(w http.ResponseWriter, r *http.Request) {
 	q := brokerQueryFrom(r)
 	profileID := s.activeProfile(r).ID
@@ -79,8 +109,7 @@ func (s *Server) handleBrokers(w http.ResponseWriter, r *http.Request) {
 		"Title":         "Data Brokers",
 		"Brokers":       shown,
 		"Limit":         limit,
-		"Categories":    s.getUniqueCategories(),
-		"Regions":       s.getUniqueRegions(),
+		"Filters":       s.brokerFilters(q),
 		"Search":        q.Search,
 		"Category":      q.Category,
 		"Region":        q.Region,
