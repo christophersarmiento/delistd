@@ -57,191 +57,172 @@ Safety features:
 	return cmd
 }
 
+// confirmLink is one link to click and the broker it belongs to, if known.
+type confirmLink struct {
+	BrokerID string
+	URL      string
+}
+
 func runConfirm(confirmURL, brokerID string, pending, validateDomain, dryRun bool) error {
 	cfg, err := config.Load(resolveConfigPath())
 	if err != nil {
 		return fmt.Errorf("failed to load config: %w", err)
 	}
-
 	activeProfile, err := resolveProfile(cfg)
 	if err != nil {
 		return err
 	}
-
 	brokerDB, err := broker.Load(brokerFile)
 	if err != nil {
 		return fmt.Errorf("failed to load brokers: %w", err)
 	}
-
 	store, err := openHistoryStore(history.DBPathFor(resolveConfigPath()))
 	if err != nil {
 		return fmt.Errorf("failed to initialize history: %w", err)
 	}
 	defer func() { _ = store.Close() }()
 
-	// Build list of broker domains for validation
 	var brokerDomains []string
 	for _, b := range brokerDB.Brokers {
 		brokerDomains = append(brokerDomains, b.Domains()...)
 	}
-
 	handler := browser.NewConfirmationHandler(brokerDomains)
 
 	fmt.Println("🔗 Confirmation Link Handler")
 	fmt.Println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 	fmt.Println()
 
-	// Determine what to confirm
-	var linksToConfirm []struct {
-		BrokerID string
-		URL      string
+	links, err := confirmLinksFor(store, activeProfile.ID, confirmURL, brokerID, pending)
+	if err != nil {
+		return err
+	}
+	if len(links) == 0 {
+		fmt.Println("✅ No pending confirmation links")
+		return nil
 	}
 
-	if confirmURL != "" {
-		// Direct URL provided
-		linksToConfirm = append(linksToConfirm, struct {
-			BrokerID string
-			URL      string
-		}{BrokerID: brokerID, URL: confirmURL})
-	} else if brokerID != "" {
-		responses, err := store.GetBrokerResponses(activeProfile.ID, "confirmation_required", false, 100)
-		if err != nil {
-			return fmt.Errorf("failed to get broker responses: %w", err)
-		}
-
-		found := false
-		for _, resp := range responses {
-			if resp.BrokerID == brokerID && resp.ConfirmURL != "" {
-				linksToConfirm = append(linksToConfirm, struct {
-					BrokerID string
-					URL      string
-				}{BrokerID: resp.BrokerID, URL: resp.ConfirmURL})
-				found = true
-				break
-			}
-		}
-
-		if !found {
-			return fmt.Errorf("no confirmation URL found for broker: %s", brokerID)
-		}
-	} else if pending {
-		responses, err := store.GetBrokerResponses(activeProfile.ID, "confirmation_required", false, 100)
-		if err != nil {
-			return fmt.Errorf("failed to get broker responses: %w", err)
-		}
-
-		for _, resp := range responses {
-			if resp.ConfirmURL != "" {
-				linksToConfirm = append(linksToConfirm, struct {
-					BrokerID string
-					URL      string
-				}{BrokerID: resp.BrokerID, URL: resp.ConfirmURL})
-			}
-		}
-
-		if len(linksToConfirm) == 0 {
-			fmt.Println("✅ No pending confirmation links")
-			return nil
-		}
-	} else {
-		return fmt.Errorf("please specify --url, --broker, or --pending")
-	}
-
-	fmt.Printf("📋 Confirmation links to process: %d\n", len(linksToConfirm))
+	fmt.Printf("📋 Confirmation links to process: %d\n", len(links))
 	if dryRun {
 		fmt.Println("🔍 DRY RUN MODE - Links will not be clicked")
 	}
 	fmt.Println()
 
-	successCount := 0
-	failCount := 0
-
-	for i, link := range linksToConfirm {
-		fmt.Printf("[%d/%d] Processing confirmation link\n", i+1, len(linksToConfirm))
+	confirmed, failed := 0, 0
+	for i, link := range links {
+		fmt.Printf("[%d/%d] Processing confirmation link\n", i+1, len(links))
 		if link.BrokerID != "" {
 			fmt.Printf("       Broker: %s\n", link.BrokerID)
 		}
 		fmt.Printf("       URL: %s\n", truncateURL(link.URL, 60))
 
-		if validateDomain {
-			valid, domain, err := handler.ValidateDomain(link.URL)
-			if err != nil {
-				fmt.Printf("       ❌ Invalid URL: %v\n", err)
-				failCount++
-				continue
-			}
-			if !valid {
-				fmt.Printf("       ⚠️  Domain %s is not a known broker domain\n", domain)
-				fmt.Printf("       Use --validate-domain=false to override\n")
-				failCount++
-				continue
-			}
-			fmt.Printf("       ✓ Domain validated: %s\n", domain)
+		switch clickOne(handler, store, activeProfile.ID, link, validateDomain, dryRun) {
+		case clickOK:
+			confirmed++
+		case clickFailed:
+			failed++
 		}
-
-		if dryRun {
-			fmt.Printf("       📋 Would click this link (dry run)\n")
-			successCount++
-			fmt.Println()
-			continue
-		}
-
-		// Click the confirmation link
-		result, err := handler.ClickConfirmationLink(link.URL, false) // Domain already validated above
-		if err != nil {
-			fmt.Printf("       ❌ Error: %v\n", err)
-			failCount++
-			continue
-		}
-
-		fmt.Printf("       HTTP Status: %d\n", result.StatusCode)
-		if len(result.RedirectPath) > 1 {
-			fmt.Printf("       Redirects: %d hops\n", len(result.RedirectPath)-1)
-		}
-		if result.FinalURL != link.URL {
-			fmt.Printf("       Final URL: %s\n", truncateURL(result.FinalURL, 60))
-		}
-
-		status := handler.ExtractConfirmationStatus(result)
-		if result.Success {
-			fmt.Printf("       ✅ %s\n", status)
-			successCount++
-
-			if link.BrokerID != "" {
-				_ = store.UpdatePipelineStatus(activeProfile.ID, link.BrokerID, history.PipelineConfirmed)
-			}
-		} else {
-			fmt.Printf("       ⚠️  %s\n", status)
-			failCount++
-
-			// Still update status to indicate we tried
-			if link.BrokerID != "" {
-				_ = store.UpdatePipelineStatus(activeProfile.ID, link.BrokerID, history.PipelineFailed)
-			}
-		}
-
 		fmt.Println()
-
-		// Small delay between confirmations
-		if i < len(linksToConfirm)-1 {
-			time.Sleep(1 * time.Second)
+		if i < len(links)-1 && !dryRun {
+			time.Sleep(time.Second) // be gentle with the broker
 		}
 	}
 
 	fmt.Println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 	if dryRun {
-		fmt.Printf("📊 Dry run complete: %d links would be clicked\n", len(linksToConfirm))
+		fmt.Printf("📊 Dry run complete: %d links would be clicked\n", len(links))
 	} else {
-		fmt.Printf("📊 Complete: %d confirmed, %d failed\n", successCount, failCount)
+		fmt.Printf("📊 Complete: %d confirmed, %d failed\n", confirmed, failed)
 	}
-
 	return nil
 }
 
-// truncateURL truncates a URL to the specified length for display
+// confirmLinksFor picks the links to click: the one given, one broker's from
+// the stored replies, or every stored one.
+func confirmLinksFor(store *history.Store, profileID, confirmURL, brokerID string, pending bool) ([]confirmLink, error) {
+	if confirmURL != "" {
+		return []confirmLink{{BrokerID: brokerID, URL: confirmURL}}, nil
+	}
+	if brokerID == "" && !pending {
+		return nil, fmt.Errorf("please specify --url, --broker, or --pending")
+	}
+	replies, err := store.GetBrokerResponses(profileID, "confirmation_required", false, 100)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get broker responses: %w", err)
+	}
+	var links []confirmLink
+	for _, r := range replies {
+		if r.ConfirmURL == "" || (brokerID != "" && r.BrokerID != brokerID) {
+			continue
+		}
+		links = append(links, confirmLink{BrokerID: r.BrokerID, URL: r.ConfirmURL})
+		if brokerID != "" {
+			break // the newest reply for that broker is the one to click
+		}
+	}
+	if brokerID != "" && len(links) == 0 {
+		return nil, fmt.Errorf("no confirmation URL found for broker: %s", brokerID)
+	}
+	return links, nil
+}
+
+type clickOutcome int
+
+const (
+	clickOK clickOutcome = iota
+	clickFailed
+)
+
+// clickOne checks, clicks and reports one link, and records the outcome in the
+// pipeline.
+func clickOne(handler *browser.ConfirmationHandler, store *history.Store, profileID string, link confirmLink, validateDomain, dryRun bool) clickOutcome {
+	if validateDomain {
+		valid, domain, err := handler.ValidateDomain(link.URL)
+		if err != nil {
+			fmt.Printf("       ❌ Invalid URL: %v\n", err)
+			return clickFailed
+		}
+		if !valid {
+			fmt.Printf("       ⚠️  Domain %s is not a known broker domain\n", domain)
+			fmt.Printf("       Use --validate-domain=false to override\n")
+			return clickFailed
+		}
+		fmt.Printf("       ✓ Domain validated: %s\n", domain)
+	}
+	if dryRun {
+		fmt.Printf("       📋 Would click this link (dry run)\n")
+		return clickOK
+	}
+
+	result, err := handler.ClickConfirmationLink(link.URL, false) // the domain was checked just above
+	if err != nil {
+		fmt.Printf("       ❌ Error: %v\n", err)
+		return clickFailed
+	}
+	fmt.Printf("       HTTP Status: %d\n", result.StatusCode)
+	if len(result.RedirectPath) > 1 {
+		fmt.Printf("       Redirects: %d hops\n", len(result.RedirectPath)-1)
+	}
+	if result.FinalURL != link.URL {
+		fmt.Printf("       Final URL: %s\n", truncateURL(result.FinalURL, 60))
+	}
+
+	status := handler.ExtractConfirmationStatus(result)
+	stage, outcome, mark := history.PipelineConfirmed, clickOK, "✅"
+	if !result.Success {
+		stage, outcome, mark = history.PipelineFailed, clickFailed, "⚠️ "
+	}
+	fmt.Printf("       %s %s\n", mark, status)
+	if link.BrokerID != "" {
+		_ = store.UpdatePipelineStatus(profileID, link.BrokerID, stage)
+	}
+	return outcome
+}
+
+// truncateURL shortens a URL for display to maxLen characters, ending in "...".
 func truncateURL(url string, maxLen int) string {
-	if len(url) <= maxLen {
+	r := []rune(url)
+	if len(r) <= maxLen {
 		return url
 	}
-	return url[:maxLen-3] + "..."
+	return string(r[:maxLen-3]) + "..."
 }
