@@ -47,7 +47,7 @@ func scanRecord(row scanner) (*Record, error) {
 func (s *Store) GetRecentRequests(profileID string, limit int) ([]Record, error) {
 	rows, err := s.query(`
 		SELECT id, profile_id, broker_id, broker_name, email, template, status, message_id, error, sent_at, created_at, sent_method
-		FROM removal_requests WHERE profile_id = ? ORDER BY sent_at DESC LIMIT ?`, normalizeProfileID(profileID), limit)
+		FROM removal_requests WHERE profile_id = ? ORDER BY sent_at DESC, id DESC LIMIT ?`, normalizeProfileID(profileID), limit)
 	if err != nil {
 		return nil, fmt.Errorf("failed to query records: %w", err)
 	}
@@ -203,7 +203,7 @@ func (s *Store) LastSuccessfulSendTimes(profileID string) (map[string]time.Time,
 func (s *Store) MarkFailed(profileID, brokerID, note string) (int64, error) {
 	result, err := s.exec(`UPDATE removal_requests SET status = ?, error = ? WHERE id = (
 			SELECT id FROM removal_requests WHERE profile_id = ? AND broker_id = ? AND status = ?
-			ORDER BY sent_at DESC LIMIT 1)`,
+			ORDER BY sent_at DESC, id DESC LIMIT 1)`,
 		string(StatusFailed), note, normalizeProfileID(profileID), brokerID, string(StatusSent))
 	if err != nil {
 		return 0, fmt.Errorf("failed to mark broker as failed: %w", err)
@@ -216,7 +216,7 @@ func (s *Store) MarkFailed(profileID, brokerID, note string) (int64, error) {
 // merely the active one. It is the default profile when none did.
 func (s *Store) ResolveProfileForBroker(brokerID string) (string, error) {
 	var id sql.NullString
-	err := s.queryRow(`SELECT profile_id FROM removal_requests WHERE broker_id = ? ORDER BY sent_at DESC LIMIT 1`, brokerID).Scan(&id)
+	err := s.queryRow(`SELECT profile_id FROM removal_requests WHERE broker_id = ? ORDER BY sent_at DESC, id DESC LIMIT 1`, brokerID).Scan(&id)
 	if err == sql.ErrNoRows {
 		return DefaultProfileID, nil
 	}
@@ -238,7 +238,7 @@ func SortBySendPriority[T any](items []T, lastSent func(T) time.Time) {
 	sort.SliceStable(items, func(i, j int) bool { return lastSent(items[i]).Before(lastSent(items[j])) })
 }
 
-const latestStatus = `(SELECT status FROM removal_requests r2 WHERE r2.profile_id = r.profile_id AND r2.broker_id = r.broker_id ORDER BY sent_at DESC LIMIT 1)`
+const latestStatus = `(SELECT status FROM removal_requests r2 WHERE r2.profile_id = r.profile_id AND r2.broker_id = r.broker_id ORDER BY sent_at DESC, id DESC LIMIT 1)`
 
 // parseLastSent reads a MAX(sent_at) text. A value that does not parse is
 // logged and skipped: one bad row should not blank every broker's status.

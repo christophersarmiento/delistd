@@ -54,7 +54,7 @@ func (s *Store) GetPendingTasks(profileID string, taskType TaskType, status stri
 		where += " AND status = ?"
 		args = append(args, status)
 	}
-	rows, err := s.query(`SELECT `+taskCols+` FROM pending_tasks WHERE `+where+` ORDER BY created_at DESC`, args...)
+	rows, err := s.query(`SELECT `+taskCols+` FROM pending_tasks WHERE `+where+` ORDER BY created_at DESC, id DESC`, args...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to query pending tasks: %w", err)
 	}

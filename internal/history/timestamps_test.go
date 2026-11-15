@@ -87,3 +87,27 @@ func TestOldLocalTimestampsAreConvertedToUTC(t *testing.T) {
 		t.Errorf("latest after conversion = %v (%v)", latest.LastSent, err)
 	}
 }
+
+// Equal timestamps are normal (a coarse clock, rows imported together). The
+// "latest" request the stage update changes must be the one LatestRequests
+// reports, and listings must come out newest first, ties included.
+func TestTiesAreBrokenByIDNewestFirst(t *testing.T) {
+	s := newTestStore(t)
+	at := time.Date(2026, 5, 1, 10, 0, 0, 0, time.UTC)
+	for i := 0; i < 3; i++ {
+		if err := s.Add(&Record{BrokerID: "x", BrokerName: "X", Email: "e", Template: "t", Status: StatusSent, SentAt: at}); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := s.UpdatePipelineStatus("default", "x", PipelineAwaitingResponse); err != nil {
+		t.Fatal(err)
+	}
+	latest, _ := s.LatestRequests("default")
+	if len(latest) != 1 || latest[0].PipelineStatus != PipelineAwaitingResponse || latest[0].ID != 3 {
+		t.Errorf("latest = %+v, want the newest row (id 3) carrying the new stage", latest)
+	}
+	recent, _ := s.GetRecentRequests("default", 3)
+	if len(recent) != 3 || recent[0].ID != 3 || recent[2].ID != 1 {
+		t.Errorf("recent ids = %v, want 3, 2, 1", []int64{recent[0].ID, recent[1].ID, recent[2].ID})
+	}
+}

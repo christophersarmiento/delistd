@@ -160,7 +160,7 @@ func (s *Store) ClearBrokerResponses() error {
 // reclassification: a full re-scan processes the whole shared inbox no matter
 // which profile the caller has open.
 func (s *Store) GetAllBrokerResponses() ([]BrokerResponse, error) {
-	return s.queryBrokerResponses(`SELECT ` + brokerResponseCols + ` FROM broker_responses ORDER BY created_at DESC`)
+	return s.queryBrokerResponses(`SELECT ` + brokerResponseCols + ` FROM broker_responses ORDER BY created_at DESC, id DESC`)
 }
 
 // GetBrokerResponsesForExport returns a profile's replies with bodies, oldest
@@ -180,7 +180,7 @@ func (s *Store) GetBrokerResponses(profileID, responseType string, needsReview b
 	if needsReview {
 		where += " AND needs_review = 1"
 	}
-	return s.queryBrokerResponses(`SELECT `+brokerResponseColsNoBody+` FROM broker_responses WHERE `+where+` ORDER BY created_at DESC LIMIT ?`, append(args, limit)...)
+	return s.queryBrokerResponses(`SELECT `+brokerResponseColsNoBody+` FROM broker_responses WHERE `+where+` ORDER BY created_at DESC, id DESC LIMIT ?`, append(args, limit)...)
 }
 
 // GetResponseStats counts a profile's replies by type.
