@@ -222,7 +222,7 @@ func (s *Store) migrate() error {
 	if err := addColumnIfMissing(s.db, `ALTER TABLE pending_tasks ADD COLUMN opened_at DATETIME`); err != nil {
 		return err
 	}
-	// broker_responses.email_body (digisamroc/eraser#3): used by queries but
+	// broker_responses.email_body: used by queries but
 	// missing from CREATE TABLE, so `monitor` broke on older databases.
 	if err := addColumnIfMissing(s.db, `ALTER TABLE broker_responses ADD COLUMN email_body TEXT`); err != nil {
 		return err

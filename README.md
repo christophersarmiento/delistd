@@ -458,10 +458,6 @@ upgrade.
 
 If you're an EU resident exercising GDPR rights, read [EU-NOTES.md](EU-NOTES.md) first — it covers which template to pick, safe send-volume behavior, and what to do if a broker ignores your request.
 
-## Credits
-
-Delistd started as a fork of [digisamroc/eraser](https://github.com/digisamroc/eraser) (MIT); see [LICENSE](LICENSE).
-
 ---
 
 ## Contributing
