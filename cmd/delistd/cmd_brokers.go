@@ -19,8 +19,8 @@ func listBrokersCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "list-brokers",
-		Short: "List all data brokers in the database",
-		Long:  "Show all data brokers that will receive removal requests.",
+		Short: "List the data brokers Delistd knows about",
+		Long:  "Shows every broker a removal request can go to.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return runListBrokers(regions, categories, search, missingEmail, allCountries)
 		},
@@ -38,8 +38,8 @@ func listBrokersCmd() *cobra.Command {
 func addBrokerCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "add-broker",
-		Short: "Add a new data broker to the database",
-		Long:  "Interactively add a new data broker to the local broker database.",
+		Short: "Add a data broker that is missing from the list",
+		Long:  "Asks for a broker's details and adds it to your own broker list, which list updates never overwrite.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return runAddBroker()
 		},

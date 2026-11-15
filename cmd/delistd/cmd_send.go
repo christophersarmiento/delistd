@@ -33,7 +33,7 @@ var (
 func sendCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "send",
-		Short: "Send removal requests to data brokers",
+		Short: "Email removal requests to data brokers",
 		Long: `Send data removal requests to all configured data brokers.
 
 To avoid tripping your email provider's daily sending limit (or looking like
@@ -48,7 +48,7 @@ safe to just re-run 'delistd send' until it reports nothing left to do.`,
 		Args: cobra.NoArgs,
 	}
 
-	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Preview emails without sending")
+	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Show what would be sent, without sending")
 	cmd.Flags().BoolVar(&ignoreDailyLimit, "ignore-daily-limit", false, "Send to all matching brokers in one run, ignoring the daily cap (only if your provider can handle the volume)")
 	cmd.Flags().BoolVar(&resend, "resend", false, "Also re-send to brokers already emailed within the last 25 days")
 	cmd.Flags().BoolVar(&manualSend, "manual", false, "Don't send: show each email and let you mark it sent after you send it by hand (implied by options.send_mode: manual)")

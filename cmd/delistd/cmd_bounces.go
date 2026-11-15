@@ -20,18 +20,16 @@ func cleanupBouncesCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "cleanup-bounces",
 		Short: "Find and clear bounced broker email addresses",
-		Long: `Scan your inbox for bounced/undeliverable emails and identify
-invalid broker email addresses. Optionally clear them in the database.
+		Long: `Looks through your inbox for delivery-failure notices and finds the broker
+addresses that no longer work.
 
-A bounce usually means the company changed its privacy-request address, not
-that it stopped existing, so this never deletes the broker itself - it only
-clears the dead email address (keeping name, category, website, and opt-out
-URL) and records the old address in the broker's notes. Use
-'list-brokers --missing-email' afterward to find brokers that need a new
-address.
+A bounce usually means the company moved its privacy address, not that it is
+gone. So the broker stays in the list: only the dead address is cleared (name,
+category, website and opt-out link are kept) and the old address is noted on
+the entry. 'list-brokers --missing-email' then shows what needs a new one.
 
-By default, this command shows what would be cleared without making changes.
-Use --remove to actually clear the invalid addresses in the database.
+Nothing is changed unless you pass --remove; without it you only see what
+would be cleared.
 
 Examples:
   delistd cleanup-bounces                 # Show bounced emails (dry run)
@@ -42,8 +40,8 @@ Examples:
 		},
 	}
 
-	cmd.Flags().BoolVar(&remove, "remove", false, "Actually clear bounced email addresses in the database")
-	cmd.Flags().IntVar(&days, "days", 30, "Number of days to scan for bounced emails")
+	cmd.Flags().BoolVar(&remove, "remove", false, "Clear the dead addresses (without it this only lists them)")
+	cmd.Flags().IntVar(&days, "days", 30, "How many days back to look")
 
 	return cmd
 }

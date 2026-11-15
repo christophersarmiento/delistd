@@ -67,11 +67,11 @@ func newRootCmd() *cobra.Command {
 		Use:     "delistd",
 		Version: version,
 		Short:   "Delistd - Automated data broker removal requests",
-		Long: `Delistd is an open-source tool that automates sending data removal
-requests to data brokers, helping you protect your privacy.
+		Long: `Delistd is open-source software that asks data brokers to delete what they
+hold about you, by email from your own account.
 
-It supports GDPR, CCPA, and generic removal request templates, and can
-send through any SMTP provider (Gmail, Proton Mail Bridge, Fastmail, ...).`,
+It has templates for GDPR, CCPA and a generic request, and works with any
+SMTP provider (Gmail, Proton Mail Bridge, Fastmail and others).`,
 	}
 	// Bare `delistd` (e.g. double-clicking the binary) starts the web UI, which
 	// opens the browser. Subcommands and --help behave as before.
