@@ -1,6 +1,5 @@
 {{define "content"}}
 <div class="space-y-6 fade-in-up">
-    <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
             <h1 class="font-display text-3xl font-bold text-primary">Action Needed</h1>
@@ -14,286 +13,70 @@
         </div>
     </div>
 
-    <!-- Stats Cards -->
     <div class="figures">
+        {{range .Figures}}
+        {{if .Filter}}
+        <div class="figure-link cursor-pointer" role="button" tabindex="0" onclick="filterItems('{{.Filter}}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();filterItems('{{.Filter}}')}">
+        {{else}}
         <div class="figure-link">
+        {{end}}
             <div class="flex items-center gap-3">
                 <div>
-                    <p class="text-xs text-muted">Total Action Items</p>
-                    <p class="num text-2xl text-primary">{{.TotalActionItems}}</p>
+                    <p class="text-xs text-muted">{{.Label}}</p>
+                    <p class="num text-2xl text-primary">{{.Value}}</p>
                 </div>
             </div>
         </div>
-
-        <div class="figure-link cursor-pointer" role="button" tabindex="0" onclick="filterItems('form')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();filterItems('form')}">
-            <div class="flex items-center gap-3">
-                <div>
-                    <p class="text-xs text-muted">Forms to Fill</p>
-                    <p class="num text-2xl text-primary">{{.FormsNeedingAction}}</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="figure-link cursor-pointer" role="button" tabindex="0" onclick="filterItems('review')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();filterItems('review')}">
-            <div class="flex items-center gap-3">
-                <div>
-                    <p class="text-xs text-muted">Needs Review</p>
-                    <p class="num text-2xl text-primary">{{.NeedsReview}}</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="figure-link cursor-pointer" role="button" tabindex="0" onclick="filterItems('completed')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();filterItems('completed')}">
-            <div class="flex items-center gap-3">
-                <div>
-                    <p class="text-xs text-muted">Completed</p>
-                    <p class="num text-2xl text-primary">{{add .CompletedTasks .FilledForms}}</p>
-                </div>
-            </div>
-        </div>
+        {{end}}
     </div>
 
-    <!-- Filter Buttons -->
     <div class="card p-4">
         <div class="flex flex-wrap items-center gap-3">
             <span class="text-sm text-muted">Filter:</span>
-            <button class="filter-btn active" data-filter="all" onclick="filterItems('all')">
-                All
-                <span class="ml-1 text-xs px-1.5 py-0.5 rounded-full" style="background: var(--bg-elevated);">{{.TotalActionItems}}</span>
+            {{range .Filters}}
+            <button class="filter-btn{{if eq .Key "all"}} active{{end}}" data-filter="{{.Key}}" onclick="filterItems('{{.Key}}')">
+                {{if .Icon}}{{icon .Icon "w-4 h-4"}}{{end}}
+                {{.Label}}
+                {{if ge .Count 0}}<span class="{{.Pill}}"{{if .PillStyle}} style="{{.PillStyle}}"{{end}}>{{.Count}}</span>{{end}}
             </button>
-            <button class="filter-btn" data-filter="form" onclick="filterItems('form')">
-                {{icon "document-text" "w-4 h-4"}}
-                Forms
-                <span class="ml-1 rounded-full chip chip-info">{{.FormsNeedingAction}}</span>
-            </button>
-            <button class="filter-btn" data-filter="captcha" onclick="filterItems('captcha')">
-                {{icon "shield-check" "w-4 h-4"}}
-                CAPTCHA
-                <span class="ml-1 rounded-full chip chip-warning">{{.CaptchaForms}}</span>
-            </button>
-            <button class="filter-btn" data-filter="confirmation" onclick="filterItems('confirmation')">
-                {{icon "mail" "w-4 h-4"}}
-                Confirmation
-            </button>
-            <button class="filter-btn" data-filter="review" onclick="filterItems('review')">
-                {{icon "eye" "w-4 h-4"}}
-                Needs Review
-                <span class="ml-1 rounded-full chip chip-warning">{{.NeedsReview}}</span>
-            </button>
-            <button class="filter-btn" data-filter="completed" onclick="filterItems('completed')">
-                {{icon "check-circle" "w-4 h-4"}}
-                Completed
-                <span class="ml-1 rounded-full chip chip-success">{{add .CompletedTasks .FilledForms}}</span>
-            </button>
+            {{end}}
         </div>
     </div>
 
-    <!-- Action Items List -->
     <div class="card overflow-hidden">
         <div id="items-list" class="divide-y divide-[var(--border)]">
-            {{$hasItems := false}}
-
-            <!-- Forms needing action (only pending status - captcha forms are shown as tasks) -->
-            {{range .Forms}}
-            {{if eq .Status "pending"}}
-            {{$hasItems = true}}
-            <div id="form-{{.BrokerID}}" class="action-item p-4 hover:bg-opacity-50 transition-colors"
-                 data-type="form"
-                 data-status="pending"
-                 style="background: var(--bg-surface);">
+            {{range .Items}}
+            <div {{if .ID}}id="{{.ID}}" {{end}}class="action-item p-4 hover:bg-opacity-50 transition-colors{{if .Hidden}} hidden{{end}}"
+                 data-type="{{.Type}}" data-status="{{.Status}}" style="background: var(--bg-surface);">
                 <div class="flex items-start gap-4">
-                    <!-- Details -->
                     <div class="flex-1 min-w-0">
                         <div class="flex items-center gap-2">
-                            <h2 class="text-sm font-semibold text-primary">{{.BrokerName}}</h2>
-                            <span class="rounded-full chip chip-info">Form</span>
+                            <h2 class="text-sm font-semibold text-primary">{{.Title}}</h2>
+                            {{range .Chips}}<span class="rounded-full {{.Class}}">{{.Text}}</span>{{end}}
+                            {{if .Aside}}<span class="text-xs text-muted">{{.Aside}}</span>{{end}}
                         </div>
-                        {{if .EmailSubject}}
-                        <p class="text-xs text-muted mt-1 truncate">{{.EmailSubject}}</p>
-                        {{end}}
-                        <p class="text-xs text-accent mt-1 truncate">
-                            <a href="{{.FormURL}}" target="_blank" class="hover:underline">{{.FormURL}}</a>
-                        </p>
-                        <p class="text-xs text-muted mt-1">Detected {{.DetectedAt.Format "Jan 2, 2006 3:04 PM"}}</p>
+                        {{range .Lines}}{{if .Text}}
+                        <p class="{{.Class}}">{{if .Link}}<a href="{{.Link}}" target="_blank" rel="noopener noreferrer" class="hover:underline">{{.Text}}</a>{{else}}{{.Text}}{{end}}</p>
+                        {{end}}{{end}}
                     </div>
-
-                    <!-- Actions -->
+                    {{if .Done}}
+                    <span class="text-success text-sm font-medium flex items-center gap-1">{{icon "check" "w-4 h-4"}} Done</span>
+                    {{else}}
                     <div class="flex-shrink-0 flex items-center gap-2">
-                        <a href="{{.FormURL}}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary text-xs px-3 py-1.5">
-                            {{icon "external-link" "w-4 h-4"}}
-                            Open Form
-                        </a>
-                        <button class="btn btn-primary text-xs px-3 py-1.5"
-                            hx-post="/forms/{{.BrokerID}}/complete"
-                            hx-target="closest .action-item"
-                            hx-swap="outerHTML"
-                            hx-confirm="Mark this form as complete?">
-                            {{icon "check" "w-4 h-4"}}
-                            Done
-                        </button>
-                        <button class="btn btn-ghost text-xs px-2 py-1.5"
-                            hx-post="/forms/{{.BrokerID}}/skip"
-                            hx-target="closest .action-item"
-                            hx-swap="outerHTML"
-                            hx-confirm="Skip this item?">
-                            {{icon "chevron-double-right" "w-4 h-4"}}
-                        </button>
-                    </div>
-                </div>
-            </div>
-            {{end}}
-            {{end}}
-
-            <!-- Tasks (confirmation, review, etc.) -->
-            {{range .Tasks}}
-            {{$hasItems = true}}
-            <div class="action-item p-4 hover:bg-opacity-50 transition-colors"
-                 data-type="{{if eq .TaskType "manual_form"}}form{{else if eq .TaskType "confirm"}}confirmation{{else}}{{.TaskType}}{{end}}"
-                 data-status="{{.Status}}"
-                 style="background: var(--bg-surface);">
-                <div class="flex items-start gap-4">
-                    <!-- Task Type Icon -->
-                    <!-- Task Details -->
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-2">
-                            <h2 class="text-sm font-semibold text-primary">{{.BrokerName}}</h2>
-                            <span class="rounded-full
-                                {{if eq .TaskType "captcha"}}chip chip-warning
-                                {{else if eq .TaskType "manual_form"}}chip chip-info
-                                {{else if eq .TaskType "review"}}chip chip-warning
-                                {{else if or (eq .TaskType "confirmation") (eq .TaskType "confirm")}}chip chip-info
-                                {{else}}chip chip-neutral{{end}}">
-                                {{if or (eq .TaskType "confirmation") (eq .TaskType "confirm")}}Confirmation{{else if eq .TaskType "manual_form"}}Manual Form{{else if eq .TaskType "review"}}Review{{else}}{{.TaskType}}{{end}}
-                            </span>
-                            {{if .NeedsReview}}<span class="rounded-full chip chip-warning">Needs review</span>{{end}}
-                            {{with .ActorLabel}}<span class="text-xs text-muted">{{.}}</span>{{end}}
-                        </div>
-                        {{if .FormURL}}
-                        <p class="text-xs text-accent mt-1 truncate">
-                            <a href="{{.FormURL}}" target="_blank" class="hover:underline">{{.FormURL}}</a>
-                        </p>
+                        {{range .Actions}}
+                        {{if .Href}}
+                        <a href="{{.Href}}" class="{{.Class}}"{{if .External}} target="_blank" rel="noopener noreferrer"{{end}}>{{icon .Icon "w-4 h-4"}} {{.Label}}</a>
+                        {{else}}
+                        <button class="{{.Class}}" hx-post="{{.Post}}" hx-target="closest .action-item" hx-swap="outerHTML" hx-confirm="{{.Confirm}}">{{icon .Icon "w-4 h-4"}} {{.Label}}</button>
                         {{end}}
-                        {{if .Notes}}
-                        <p class="text-sm text-secondary mt-2">{{.Notes}}</p>
                         {{end}}
-                        <p class="text-xs text-muted mt-2">Created {{.CreatedAt.Format "Jan 2, 2006 3:04 PM"}}</p>
                     </div>
-
-                    <!-- Actions -->
-                    <div class="flex-shrink-0 flex items-center gap-2">
-                        {{if eq .TaskType "captcha"}}
-                        <a href="/tasks/{{.ID}}/helper" class="btn btn-primary text-xs px-3 py-1.5">
-                            {{icon "external-link" "w-4 h-4"}}
-                            Open Helper
-                        </a>
-                        {{else if .FormURL}}
-                        <a href="{{.FormURL}}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary text-xs px-3 py-1.5">
-                            {{icon "external-link" "w-4 h-4"}}
-                            Open
-                        </a>
-                        {{end}}
-                        <button
-                            class="btn btn-primary text-xs px-3 py-1.5"
-                            hx-post="/tasks/{{.ID}}/complete"
-                            hx-target="closest .action-item"
-                            hx-swap="outerHTML"
-                            hx-confirm="Mark this task as complete?">
-                            {{icon "check" "w-4 h-4"}}
-                            Done
-                        </button>
-                    </div>
+                    {{end}}
                 </div>
             </div>
             {{end}}
 
-            <!-- Review Items (parser was unsure) -->
-            {{range .ReviewItems}}
-            {{$hasItems = true}}
-            <div class="action-item p-4 hover:bg-opacity-50 transition-colors"
-                 data-type="review"
-                 data-status="pending"
-                 style="background: var(--bg-surface);">
-                <div class="flex items-start gap-4">
-                    <!-- Review Icon -->
-                    <!-- Details -->
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-2">
-                            <h2 class="text-sm font-semibold text-primary">{{.BrokerName}}</h2>
-                            <span class="rounded-full chip chip-warning">Needs Review</span>
-                        </div>
-                        <p class="text-xs text-muted mt-1 truncate">{{.EmailSubject}}</p>
-                        <p class="text-xs text-secondary mt-1">Response type: {{pipelineLabel .ResponseType}}</p>
-                        <p class="text-xs text-muted mt-1">Received {{.ReceivedAt.Format "Jan 2, 2006 3:04 PM"}}</p>
-                    </div>
-
-                    <!-- Actions -->
-                    <div class="flex-shrink-0 flex items-center gap-2">
-                        <a href="/pipeline/responses/{{.ID}}" class="btn btn-secondary text-xs px-3 py-1.5">
-                            {{icon "eye" "w-4 h-4"}}
-                            Review
-                        </a>
-                        <button
-                            class="btn btn-primary text-xs px-3 py-1.5"
-                            hx-post="/api/pipeline/responses/{{.ID}}/reviewed"
-                            hx-target="closest .action-item"
-                            hx-swap="outerHTML"
-                            hx-confirm="Mark this as reviewed?">
-                            {{icon "check" "w-4 h-4"}}
-                            Done
-                        </button>
-                    </div>
-                </div>
-            </div>
-            {{end}}
-
-            <!-- Completed Tasks (for completed filter) -->
-            {{range .CompletedTasksList}}
-            <div class="action-item p-4 hover:bg-opacity-50 transition-colors hidden"
-                 data-type="{{if eq .TaskType "manual_form"}}form{{else if eq .TaskType "confirm"}}confirmation{{else}}{{.TaskType}}{{end}}"
-                 data-status="completed"
-                 style="background: var(--bg-surface);">
-                <div class="flex items-start gap-4">
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-2">
-                            <h2 class="text-sm font-semibold text-primary">{{.BrokerName}}</h2>
-                            <span class="rounded-full chip chip-success">Completed</span>
-                        </div>
-                        <p class="text-xs text-muted mt-1">Task completed</p>
-                    </div>
-                    <span class="text-success text-sm font-medium flex items-center gap-1">
-                        {{icon "check" "w-4 h-4"}}
-                        Done
-                    </span>
-                </div>
-            </div>
-            {{end}}
-
-            <!-- Completed Forms (for completed filter) -->
-            {{range .Forms}}
-            {{if eq .Status "filled"}}
-            <div class="action-item p-4 hover:bg-opacity-50 transition-colors hidden"
-                 data-type="form"
-                 data-status="completed"
-                 style="background: var(--bg-surface);">
-                <div class="flex items-start gap-4">
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-2">
-                            <h2 class="text-sm font-semibold text-primary">{{.BrokerName}}</h2>
-                            <span class="rounded-full chip chip-success">Completed</span>
-                        </div>
-                        <p class="text-xs text-muted mt-1">Form submitted successfully</p>
-                    </div>
-                    <span class="text-success text-sm font-medium flex items-center gap-1">
-                        {{icon "check" "w-4 h-4"}}
-                        Done
-                    </span>
-                </div>
-            </div>
-            {{end}}
-            {{end}}
-
-            <!-- Empty State -->
-            {{if not $hasItems}}
+            {{if not .HasPending}}
             <div class="p-12 text-center" id="empty-state">
                 <div class="w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4" style="background: rgba(34, 197, 94, 0.14);">
                     {{icon "check-circle" "w-8 h-8 text-success"}}
@@ -306,7 +89,6 @@
         </div>
     </div>
 
-    <!-- Instructions Card -->
     <div class="card p-6">
         <h2 class="font-display text-lg font-semibold text-primary mb-4">How to Complete Tasks</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -367,46 +149,14 @@
 </style>
 
 <script>
+// a row shows when its type matches the filter; finished rows only under
+// "completed", and "all" means every row that is not finished
 function filterItems(type) {
-    // Update active button
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.filter === type);
-    });
-
-    // Filter items
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.filter === type));
     document.querySelectorAll('.action-item').forEach(item => {
-        const itemType = item.dataset.type;
-        const itemStatus = item.dataset.status;
-
-        if (type === 'all') {
-            // Show all pending items, hide completed
-            if (itemStatus === 'completed') {
-                item.classList.add('hidden');
-            } else {
-                item.classList.remove('hidden');
-            }
-        } else if (type === 'completed') {
-            // Show only completed items
-            if (itemStatus === 'completed') {
-                item.classList.remove('hidden');
-            } else {
-                item.classList.add('hidden');
-            }
-        } else if (type === 'form') {
-            // Show forms (not captcha)
-            if (itemType === 'form' && itemStatus !== 'completed') {
-                item.classList.remove('hidden');
-            } else {
-                item.classList.add('hidden');
-            }
-        } else {
-            // Filter by specific type
-            if (itemType === type && itemStatus !== 'completed') {
-                item.classList.remove('hidden');
-            } else {
-                item.classList.add('hidden');
-            }
-        }
+        const finished = item.dataset.status === 'completed';
+        const show = type === 'completed' ? finished : !finished && (type === 'all' || item.dataset.type === type);
+        item.classList.toggle('hidden', !show);
     });
 }
 </script>

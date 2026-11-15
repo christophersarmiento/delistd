@@ -41,6 +41,20 @@ func (s *Server) settleForm(w http.ResponseWriter, r *http.Request, stage histor
 	http.Redirect(w, r, "/tasks", http.StatusFound)
 }
 
+// taskFigure is one headline number; a Filter makes it a button for that filter.
+type taskFigure struct {
+	Label  string
+	Value  int
+	Filter string
+}
+
+// taskFilter is a filter button. A negative Count shows no number.
+type taskFilter struct {
+	Key, Label, Icon string
+	Count            int
+	Pill, PillStyle  string
+}
+
 func (s *Server) handleTasks(w http.ResponseWriter, r *http.Request) {
 	if cfg := s.getConfig(); cfg == nil || !cfg.HasProfile() {
 		http.Redirect(w, r, "/setup", http.StatusFound)
@@ -84,8 +98,26 @@ func (s *Server) handleTasks(w http.ResponseWriter, r *http.Request) {
 		_, filled, captcha, failedForms, skips, _ = store.GetFormStats(active.ID)
 	}
 
+	items, hasPending := buildActionItems(forms, actions.Tasks, actions.Reviews, completedList)
+	completedCount := completedTasks + filled
 	s.renderWithCSRF(w, r, "tasks.html", map[string]interface{}{
-		"Title":              "Action Needed",
+		"Title":      "Action Needed",
+		"Items":      items,
+		"HasPending": hasPending,
+		"Figures": []taskFigure{
+			{"Total Action Items", actions.Total(), ""},
+			{"Forms to Fill", actions.FormsToFill(), "form"},
+			{"Needs Review", actions.NeedsReview(), "review"},
+			{"Completed", completedCount, "completed"},
+		},
+		"Filters": []taskFilter{
+			{Key: "all", Label: "All", Count: actions.Total(), Pill: "ml-1 text-xs px-1.5 py-0.5 rounded-full", PillStyle: "background: var(--bg-elevated);"},
+			{Key: "form", Label: "Forms", Icon: "document-text", Count: actions.FormsToFill(), Pill: "ml-1 rounded-full " + chipInfo},
+			{Key: "captcha", Label: "CAPTCHA", Icon: "shield-check", Count: captcha, Pill: "ml-1 rounded-full " + chipWarn},
+			{Key: "confirmation", Label: "Confirmation", Icon: "mail", Count: -1},
+			{Key: "review", Label: "Needs Review", Icon: "eye", Count: actions.NeedsReview(), Pill: "ml-1 rounded-full " + chipWarn},
+			{Key: "completed", Label: "Completed", Icon: "check-circle", Count: completedCount, Pill: "ml-1 rounded-full " + chipDone},
+		},
 		"Tasks":              actions.Tasks,
 		"CompletedTasksList": completedList,
 		"Forms":              forms,
