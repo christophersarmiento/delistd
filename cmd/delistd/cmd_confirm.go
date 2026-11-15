@@ -57,12 +57,6 @@ Safety features:
 	return cmd
 }
 
-// confirmLink is one link to click and the broker it belongs to, if known.
-type confirmLink struct {
-	BrokerID string
-	URL      string
-}
-
 func runConfirm(confirmURL, brokerID string, pending, validateDomain, dryRun bool) error {
 	cfg, err := config.Load(resolveConfigPath())
 	if err != nil {
@@ -92,7 +86,8 @@ func runConfirm(confirmURL, brokerID string, pending, validateDomain, dryRun boo
 	fmt.Println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 	fmt.Println()
 
-	links, err := confirmLinksFor(store, activeProfile.ID, confirmURL, brokerID, pending)
+	links, err := storedLinksFor(store, activeProfile.ID, "confirmation_required", confirmURL, brokerID, pending,
+		func(r history.BrokerResponse) string { return r.ConfirmURL }, "no confirmation URL found for broker")
 	if err != nil {
 		return err
 	}
@@ -136,35 +131,6 @@ func runConfirm(confirmURL, brokerID string, pending, validateDomain, dryRun boo
 	return nil
 }
 
-// confirmLinksFor picks the links to click: the one given, one broker's from
-// the stored replies, or every stored one.
-func confirmLinksFor(store *history.Store, profileID, confirmURL, brokerID string, pending bool) ([]confirmLink, error) {
-	if confirmURL != "" {
-		return []confirmLink{{BrokerID: brokerID, URL: confirmURL}}, nil
-	}
-	if brokerID == "" && !pending {
-		return nil, fmt.Errorf("please specify --url, --broker, or --pending")
-	}
-	replies, err := store.GetBrokerResponses(profileID, "confirmation_required", false, 100)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get broker responses: %w", err)
-	}
-	var links []confirmLink
-	for _, r := range replies {
-		if r.ConfirmURL == "" || (brokerID != "" && r.BrokerID != brokerID) {
-			continue
-		}
-		links = append(links, confirmLink{BrokerID: r.BrokerID, URL: r.ConfirmURL})
-		if brokerID != "" {
-			break // the newest reply for that broker is the one to click
-		}
-	}
-	if brokerID != "" && len(links) == 0 {
-		return nil, fmt.Errorf("no confirmation URL found for broker: %s", brokerID)
-	}
-	return links, nil
-}
-
 type clickOutcome int
 
 const (
@@ -174,7 +140,7 @@ const (
 
 // clickOne checks, clicks and reports one link, and records the outcome in the
 // pipeline.
-func clickOne(handler *browser.ConfirmationHandler, store *history.Store, profileID string, link confirmLink, validateDomain, dryRun bool) clickOutcome {
+func clickOne(handler *browser.ConfirmationHandler, store *history.Store, profileID string, link storedLink, validateDomain, dryRun bool) clickOutcome {
 	if validateDomain {
 		valid, domain, err := handler.ValidateDomain(link.URL)
 		if err != nil {
