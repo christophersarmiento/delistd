@@ -3,6 +3,7 @@ package inbox
 import (
 	"compress/gzip"
 	"encoding/json"
+	"math"
 	"os"
 	"slices"
 	"testing"
@@ -35,7 +36,7 @@ func TestClassifierMatchesGolden(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 	zr, err := gzip.NewReader(f)
 	if err != nil {
 		t.Fatal(err)
@@ -65,7 +66,7 @@ func TestClassifierMatchesGolden(t *testing.T) {
 			fail("type %s, golden %v", got.Type, c.Out.Types)
 		} else if len(c.Out.Types) == 1 {
 			o := c.Out
-			if got.Confidence != o.Confidence || got.NeedsReview != o.NeedsReview || got.Reason != o.Reason ||
+			if !near(got.Confidence, o.Confidence) || got.NeedsReview != o.NeedsReview || got.Reason != o.Reason ||
 				got.FormURL != o.FormURL || got.ConfirmURL != o.ConfirmURL || got.BouncedRecipient != o.Bounced {
 				fail("got conf %v review %v reason %q form %q confirm %q bounced %q; golden conf %v review %v reason %q form %q confirm %q bounced %q",
 					got.Confidence, got.NeedsReview, got.Reason, got.FormURL, got.ConfirmURL, got.BouncedRecipient,
@@ -73,7 +74,7 @@ func TestClassifierMatchesGolden(t *testing.T) {
 			}
 		}
 		ty, cf, rv := ClassifyBySubjectOnly(in.Subject)
-		if !slices.Contains(c.Out.SubjTypes, string(ty)) || (len(c.Out.SubjTypes) == 1 && (cf != c.Out.SubjConf || rv != c.Out.SubjReview)) {
+		if !slices.Contains(c.Out.SubjTypes, string(ty)) || (len(c.Out.SubjTypes) == 1 && (!near(cf, c.Out.SubjConf) || rv != c.Out.SubjReview)) {
 			fail("subject-only %s %v %v, golden %v %v %v", ty, cf, rv, c.Out.SubjTypes, c.Out.SubjConf, c.Out.SubjReview)
 		}
 	}
@@ -81,3 +82,6 @@ func TestClassifierMatchesGolden(t *testing.T) {
 		t.Fatalf("%d of %d cases differ from the golden file", bad, len(cases))
 	}
 }
+
+// near: fused multiply-add on arm64 makes the last bit of a float differ from amd64.
+func near(a, b float64) bool { return math.Abs(a-b) < 1e-9 }
