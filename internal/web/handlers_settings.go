@@ -307,6 +307,9 @@ func (s *Server) renderSettings(w http.ResponseWriter, r *http.Request, extra ma
 		"Regions":     regionChoices(cfg),
 		"Passphrase":  s.passphraseView(cfg),
 	}
+	if cfg != nil {
+		data["OptionsBefore"], data["OptionsAfter"] = optionFields(cfg)
+	}
 	for k, v := range extra {
 		data[k] = v
 	}

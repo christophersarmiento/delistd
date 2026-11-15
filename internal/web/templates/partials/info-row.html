@@ -1,0 +1,11 @@
+{{/* A label with its value and an optional badge. Data: dict with Label, Value,
+     Class (value classes), Badge, Error, Center (align to the middle), Last
+     (no rule below). */}}
+<div class="flex {{if .Center}}items-center{{else}}items-start{{end}} justify-between py-3{{if not .Last}} border-b border-[var(--border-subtle)]{{end}}">
+    <div>
+        <p class="text-sm text-muted">{{.Label}}</p>
+        <p class="{{if .Class}}{{.Class}}{{else}}text-secondary{{end}}">{{.Value}}</p>
+        {{if .Error}}<p class="text-sm text-error mt-1">{{.Error}}</p>{{end}}
+    </div>
+    {{.Badge}}
+</div>

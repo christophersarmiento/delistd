@@ -101,3 +101,23 @@ func dict(pairs ...any) (map[string]any, error) {
 	}
 	return m, nil
 }
+
+// section opens a settings-style card: an icon beside a heading and an
+// optional line under it, then {{endcard}}. id makes the card a link target.
+func section(iconName, title, subtitle string, id ...string) template.HTML {
+	attr := ""
+	if len(id) > 0 && id[0] != "" {
+		attr = ` id="` + html.EscapeString(id[0]) + `"`
+	}
+	heading := `<h2 class="font-display text-lg font-semibold text-primary">` + html.EscapeString(title) + `</h2>`
+	if subtitle != "" {
+		heading = "<div>" + heading + `<p class="text-sm text-muted">` + html.EscapeString(subtitle) + `</p></div>`
+	}
+	return template.HTML(`<div class="card p-6"` + attr + `><div class="flex items-center gap-3 mb-6">` +
+		string(icon(iconName, "w-5 h-5 text-muted flex-shrink-0")) + heading + `</div>`)
+}
+
+// badge is a small status label: kind is success, warning, error or neutral.
+func badge(kind, text string) template.HTML {
+	return template.HTML(`<span class="badge badge-` + html.EscapeString(kind) + `">` + html.EscapeString(text) + `</span>`)
+}
