@@ -46,8 +46,10 @@ func TestEveryTemplateParses(t *testing.T) {
 
 func TestRateLimiterWindow(t *testing.T) {
 	rl := NewRateLimiter(2, 50*time.Millisecond)
-	if !rl.Allow("a") || !rl.Allow("a") {
-		t.Fatal("the first two hits are within the limit")
+	for i := 0; i < 2; i++ {
+		if !rl.Allow("a") {
+			t.Fatalf("hit %d is within the limit", i+1)
+		}
 	}
 	if rl.Allow("a") {
 		t.Error("a third hit inside the window must be refused")
