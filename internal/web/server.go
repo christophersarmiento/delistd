@@ -230,6 +230,9 @@ func (s *Server) parseTemplates() (map[string]*template.Template, error) {
 		"add": func(a, b int) int {
 			return a + b
 		},
+		"sub": func(a, b int) int {
+			return a - b
+		},
 		// percent formats a 0..1 confidence score as a whole-number percentage.
 		"percent": func(f float64) string {
 			return fmt.Sprintf("%.0f%%", f*100)

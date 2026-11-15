@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/drumandbytes/delistd/internal/evidence"
@@ -34,6 +35,24 @@ func (s *Server) handleDashboard(w http.ResponseWriter, r *http.Request) {
 	s.renderWithCSRF(w, r, "dashboard.html", data)
 }
 
+// brokerPageSize is how many broker rows the list renders at a time. All 700+
+// rendered twice (table and phone cards) made a 2 MB page that phones took
+// seconds to lay out; "Show more" asks for another page.
+const brokerPageSize = 50
+
+// pageOfBrokers returns the rows to render for ?limit=, which grows by
+// brokerPageSize each time "Show more" is pressed.
+func pageOfBrokers(r *http.Request, all []BrokerWithStatus) (rows []BrokerWithStatus, limit int) {
+	limit = brokerPageSize
+	if n, err := strconv.Atoi(r.URL.Query().Get("limit")); err == nil && n > limit {
+		limit = n
+	}
+	if limit > len(all) {
+		return all, limit
+	}
+	return all[:limit], limit
+}
+
 func (s *Server) handleBrokers(w http.ResponseWriter, r *http.Request) {
 	search := r.URL.Query().Get("search")
 	category := r.URL.Query().Get("category")
@@ -43,13 +62,15 @@ func (s *Server) handleBrokers(w http.ResponseWriter, r *http.Request) {
 	showExcluded := r.URL.Query().Get("show_excluded") == "true"
 
 	brokers := s.getBrokersWithStatus(s.activeProfile(r).ID, search, category, region, status, nil, nil, missingEmail, showExcluded)
+	shown, limit := pageOfBrokers(r, brokers)
 
 	dailyLimit := effectiveDailyLimit(s.getConfig())
 	hidden, country := s.countryHidden(s.activeProfile(r).ID)
 
 	data := map[string]interface{}{
 		"Title":         "Data Brokers",
-		"Brokers":       brokers,
+		"Brokers":       shown,
+		"Limit":         limit,
 		"Categories":    s.getUniqueCategories(),
 		"Regions":       s.getUniqueRegions(),
 		"Search":        search,

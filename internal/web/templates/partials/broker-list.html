@@ -1,6 +1,6 @@
 <!-- Count header -->
 <div class="px-4 py-3 border-b border-[var(--border)] bg-elevated">
-    <p class="text-sm text-secondary">Showing <span class="font-medium text-primary">{{.Filtered}}</span> of <span class="font-medium text-primary">{{.Total}}</span> brokers{{if .CountryHidden}} <span class="text-muted">&middot; {{.CountryHidden}} hidden - they only handle countries other than {{.Country}}</span>{{end}}</p>
+    <p class="text-sm text-secondary">{{if gt .Filtered (len .Brokers)}}Showing the first <span class="font-medium text-primary">{{len .Brokers}}</span> of <span class="font-medium text-primary">{{.Filtered}}</span> matching, out of{{else}}Showing <span class="font-medium text-primary">{{.Filtered}}</span> of{{end}} <span class="font-medium text-primary">{{.Total}}</span> brokers{{if .CountryHidden}} <span class="text-muted">&middot; {{.CountryHidden}} hidden - they only handle countries other than {{.Country}}</span>{{end}}</p>
 </div>
 
 <!-- Desktop Table -->
@@ -86,4 +86,14 @@
     {{else}}
     <div class="p-8 text-center">{{template "partials/broker-empty.html" .}}</div>
     {{end}}
+{{if gt .Filtered (len .Brokers)}}
+<div class="p-4 border-t border-[var(--border)] text-center">
+    <button type="button" class="btn btn-secondary"
+        hx-get="/api/brokers" hx-target="#broker-list" hx-swap="innerHTML"
+        hx-vals='{"limit": {{add .Limit 50}}}'
+        hx-include="#broker-search,[name='status'],[name='category'],[name='region'],[name='missing_email'],[name='show_excluded']">
+        Show {{if gt (sub .Filtered (len .Brokers)) 50}}50{{else}}{{sub .Filtered (len .Brokers)}}{{end}} more
+    </button>
+</div>
+{{end}}
 </div>
