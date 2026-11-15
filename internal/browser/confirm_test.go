@@ -105,20 +105,17 @@ func TestIsSuccessResponse(t *testing.T) {
 		{"200 with 'unsubscribed'", 200, "You have been unsubscribed", true},
 		{"200 with no recognizable phrase", 200, "<html><body>OK</body></html>", true},
 		{"200 but body says link expired", 200, "Sorry, this link expired yesterday", false},
-		// "already confirmed" is unreachable: the "confirmed" success pattern
-		// matches first. Documents current behavior.
-		{"200 but body says already confirmed (shadowed by 'confirmed' success match)", 200, "This request was already confirmed", true},
+		{"200 but body says already confirmed", 200, "This request was already confirmed", false},
 		{"200 but body says link invalid", 200, "Sorry, link invalid or already used", false},
 		{"200 but body says failed", 200, "Something failed while processing", false},
 		{"404 status", 404, "Page not found", false},
 		{"500 status", 500, "Internal Server Error", false},
 		{"300 redirect status alone", 300, "Moved", false},
 		{"199 below success range", 199, "success", false},
-		// Success phrase present but so is a failure phrase - failure
-		// patterns are checked after success patterns and both loops run
-		// independently, so whichever phrase appears wins by loop order:
-		// success is checked first and returns immediately.
-		{"success phrase wins when both present", 200, "Successfully received, but could not verify identity", true},
+		// a failure phrase outranks a success phrase on the same page: a removal
+		// wrongly marked confirmed is worse than one that gets retried
+		{"failure phrase wins when both present", 200, "Successfully received, but could not verify identity", false},
+		{"thank-you page that says it failed", 200, "Thank you for visiting. Verification failed.", false},
 	}
 
 	for _, tt := range tests {
