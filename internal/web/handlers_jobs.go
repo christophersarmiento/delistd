@@ -161,7 +161,7 @@ func (s *Server) handleAPISendAll(w http.ResponseWriter, r *http.Request) {
 
 	// Bulk send never targets missing-email or excluded brokers - there's
 	// nowhere to send, and exclusion means "don't send to this one".
-	toSend := s.getBrokersWithStatus(activeProfile.ID, search, category, region, status, includeIDs, excludeIDs, false, false)
+	toSend := s.listBrokers(activeProfile.ID, brokerQuery{Search: search, Category: category, Region: region, Status: status, Only: includeIDs, Skip: excludeIDs})
 	filtered := toSend[:0:0]
 	for _, b := range toSend {
 		if strings.TrimSpace(b.Email) != "" {

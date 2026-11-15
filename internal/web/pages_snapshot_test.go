@@ -10,6 +10,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strings"
 	"testing"
@@ -38,9 +39,11 @@ type pageFingerprint struct {
 
 func fingerprint(rec *httptest.ResponseRecorder) pageFingerprint {
 	body := rec.Body.String()
-	ct := rec.Header().Get("Content-Type")
-	if ct == "" {
-		ct = http.DetectContentType(rec.Body.Bytes()) // what a browser would be told
+	// judged from the body, not the header, so the snapshot does not care
+	// whether a handler sets Content-Type or leaves it to sniffing
+	ct := http.DetectContentType(rec.Body.Bytes())
+	if h := rec.Header().Get("Content-Type"); strings.HasPrefix(h, "application/json") || strings.HasPrefix(h, "text/plain") {
+		ct = h
 	}
 	fp := pageFingerprint{Status: rec.Code, Location: rec.Header().Get("Location"), Type: strings.Split(ct, ";")[0]}
 	if fp.Type != "text/html" {
@@ -102,7 +105,7 @@ func fingerprint(rec *httptest.ResponseRecorder) pageFingerprint {
 	if err == nil {
 		walk(doc, false, "")
 	}
-	fp.Text = strings.Join(text, " | ")
+	fp.Text = undate(strings.Join(text, " | "))
 	for l := range links {
 		fp.Links = append(fp.Links, l)
 	}
@@ -268,6 +271,14 @@ func TestPagesMatchSnapshot(t *testing.T) {
 	if bad > 0 {
 		t.Fatalf("%d of %d pages differ from the snapshot (run with -update-snapshots if that is intended)", bad, len(paths))
 	}
+}
+
+// undate turns "now" in a page into a fixed word: rows the store stamps with
+// the current time would otherwise change the snapshot every minute.
+func undate(s string) string {
+	today := time.Now().Format("Jan 2, 2006")
+	s = regexp.MustCompile(regexp.QuoteMeta(today)+` \d{1,2}:\d{2} [AP]M`).ReplaceAllString(s, "<now>")
+	return strings.ReplaceAll(s, today, "<today>")
 }
 
 func clip(s string) string {

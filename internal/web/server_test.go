@@ -155,7 +155,7 @@ func TestGetBrokersWithStatusRespectsExclusions(t *testing.T) {
 		{ID: "beenverified", Name: "BeenVerified", Region: "us", Category: "people-search"},
 	}
 
-	got := s.getBrokersWithStatus("default", "", "", "", "", nil, nil, false, false)
+	got := s.listBrokers("default", brokerQuery{})
 
 	if len(got) != 1 || got[0].ID != "beenverified" {
 		t.Errorf("expected only beenverified to survive exclusion, got %+v", got)
@@ -172,7 +172,7 @@ func TestGetBrokersWithStatusRespectsCountries(t *testing.T) {
 		{ID: "anywhere", Name: "Anywhere", Region: "eu"},
 	}
 
-	got := s.getBrokersWithStatus("default", "", "", "", "", nil, nil, false, false)
+	got := s.listBrokers("default", brokerQuery{})
 
 	if len(got) != 1 || got[0].ID != "anywhere" {
 		t.Errorf("expected only anywhere for a French profile, got %+v", got)
@@ -191,7 +191,7 @@ func TestGetBrokersWithStatusShowExcludedIncludesAndMarksThem(t *testing.T) {
 		{ID: "beenverified", Name: "BeenVerified", Region: "us", Category: "people-search"},
 	}
 
-	got := s.getBrokersWithStatus("default", "", "", "", "", nil, nil, false, true)
+	got := s.listBrokers("default", brokerQuery{ShowExcluded: true})
 
 	if len(got) != 3 {
 		t.Fatalf("expected all 3 brokers with showExcluded=true, got %d: %+v", len(got), got)

@@ -27,7 +27,7 @@ func (s *Server) handleAPIBrokers(w http.ResponseWriter, r *http.Request) {
 	missingEmail := r.URL.Query().Get("missing_email") == "true"
 	showExcluded := r.URL.Query().Get("show_excluded") == "true"
 
-	brokers := s.getBrokersWithStatus(s.activeProfile(r).ID, search, category, region, status, nil, nil, missingEmail, showExcluded)
+	brokers := s.listBrokers(s.activeProfile(r).ID, brokerQuery{Search: search, Category: category, Region: region, Status: status, MissingEmail: missingEmail, ShowExcluded: showExcluded})
 
 	shown, limit := pageOfBrokers(r, brokers)
 	hidden, country := s.countryHidden(s.activeProfile(r).ID)

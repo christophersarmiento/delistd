@@ -98,7 +98,7 @@ func TestBrokerListHonoursConfiguredRegions(t *testing.T) {
 		{ID: "eu-one", Name: "EU One", Region: "eu"},
 		{ID: "global-one", Name: "Global One", Region: "global"},
 	}
-	got := s.getBrokersWithStatus("default", "", "", "", "", nil, nil, false, false)
+	got := s.listBrokers("default", brokerQuery{})
 	if len(got) != 2 || got[0].ID == "us-one" || got[1].ID == "us-one" {
 		t.Errorf("regions: [eu] should keep eu and global only, got %+v", got)
 	}
