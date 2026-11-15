@@ -20,11 +20,11 @@ func confirmCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "confirm",
-		Short: "Click confirmation links from broker emails",
-		Long: `Automatically click confirmation links received from data brokers.
+		Short: "Open the confirmation links brokers email you",
+		Long: `Opens the confirmation links data brokers send, which finishes an opt-out.
 
-This command makes HTTP GET requests to confirmation URLs to complete the opt-out process.
-It follows redirects and verifies success based on the response content.
+Each link is requested with a plain HTTP GET, redirects are followed, and the
+page that comes back decides whether it worked.
 
 Examples:
   # Confirm a specific URL
@@ -39,20 +39,20 @@ Examples:
   # Preview without actually clicking (dry run)
   delistd confirm --pending --dry-run
 
-Safety features:
-  - Domain validation ensures links are from known broker domains
-  - Follows redirects up to 10 hops
-  - Detects success/failure from response content`,
+Safeguards:
+  - a link must point at a known broker domain, and so must every redirect
+  - at most 10 redirects are followed
+  - a page that reports a failure is never counted as a confirmation`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return runConfirm(confirmURL, brokerID, pending, validateDomain, dryRun)
 		},
 	}
 
-	cmd.Flags().StringVar(&confirmURL, "url", "", "Direct confirmation URL to click")
-	cmd.Flags().StringVar(&brokerID, "broker", "", "Broker ID to confirm for (uses URL from pipeline)")
-	cmd.Flags().BoolVar(&pending, "pending", false, "Confirm all pending confirmation links")
+	cmd.Flags().StringVar(&confirmURL, "url", "", "The confirmation link to open")
+	cmd.Flags().StringVar(&brokerID, "broker", "", "Open the link a broker's reply carried (by broker ID)")
+	cmd.Flags().BoolVar(&pending, "pending", false, "Open every confirmation link still waiting")
 	cmd.Flags().BoolVar(&validateDomain, "validate-domain", true, "Validate URL domain against known brokers (private/localhost addresses are always blocked regardless of this flag)")
-	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Preview links without clicking them")
+	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "List the links without opening them")
 
 	return cmd
 }

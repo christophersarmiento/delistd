@@ -40,14 +40,13 @@ func fillCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "fill",
-		Short: "Fill opt-out forms using browser automation",
-		Long: `Navigate to data broker opt-out forms and automatically fill them using your profile data.
+		Short: "Fill in broker opt-out forms in a browser",
+		Long: `Opens a broker's opt-out form in Chrome and types your profile into it.
 
-This command uses headless Chrome to:
-- Navigate to opt-out form URLs
-- Detect and fill form fields with your personal information
-- Detect CAPTCHAs (creates tasks for manual solving)
-- Optionally submit the form
+For each form it:
+- finds the fields and enters what your profile holds for them
+- notices a CAPTCHA and turns it into a task for you to solve
+- submits the form only if you ask it to (--submit)
 
 Examples:
   # Fill a specific form URL
@@ -70,13 +69,13 @@ Examples:
 		},
 	}
 
-	cmd.Flags().StringVar(&brokerID, "broker", "", "Broker ID to fill form for (uses URL from pipeline)")
-	cmd.Flags().StringVar(&formURL, "url", "", "Direct URL to the opt-out form")
-	cmd.Flags().BoolVar(&headless, "headless", true, "Run browser in headless mode (default: your config's pipeline.browser_headless, or true if unset)")
-	cmd.Flags().BoolVar(&autoSubmit, "submit", false, "Automatically submit the form after filling")
-	cmd.Flags().StringVar(&screenshotDir, "screenshots", "", "Directory to save screenshots (default: ~/.delistd/screenshots)")
-	cmd.Flags().BoolVar(&pending, "pending", false, "Fill all pending forms from the pipeline")
-	cmd.Flags().BoolVar(&waitForCaptcha, "wait", false, "Wait for user to solve CAPTCHA before continuing (use with --headless=false)")
+	cmd.Flags().StringVar(&brokerID, "broker", "", "Fill the form a broker's reply pointed to (by broker ID)")
+	cmd.Flags().StringVar(&formURL, "url", "", "The opt-out form's address")
+	cmd.Flags().BoolVar(&headless, "headless", true, "Run Chrome without a window (default: pipeline.browser_headless in your config, else yes)")
+	cmd.Flags().BoolVar(&autoSubmit, "submit", false, "Submit the form once it is filled in")
+	cmd.Flags().StringVar(&screenshotDir, "screenshots", "", "Where screenshots are saved (default: screenshots in the data directory)")
+	cmd.Flags().BoolVar(&pending, "pending", false, "Fill every form the pipeline is waiting on")
+	cmd.Flags().BoolVar(&waitForCaptcha, "wait", false, "Pause at a CAPTCHA until you have solved it (needs --headless=false)")
 
 	return cmd
 }
