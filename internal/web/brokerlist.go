@@ -77,6 +77,7 @@ func (s *Server) listBrokers(profileID string, q brokerQuery) []BrokerWithStatus
 	search, category, region, status := clean(q.Search), clean(q.Category), clean(q.Region), clean(q.Status)
 	only, skip := broker.Set(q.Only), broker.Set(q.Skip)
 
+	now := time.Now()
 	var out []BrokerWithStatus
 	for _, b := range s.brokers().Brokers {
 		id := strings.ToLower(b.ID)
@@ -105,13 +106,15 @@ func (s *Server) listBrokers(profileID string, q brokerQuery) []BrokerWithStatus
 		}
 
 		row := BrokerWithStatus{Broker: b, Status: "never", Excluded: excluded, ManualMode: manual}
+		var st *history.BrokerStatus
 		if h, ok := statuses[b.ID]; ok {
+			st = &h
 			row.Status, row.TotalSent, row.lastSentAt = string(h.Status), h.TotalSent, h.LastSent
 			if !h.LastSent.IsZero() {
 				row.LastSent = h.LastSent.Format("Jan 2, 2006")
 			}
 		}
-		if !statusMatches(status, row) {
+		if !history.MatchesFilter(status, st, now) {
 			continue
 		}
 		out = append(out, row)
@@ -127,18 +130,6 @@ func containsAnyFold(needle string, fields ...string) bool {
 		}
 	}
 	return false
-}
-
-func statusMatches(filter string, row BrokerWithStatus) bool {
-	switch filter {
-	case "pending", "never":
-		return row.Status == "never"
-	case "sent", "failed":
-		return row.Status == filter
-	case "eligible":
-		return row.Status != "sent" || time.Since(row.lastSentAt) >= history.ResendCooldown
-	}
-	return true
 }
 
 // countryHidden counts the brokers the profile's country rules out, for the

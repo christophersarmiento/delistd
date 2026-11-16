@@ -65,19 +65,11 @@ safe to just re-run 'delistd send' until it reports nothing left to do.`,
 func filterBrokersByStatus(brokers []broker.Broker, statuses map[string]history.BrokerStatus, statusFilter string, now time.Time) []broker.Broker {
 	filtered := brokers[:0:0]
 	for _, b := range brokers {
-		status, exists := statuses[b.ID]
-		include := false
-		switch statusFilter {
-		case "all":
-			include = true
-		case "never":
-			include = !exists
-		case "failed":
-			include = exists && status.Status == history.StatusFailed
-		case "eligible":
-			include = !exists || status.Status != history.StatusSent || now.Sub(status.LastSent) >= history.ResendCooldown
+		var st *history.BrokerStatus
+		if h, ok := statuses[b.ID]; ok {
+			st = &h
 		}
-		if include {
+		if history.MatchesFilter(statusFilter, st, now) {
 			filtered = append(filtered, b)
 		}
 	}

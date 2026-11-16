@@ -297,7 +297,8 @@ func undate(s string) string {
 	today := time.Now().Format("Jan 2, 2006")
 	s = regexp.MustCompile(regexp.QuoteMeta(today)+` \d{1,2}:\d{2} [AP]M`).ReplaceAllString(s, "<now>")
 	s = regexp.MustCompile(`Generated \d{1,2} \w+ \d{4}, \d{2}:\d{2} UTC`).ReplaceAllString(s, "Generated <now>") // evidence report
-	return strings.ReplaceAll(s, today, "<today>")
+	s = strings.ReplaceAll(s, today, "<today>")
+	return strings.ReplaceAll(s, time.Now().Format("January 2, 2006"), "<today>") // template {{.Date}}
 }
 
 func clip(s string) string {
