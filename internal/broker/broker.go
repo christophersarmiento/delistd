@@ -73,17 +73,6 @@ func (db *BrokerDatabase) find(match func(Broker) bool) *Broker {
 	return nil
 }
 
-// remove deletes and returns the first broker satisfying match, or nil.
-func (db *BrokerDatabase) remove(match func(Broker) bool) *Broker {
-	i := slices.IndexFunc(db.Brokers, match)
-	if i < 0 {
-		return nil
-	}
-	gone := db.Brokers[i]
-	db.Brokers = slices.Delete(db.Brokers, i, i+1)
-	return &gone
-}
-
 func hasID(id string) func(Broker) bool {
 	return func(b Broker) bool { return strings.EqualFold(b.ID, id) }
 }
@@ -100,8 +89,6 @@ func hasName(name string) func(Broker) bool {
 func (db *BrokerDatabase) FindByID(id string) *Broker       { return db.find(hasID(id)) }
 func (db *BrokerDatabase) FindByName(name string) *Broker   { return db.find(hasName(name)) }
 func (db *BrokerDatabase) FindByEmail(email string) *Broker { return db.find(hasEmail(email)) }
-func (db *BrokerDatabase) RemoveByID(id string) *Broker     { return db.remove(hasID(id)) }
-func (db *BrokerDatabase) RemoveByEmail(e string) *Broker   { return db.remove(hasEmail(e)) }
 
 // Add appends b, refusing an ID that is already taken.
 func (db *BrokerDatabase) Add(b Broker) error {

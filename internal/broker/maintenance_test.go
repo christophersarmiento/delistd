@@ -123,19 +123,6 @@ func TestDatabaseEdits(t *testing.T) {
 	if db.FindByName("nobody") != nil {
 		t.Error("FindByName matched a missing name")
 	}
-
-	if b := db.RemoveByEmail("privacy@acme.EXAMPLE"); b == nil || b.ID != "acme" || db.FindByID("acme") != nil {
-		t.Errorf("RemoveByEmail = %+v", b)
-	}
-	if db.RemoveByEmail("ghost@example.com") != nil {
-		t.Error("RemoveByEmail removed a missing address")
-	}
-	if b := db.RemoveByID("GLOBEX"); b == nil || b.Name != "Globex" || len(db.Brokers) != 2 {
-		t.Errorf("RemoveByID = %+v, %d left", b, len(db.Brokers))
-	}
-	if db.RemoveByID("ghost") != nil {
-		t.Error("RemoveByID removed a missing id")
-	}
 }
 
 func TestSaveWithBackup(t *testing.T) {
