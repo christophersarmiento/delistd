@@ -372,15 +372,45 @@ func (db *BrokerDatabase) UnknownIDs(ids []string) []string {
 	return unknown
 }
 
-func (db *BrokerDatabase) FindByID(id string) *Broker {
-	id = strings.ToLower(id)
-	for i := range db.Brokers {
-		if strings.ToLower(db.Brokers[i].ID) == id {
-			return &db.Brokers[i]
-		}
+// find returns the first broker for which match is true, or nil.
+func (db *BrokerDatabase) find(match func(Broker) bool) *Broker {
+	if i := db.indexOf(match); i >= 0 {
+		return &db.Brokers[i]
 	}
 	return nil
 }
+
+func (db *BrokerDatabase) indexOf(match func(Broker) bool) int {
+	for i := range db.Brokers {
+		if match(db.Brokers[i]) {
+			return i
+		}
+	}
+	return -1
+}
+
+// remove deletes the first broker for which match is true and returns it, or nil.
+func (db *BrokerDatabase) remove(match func(Broker) bool) *Broker {
+	i := db.indexOf(match)
+	if i < 0 {
+		return nil
+	}
+	removed := db.Brokers[i]
+	db.Brokers = slices.Delete(db.Brokers, i, i+1)
+	return &removed
+}
+
+func byID(id string) func(Broker) bool {
+	id = strings.ToLower(id)
+	return func(b Broker) bool { return strings.ToLower(b.ID) == id }
+}
+
+func byEmail(email string) func(Broker) bool {
+	email = strings.ToLower(email)
+	return func(b Broker) bool { return strings.ToLower(b.Email) == email }
+}
+
+func (db *BrokerDatabase) FindByID(id string) *Broker { return db.find(byID(id)) }
 
 func (db *BrokerDatabase) Save(path string) error {
 	data, err := yaml.Marshal(db)
@@ -401,38 +431,15 @@ func (db *BrokerDatabase) Add(broker Broker) error {
 // FindByName finds a broker by name, ignoring case and surrounding spaces.
 func (db *BrokerDatabase) FindByName(name string) *Broker {
 	name = strings.TrimSpace(name)
-	for i := range db.Brokers {
-		if strings.EqualFold(strings.TrimSpace(db.Brokers[i].Name), name) {
-			return &db.Brokers[i]
-		}
-	}
-	return nil
+	return db.find(func(b Broker) bool { return strings.EqualFold(strings.TrimSpace(b.Name), name) })
 }
 
 // FindByEmail finds a broker by their email address
-func (db *BrokerDatabase) FindByEmail(email string) *Broker {
-	email = strings.ToLower(email)
-	for i := range db.Brokers {
-		if strings.ToLower(db.Brokers[i].Email) == email {
-			return &db.Brokers[i]
-		}
-	}
-	return nil
-}
+func (db *BrokerDatabase) FindByEmail(email string) *Broker { return db.find(byEmail(email)) }
 
 // RemoveByEmail removes a broker by their email address
 // Returns the removed broker, or nil if not found
-func (db *BrokerDatabase) RemoveByEmail(email string) *Broker {
-	email = strings.ToLower(email)
-	for i := range db.Brokers {
-		if strings.ToLower(db.Brokers[i].Email) == email {
-			removed := db.Brokers[i]
-			db.Brokers = append(db.Brokers[:i], db.Brokers[i+1:]...)
-			return &removed
-		}
-	}
-	return nil
-}
+func (db *BrokerDatabase) RemoveByEmail(email string) *Broker { return db.remove(byEmail(email)) }
 
 // MarkEmailUnreachable clears a broker's email (old address and reason go to
 // Notes) instead of deleting it: a bounce usually means a changed address, not
@@ -459,17 +466,7 @@ func (db *BrokerDatabase) MarkEmailUnreachable(email, reason string) *Broker {
 
 // RemoveByID removes a broker by their ID
 // Returns the removed broker, or nil if not found
-func (db *BrokerDatabase) RemoveByID(id string) *Broker {
-	id = strings.ToLower(id)
-	for i := range db.Brokers {
-		if strings.ToLower(db.Brokers[i].ID) == id {
-			removed := db.Brokers[i]
-			db.Brokers = append(db.Brokers[:i], db.Brokers[i+1:]...)
-			return &removed
-		}
-	}
-	return nil
-}
+func (db *BrokerDatabase) RemoveByID(id string) *Broker { return db.remove(byID(id)) }
 
 // SaveWithBackup saves the database to file, creating a backup first
 func (db *BrokerDatabase) SaveWithBackup(path string) error {

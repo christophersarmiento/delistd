@@ -365,6 +365,23 @@ func runSendManual(cfg *config.Config, activeProfile config.NamedProfile, broker
 	fmt.Printf("   %d broker(s) to review.\n\n", len(brokers))
 
 	recorded, skipped := 0, 0
+	// ask puts one question to the user: "yes" records the broker as sent by
+	// hand, q stops, anything else moves on.
+	ask := func(b broker.Broker, question, yes string) (quit bool, err error) {
+		ans := strings.ToLower(prompt(reader, question))
+		switch {
+		case strings.HasPrefix(ans, "q"):
+			return true, nil
+		case strings.HasPrefix(ans, yes):
+			if err := store.Add(manualSentRecord(activeProfile.ID, b, tmplName)); err != nil {
+				return false, fmt.Errorf("failed to record %s: %w", b.ID, err)
+			}
+			recorded++
+		default:
+			skipped++
+		}
+		return false, nil
+	}
 	for i, b := range brokers {
 		fmt.Println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 		fmt.Printf("[%d/%d] %s (%s)\n\n", i+1, len(brokers), b.Name, b.ID)
@@ -375,17 +392,12 @@ func runSendManual(cfg *config.Config, activeProfile config.NamedProfile, broker
 			} else {
 				fmt.Print("No email on file and no opt-out URL - see notes in brokers.yaml.\n\n")
 			}
-			ans := strings.ToLower(prompt(reader, "Mark handled? [y]es / [n]ext / [q]uit: "))
-			switch {
-			case strings.HasPrefix(ans, "q"):
+			quit, err := ask(b, "Mark handled? [y]es / [n]ext / [q]uit: ", "y")
+			if err != nil {
+				return err
+			}
+			if quit {
 				return finishManual(recorded, skipped)
-			case strings.HasPrefix(ans, "y"):
-				if err := store.Add(manualSentRecord(activeProfile.ID, b, tmplName)); err != nil {
-					return fmt.Errorf("failed to record %s: %w", b.ID, err)
-				}
-				recorded++
-			default:
-				skipped++
 			}
 			continue
 		}
@@ -398,17 +410,12 @@ func runSendManual(cfg *config.Config, activeProfile config.NamedProfile, broker
 		}
 		fmt.Printf("From: %s\nTo: %s\nSubject: %s\n\n%s\n", from, b.Email, email.Subject, email.Body)
 
-		ans := strings.ToLower(prompt(reader, "Sent it? [s]ent / [n]ext / [q]uit: "))
-		switch {
-		case strings.HasPrefix(ans, "q"):
+		quit, err := ask(b, "Sent it? [s]ent / [n]ext / [q]uit: ", "s")
+		if err != nil {
+			return err
+		}
+		if quit {
 			return finishManual(recorded, skipped)
-		case strings.HasPrefix(ans, "s"):
-			if err := store.Add(manualSentRecord(activeProfile.ID, b, tmplName)); err != nil {
-				return fmt.Errorf("failed to record %s: %w", b.ID, err)
-			}
-			recorded++
-		default:
-			skipped++
 		}
 	}
 	return finishManual(recorded, skipped)

@@ -227,22 +227,14 @@ func (f *FormFiller) typeInto(ctx context.Context, selector, value string) (bool
 	return true, nil
 }
 
-// chooseOption picks the <option> whose value or text is value and fires
-// 'change'. Typing into a <select> can report success while selecting
-// nothing, so this sets .value against a real option instead. No matching
-// option is (false, nil).
-func (f *FormFiller) chooseOption(ctx context.Context, selector, value string) (bool, error) {
+// evalOnElement runs body, a JS function body over (el, value), against the
+// first element matching selector, and reports whether it returned true. A
+// failing script is (false, nil) so the caller can fall through to the next
+// way of filling the field; only a dead context is an error.
+func (f *FormFiller) evalOnElement(ctx context.Context, selector, value, body string) (bool, error) {
 	sel, _ := json.Marshal(selector)
 	want, _ := json.Marshal(value)
-	js := fmt.Sprintf(`(function(el, target) {
-		if (!el) return false;
-		var opt = Array.from(el.options).find(function(o) { return o.value === target || o.textContent.trim() === target; });
-		if (!opt) return false;
-		el.value = opt.value;
-		el.dispatchEvent(new Event('change', {bubbles: true}));
-		return el.value === opt.value;
-	})(document.querySelector(%s), %s)`, sel, want)
-
+	js := fmt.Sprintf(`(function(el, value) { if (!el) return false; %s })(document.querySelector(%s), %s)`, body, sel, want)
 	ok, err := chromedp.Run(ctx, chromedp.Evaluate[bool](js))
 	if err != nil {
 		if isContextErr(err) {
@@ -253,26 +245,27 @@ func (f *FormFiller) chooseOption(ctx context.Context, selector, value string) (
 	return ok, nil
 }
 
+// chooseOption picks the <option> whose value or text is value and fires
+// 'change'. Typing into a <select> can report success while selecting
+// nothing, so this sets .value against a real option instead. No matching
+// option is (false, nil).
+func (f *FormFiller) chooseOption(ctx context.Context, selector, value string) (bool, error) {
+	return f.evalOnElement(ctx, selector, value, `
+		var opt = Array.from(el.options).find(function(o) { return o.value === value || o.textContent.trim() === value; });
+		if (!opt) return false;
+		el.value = opt.value;
+		el.dispatchEvent(new Event('change', {bubbles: true}));
+		return el.value === opt.value;`)
+}
+
 // setValue sets the value directly and fires the events a keystroke would. A
 // date input has to be filled this way: typed keys are read in the browser's
 // own date order (month first in en-US, day first elsewhere), so an ISO date
 // typed into it ends up as a different date from machine to machine.
 func (f *FormFiller) setValue(ctx context.Context, selector, value string) (bool, error) {
-	sel, _ := json.Marshal(selector)
-	want, _ := json.Marshal(value)
-	js := fmt.Sprintf(`(function(el, value) {
-		if (!el) return false;
+	return f.evalOnElement(ctx, selector, value, `
 		el.value = value;
 		el.dispatchEvent(new Event('input', {bubbles: true}));
 		el.dispatchEvent(new Event('change', {bubbles: true}));
-		return el.value === value;
-	})(document.querySelector(%s), %s)`, sel, want)
-	ok, err := chromedp.Run(ctx, chromedp.Evaluate[bool](js))
-	if err != nil {
-		if isContextErr(err) {
-			return false, err
-		}
-		return false, nil
-	}
-	return ok, nil
+		return el.value === value;`)
 }
