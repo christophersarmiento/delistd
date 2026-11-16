@@ -144,7 +144,7 @@ func eligibleBrokers(store *history.Store, activeProfile config.NamedProfile, br
 	if statusFilter == "" {
 		statusFilter = "eligible"
 	}
-	if statusFilter != "eligible" && statusFilter != "never" && statusFilter != "failed" && statusFilter != "all" {
+	if !history.IsSendFilter(statusFilter) {
 		return nil, fmt.Errorf("invalid status %q: must be eligible, never, failed, or all", statusFilter)
 	}
 	if resend {

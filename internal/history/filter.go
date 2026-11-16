@@ -19,3 +19,13 @@ func MatchesFilter(filter string, st *BrokerStatus, now time.Time) bool {
 	}
 	return true
 }
+
+// IsSendFilter reports whether s names a status filter a send may use:
+// `send --status` and the web "Send all" accept only these four.
+func IsSendFilter(s string) bool {
+	switch s {
+	case "eligible", "never", "failed", "all":
+		return true
+	}
+	return false
+}

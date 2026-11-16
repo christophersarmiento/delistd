@@ -27,3 +27,16 @@ func TestMatchesFilter(t *testing.T) {
 		}
 	}
 }
+
+func TestIsSendFilter(t *testing.T) {
+	for _, ok := range []string{"eligible", "never", "failed", "all"} {
+		if !IsSendFilter(ok) {
+			t.Errorf("%q rejected", ok)
+		}
+	}
+	for _, bad := range []string{"", "sent", "pending", "ALL"} {
+		if IsSendFilter(bad) {
+			t.Errorf("%q accepted", bad)
+		}
+	}
+}

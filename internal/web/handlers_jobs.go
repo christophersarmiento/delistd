@@ -149,7 +149,7 @@ func (s *Server) handleAPISendAll(w http.ResponseWriter, r *http.Request) {
 	if status == "" {
 		status = "eligible"
 	}
-	if status != "eligible" && status != "never" && status != "failed" && status != "all" {
+	if !history.IsSendFilter(status) {
 		w.WriteHeader(http.StatusBadRequest)
 		_ = json.NewEncoder(w).Encode(map[string]string{"error": "Status must be eligible, never, failed, or all."})
 		return
