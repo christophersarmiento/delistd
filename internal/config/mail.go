@@ -78,8 +78,6 @@ func (e EmailConfig) Configured() bool {
 	return e.SMTP.Host != ""
 }
 
-type Email = EmailConfig
-
 type SMTPConfig struct {
 	Host     string `yaml:"host"`
 	Port     int    `yaml:"port"`
@@ -100,9 +98,9 @@ func (s SMTPConfig) TLS() bool {
 	return s.UseTLS == nil || *s.UseTLS
 }
 
-// applyInboxDefaults fills Folder/ArchiveFolder and, for known providers,
-// Server/Port. Shared by the top-level inbox and per-profile overrides.
-func applyInboxDefaults(inbox *InboxConfig) {
+// ApplyInboxDefaults fills Folder/ArchiveFolder and, for known providers,
+// Server/Port. Shared by the top-level inbox, per-profile overrides and configs edited at runtime.
+func ApplyInboxDefaults(inbox *InboxConfig) {
 	if inbox.Folder == "" {
 		inbox.Folder = "INBOX"
 	}
@@ -118,10 +116,6 @@ func applyInboxDefaults(inbox *InboxConfig) {
 		inbox.Server, inbox.Port = "outlook.office365.com", 993
 	}
 }
-
-// ApplyInboxDefaults is applyInboxDefaults for configs edited at runtime
-// (Load's defaults only run at startup).
-func ApplyInboxDefaults(inbox *InboxConfig) { applyInboxDefaults(inbox) }
 
 func validateEmailConfig(e EmailConfig) error {
 	if !e.Configured() {

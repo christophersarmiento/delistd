@@ -23,7 +23,7 @@ import (
 // returns its inbox: YAML.
 func imapInbox(t *testing.T, mails ...[3]string) string {
 	t.Helper()
-	srv := imaptest.Start(t, false)
+	srv := imaptest.StartWith(t, imaptest.Options{Move: false})
 	for _, m := range mails {
 		srv.Deliver(t, "INBOX", m[0], m[1], m[2])
 	}

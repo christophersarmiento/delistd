@@ -253,7 +253,7 @@ func (s *Server) handleSetupComplete(w http.ResponseWriter, r *http.Request) {
 	cfg.Options.SendMode = ""
 	if session.ManualSend {
 		cfg.Options.SendMode = "manual"
-		cfg.Email = config.Email{}
+		cfg.Email = config.EmailConfig{}
 	}
 
 	if err := s.saveConfig(cfg); err != nil {

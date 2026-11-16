@@ -37,14 +37,12 @@ func count(list []*regexp.Regexp, texts ...string) int {
 	return n
 }
 
-func countEach(list []*regexp.Regexp, text string) int { return count(list, text) }
-
 // subjectPoints scores the subject-only phrase lists.
 func (p points) addSubject(subject string) {
-	p[ResponsePending] += subjectPoints * countEach(subjectPendingPatterns, subject)
-	p[ResponseRejected] += subjectPoints * countEach(subjectRejectionPatterns, subject)
-	p[ResponseSuccess] += subjectPoints * countEach(subjectSuccessPatterns, subject)
-	p[ResponseFormRequired] += subjectPoints * countEach(subjectFormPatterns, subject)
+	p[ResponsePending] += subjectPoints * count(subjectPendingPatterns, subject)
+	p[ResponseRejected] += subjectPoints * count(subjectRejectionPatterns, subject)
+	p[ResponseSuccess] += subjectPoints * count(subjectSuccessPatterns, subject)
+	p[ResponseFormRequired] += subjectPoints * count(subjectFormPatterns, subject)
 }
 
 // top returns the winning type, its points and the runner-up's points
@@ -77,10 +75,10 @@ func scoreReply(subject, content string, urls ExtractedURLs) points {
 	p := points{}
 	p.addSubject(subject)
 	p[ResponseSuccess] += count(successPatterns, content, subject)
-	p[ResponseFormRequired] += countEach(formRequiredPatterns, content)
-	p[ResponseConfirmationRequired] += countEach(confirmationPatterns, content)
+	p[ResponseFormRequired] += count(formRequiredPatterns, content)
+	p[ResponseConfirmationRequired] += count(confirmationPatterns, content)
 	p[ResponseRejected] += count(rejectionPatterns, content, subject)
-	p[ResponsePending] += countEach(pendingPatterns, content)
+	p[ResponsePending] += count(pendingPatterns, content)
 	if len(urls.FormURLs) > 0 {
 		p[ResponseFormRequired] += urlPoints
 	}
@@ -175,9 +173,9 @@ func ClassifyBySubjectOnly(subject string) (ResponseType, float64, bool) {
 
 	p := points{}
 	p.addSubject(subject)
-	p[ResponseSuccess] += countEach(successPatterns, subject)
-	p[ResponseRejected] += countEach(rejectionPatterns, subject)
-	p[ResponsePending] += countEach(pendingPatterns, subject)
+	p[ResponseSuccess] += count(successPatterns, subject)
+	p[ResponseRejected] += count(rejectionPatterns, subject)
+	p[ResponsePending] += count(pendingPatterns, subject)
 
 	best, top, _ := p.top()
 	switch {

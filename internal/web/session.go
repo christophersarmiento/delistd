@@ -15,7 +15,7 @@ type Session struct {
 	ID         string
 	Step       string
 	Profile    config.Profile
-	Email      config.Email
+	Email      config.EmailConfig
 	ManualSend bool // sending by hand, so no SMTP account
 	CreatedAt  time.Time
 	ExpiresAt  time.Time

@@ -160,10 +160,10 @@ func Load(path string) (*Config, error) {
 		*p = plain
 	})
 	migrateFrom1x(path, data, &cfg, plaintext)
-	applyInboxDefaults(&cfg.Inbox)
+	ApplyInboxDefaults(&cfg.Inbox)
 	for i := range cfg.Profiles {
 		if cfg.Profiles[i].Mail != nil && cfg.Profiles[i].Mail.Inbox != nil {
-			applyInboxDefaults(cfg.Profiles[i].Mail.Inbox)
+			ApplyInboxDefaults(cfg.Profiles[i].Mail.Inbox)
 		}
 	}
 

@@ -30,7 +30,7 @@ func deliverNDR(t *testing.T, srv *imaptest.Server, addr string) {
 }
 
 func TestScanSortsBounces(t *testing.T) {
-	srv := imaptest.Start(t, false)
+	srv := imaptest.StartWith(t, imaptest.Options{Move: false})
 	deliverNDR(t, srv, "privacy@acme.example")
 	deliverNDR(t, srv, "privacy@acme.example") // the same address twice
 	deliverNDR(t, srv, "dpo@globex.example")   // never emailed

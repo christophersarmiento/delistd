@@ -33,7 +33,7 @@ type imapFixture struct {
 
 func newIMAPFixture(t *testing.T, move bool) *imapFixture {
 	t.Helper()
-	srv := imaptest.Start(t, move)
+	srv := imaptest.StartWith(t, imaptest.Options{Move: move})
 	return &imapFixture{Server: srv, cfg: srv.Inbox, brokers: []broker.Broker{
 		{ID: "acme", Name: "Acme", Email: "privacy@acme.example"},
 		{ID: "globex", Name: "Globex", Website: "https://www.globex.example/privacy"},
