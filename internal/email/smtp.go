@@ -193,7 +193,7 @@ func (s *SMTPSender) connect(ctx context.Context, useTLS bool) (*smtp.Client, fu
 		return nil, nil, err
 	}
 
-	var wire net.Conn = conn
+	wire := net.Conn(conn)
 	implicitTLS := useTLS && config.ImplicitTLS(s.config.Port)
 	if implicitTLS {
 		secured := tls.Client(conn, config.TLSFor(s.config.Host))
@@ -234,7 +234,7 @@ func (s *SMTPSender) VerifyLogin(ctx context.Context) error {
 		return err
 	}
 	defer stop()
-	defer client.Close()
+	defer func() { _ = client.Close() }()
 	if err := client.Auth(auth); err != nil {
 		return err
 	}
@@ -249,7 +249,7 @@ func (s *SMTPSender) transact(ctx context.Context, auth smtp.Auth, from, to stri
 		return err
 	}
 	defer stop()
-	defer client.Close()
+	defer func() { _ = client.Close() }()
 
 	if auth != nil {
 		if err := client.Auth(auth); err != nil {
