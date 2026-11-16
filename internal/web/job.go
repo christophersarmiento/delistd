@@ -18,10 +18,6 @@ const (
 	JobStatusError     JobStatus = "error"  // stopped on an auth or config error
 )
 
-// maxAuthFailures in a row stop a send: the account or password is wrong and
-// every further attempt would only add to the provider's lockout counter.
-const maxAuthFailures = 3
-
 // Job is one background send over a list of brokers. Everything but the
 // immutable fields is guarded by mu; other code goes through the methods, and
 // JSON encoding takes a consistent snapshot.
@@ -45,7 +41,6 @@ type Job struct {
 	ctx        context.Context
 	cancelFunc context.CancelFunc
 	mu         sync.Mutex
-	authFails  int // consecutive
 }
 
 // do runs change with the job locked.
@@ -90,18 +85,6 @@ func (j *Job) StopWithError(errorType, message string) {
 func (j *Job) Pause(daySent int, message string) {
 	j.do(func() { j.DaySent, j.Status, j.Error = daySent, JobStatusPaused, message })
 }
-
-// RecordAuthFailure counts one more login failure in a row and reports
-// whether the job should stop.
-func (j *Job) RecordAuthFailure() (stop bool) {
-	j.do(func() {
-		j.authFails++
-		stop = j.authFails >= maxAuthFailures
-	})
-	return stop
-}
-
-func (j *Job) ResetAuthFailures() { j.do(func() { j.authFails = 0 }) }
 
 func (j *Job) SetDailyLimit(limit int) { j.do(func() { j.DailyLimit = limit }) }
 

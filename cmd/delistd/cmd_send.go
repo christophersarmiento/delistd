@@ -188,83 +188,70 @@ func applyDailyCap(store *history.Store, cfg *config.Config, activeProfile confi
 	return brokers, nil
 }
 
-// sendLoop emails each broker in turn, records the outcome, and stops early
-// after three consecutive authentication failures.
+// sendLoop emails each broker in turn (or, with --dry-run, only renders the
+// email) and prints what happened.
 func sendLoop(cfg *config.Config, activeProfile config.NamedProfile, emailCfg config.EmailConfig, brokers []broker.Broker, tmplEngine *template.Engine, sender *email.SMTPSender, store *history.Store) error {
-	successCount := 0
-	failCount := 0
-	authFails := 0
-
-	for i, b := range brokers {
-		fmt.Printf("[%d/%d] %s (%s)\n", i+1, len(brokers), b.Name, b.Email)
-
-		// Brokers with no email on file (confirmed defunct, or "use the web
-		// form instead" cases documented in their notes) have nothing to
-		// send to - skip rather than let the SMTP layer choke on an empty
-		// recipient and burn a daily-cap slot on a guaranteed failure.
-		if strings.TrimSpace(b.Email) == "" {
+	dry := cfg.Options.DryRun
+	var subject string // of the email a dry run just rendered
+	batch := &email.Batch{
+		Sender: sender, Engine: tmplEngine, Template: cfg.Options.Template, Profile: activeProfile, From: emailCfg.From,
+		RateLimit: time.Duration(cfg.Options.RateLimitMs) * time.Millisecond,
+		Budget:    -1, // the daily cap already trimmed the list
+		Before: func(i int, b broker.Broker, _, _ int) {
+			fmt.Printf("[%d/%d] %s (%s)\n", i+1, len(brokers), b.Name, b.Email)
+		},
+		Skipped: func(i int, b broker.Broker) {
+			fmt.Printf("[%d/%d] %s (%s)\n", i+1, len(brokers), b.Name, b.Email)
 			if b.OptOutURL != "" {
 				fmt.Printf("  ⏭️  No email on file - use the opt-out form instead: %s\n", b.OptOutURL)
 			} else {
 				fmt.Printf("  ⏭️  No email on file - see notes in brokers.yaml\n")
 			}
-			continue
-		}
-
-		if cfg.Options.DryRun {
-			emailMsg, err := tmplEngine.Render(cfg.Options.Template, activeProfile.Profile, b)
+		},
+		After: func(a email.Attempt) {
+			switch {
+			case a.Err != nil && dry:
+				fmt.Printf("  ❌ Failed to render template: %v\n", a.Err)
+			case a.Err != nil:
+				fmt.Printf("  ❌ %v\n", a.Err)
+			case dry:
+				fmt.Printf("  📧 Would send: %s\n", subject)
+				fmt.Printf("  📍 To: %s\n", a.Broker.Email)
+			case a.Record.Status == history.StatusSent:
+				fmt.Printf("  ✅ Sent successfully\n")
+			default:
+				fmt.Printf("  ❌ Failed: %s\n", a.Record.Error)
+			}
+			if a.RecordErr != nil {
+				fmt.Printf("  ⚠️  Failed to record history: %v\n", a.RecordErr)
+			}
+		},
+	}
+	if dry {
+		batch.Attempt = func(_ context.Context, b broker.Broker) (*history.Record, error) {
+			msg, err := tmplEngine.Render(cfg.Options.Template, activeProfile.Profile, b)
 			if err != nil {
-				fmt.Printf("  ❌ Failed to render template: %v\n", err)
-				failCount++
-				continue
+				return nil, err
 			}
-			fmt.Printf("  📧 Would send: %s\n", emailMsg.Subject)
-			fmt.Printf("  📍 To: %s\n", b.Email)
-			successCount++
-			continue
+			subject = msg.Subject
+			return &history.Record{BrokerID: b.ID, Status: history.StatusSent}, nil
 		}
+	} else {
+		batch.Record = store.Add
+	}
 
-		record, err := email.SendRemoval(context.Background(), sender, tmplEngine, cfg.Options.Template, activeProfile, emailCfg.From, b)
-		if err != nil {
-			fmt.Printf("  ❌ %v\n", err)
-			failCount++
-			continue
-		}
-		if record.Status == history.StatusSent {
-			fmt.Printf("  ✅ Sent successfully\n")
-			successCount++
-			authFails = 0
-		} else {
-			fmt.Printf("  ❌ Failed: %s\n", record.Error)
-			failCount++
-			if strings.Contains(strings.ToLower(record.Error), "auth") {
-				authFails++
-			}
-		}
-		if err := store.Add(record); err != nil {
-			fmt.Printf("  ⚠️  Failed to record history: %v\n", err)
-		}
-
-		// Same cutoff as the web job sender: a bad password or a provider
-		// block would otherwise mark every due broker failed, and failed
-		// brokers are retried on every run.
-		if authFails >= 3 {
-			return fmt.Errorf("stopped after %d consecutive authentication failures (%d sent, %d failed) - check your email settings", authFails, successCount, failCount)
-		}
-
-		if i < len(brokers)-1 {
-			time.Sleep(time.Duration(cfg.Options.RateLimitMs) * time.Millisecond)
-		}
+	res := batch.Run(context.Background(), brokers)
+	if res.Stop == email.StopAuth {
+		return fmt.Errorf("stopped after %d consecutive authentication failures (%d sent, %d failed) - check your email settings", email.MaxAuthFailures, res.Sent, res.Failed)
 	}
 
 	fmt.Println()
 	fmt.Println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-	if cfg.Options.DryRun {
-		fmt.Printf("📊 Dry run complete: %d brokers would receive emails\n", successCount)
+	if dry {
+		fmt.Printf("📊 Dry run complete: %d brokers would receive emails\n", res.Sent)
 	} else {
-		fmt.Printf("📊 Complete: %d sent, %d failed\n", successCount, failCount)
+		fmt.Printf("📊 Complete: %d sent, %d failed\n", res.Sent, res.Failed)
 	}
-
 	return nil
 }
 

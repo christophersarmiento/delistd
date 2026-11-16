@@ -14,12 +14,12 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-const defaultRateLimitMs = 2000
+const DefaultRateLimitMs = 2000
 
-// defaultDailySendLimit stays safely under Gmail's ~500/day cap for a
+// DefaultDailySendLimit stays safely under Gmail's ~500/day cap for a
 // regular (non-Workspace) account, leaving headroom for other mail you send
 // that same day.
-const defaultDailySendLimit = 450
+const DefaultDailySendLimit = 450
 
 func checkFilePermissions(path string) error {
 	if runtime.GOOS == "windows" {
@@ -137,10 +137,10 @@ func Load(path string) (*Config, error) {
 		cfg.Options.Template = "gdpr"
 	}
 	if cfg.Options.RateLimitMs == 0 {
-		cfg.Options.RateLimitMs = defaultRateLimitMs
+		cfg.Options.RateLimitMs = DefaultRateLimitMs
 	}
 	if cfg.Options.DailySendLimit == 0 {
-		cfg.Options.DailySendLimit = defaultDailySendLimit
+		cfg.Options.DailySendLimit = DefaultDailySendLimit
 	}
 
 	plaintext := false

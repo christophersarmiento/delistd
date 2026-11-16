@@ -317,16 +317,6 @@ func TestJobLifecycleHelpers(t *testing.T) {
 		t.Fatal("new job not active or has no context")
 	}
 
-	for i := 1; i <= 2; i++ {
-		if j.RecordAuthFailure() {
-			t.Fatalf("stopped after %d auth failure(s), want 3", i)
-		}
-	}
-	j.ResetAuthFailures()
-	if j.RecordAuthFailure() {
-		t.Fatal("reset didn't clear the counter")
-	}
-
 	j.StopWithError("auth", "locked out")
 	if j.GetStatus() != JobStatusCompleted || j.Error != "locked out" || jm.AnyActive() {
 		t.Fatalf("after StopWithError: %+v", j)
