@@ -23,6 +23,7 @@ func (s *Server) handleSettings(w http.ResponseWriter, r *http.Request) {
 type automationView struct {
 	Supported bool // OS scheduler available on this platform
 	Installed bool // OS job set up
+	Legacy    bool // a pre-3.0 OS job is still installed (schedule/legacy.go)
 	Enabled   bool // in-app scheduler turned on (schedule.enabled)
 	Running   bool // a cycle holds the lock right now
 	Every     string
@@ -37,6 +38,7 @@ func (s *Server) automationView() automationView {
 	v := automationView{
 		Supported: schedule.Supported(),
 		Installed: s.osInstalled(),
+		Legacy:    schedule.LegacyInstalled(),
 		Running:   s.cycleInProgress(),
 		Every:     schedule.Every,
 	}

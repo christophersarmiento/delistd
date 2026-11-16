@@ -6,11 +6,13 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"runtime"
 	"strings"
 
 	"github.com/drumandbytes/delistd/internal/broker"
 	"github.com/drumandbytes/delistd/internal/config"
+	"github.com/drumandbytes/delistd/internal/schedule"
 	"github.com/spf13/cobra"
 )
 
@@ -72,6 +74,17 @@ hold about you, by email from your own account.
 
 It has templates for GDPR, CCPA and a generic request, and works with any
 SMTP provider (Gmail, Proton Mail Bridge, Fastmail and others).`,
+	}
+	// One-time note when a pre-3.0 OS schedule is still installed (schedule/legacy.go).
+	rootCmd.PersistentPreRun = func(cmd *cobra.Command, args []string) {
+		for c := cmd; c != nil; c = c.Parent() {
+			if c.Name() == "schedule" { // `schedule install|remove|status` deal with it themselves
+				return
+			}
+		}
+		if msg := schedule.LegacyNoticeOnce(filepath.Dir(resolveConfigPath())); msg != "" {
+			fmt.Fprintln(cmd.ErrOrStderr(), "NOTE:", msg)
+		}
 	}
 	// Bare `delistd` (e.g. double-clicking the binary) starts the web UI, which
 	// opens the browser. Subcommands and --help behave as before.
