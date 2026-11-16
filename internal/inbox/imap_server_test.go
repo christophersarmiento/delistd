@@ -319,3 +319,29 @@ func TestArchiveEmailsWithUIDPlusLeavesOtherFlaggedMailAlone(t *testing.T) {
 		t.Errorf("unexpected warning:\n%s", logs.String())
 	}
 }
+
+// A connection the server dropped must surface as errors from every
+// operation, never as an empty mailbox.
+func TestOperationsFailWhenTheConnectionIsGone(t *testing.T) {
+	f := newIMAPFixture(t, false)
+	f.Deliver(t, "INBOX", "privacy@acme.example", "Re: x", "x")
+	m := f.connect(t)
+	if err := m.client.Terminate(); err != nil {
+		t.Fatal(err)
+	}
+	ctx := context.Background()
+	calls := map[string]func() error{
+		"FetchBrokerEmails":           func() error { _, err := m.FetchBrokerEmails(ctx, 7); return err },
+		"FetchBrokerEmailsFromFolder": func() error { _, err := m.FetchBrokerEmailsFromFolder(ctx, "INBOX", 7); return err },
+		"FetchBounceEmails":           func() error { _, err := m.FetchBounceEmails(ctx, 7); return err },
+		"EnsureFolderExists":          func() error { return m.EnsureFolderExists("Delistd") },
+		"ArchiveEmails":               func() error { return m.ArchiveEmails([]uint32{1}, "Delistd") },
+		"deletedUIDsBesides":          func() error { _, err := m.deletedUIDsBesides([]uint32{1}); return err },
+		"WatchForNewEmails":           func() error { return m.WatchForNewEmails(ctx, func(Email) {}) },
+	}
+	for name, call := range calls {
+		if err := call(); err == nil {
+			t.Errorf("%s succeeded on a dead connection", name)
+		}
+	}
+}
