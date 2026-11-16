@@ -34,10 +34,7 @@ func (b *Browser) settle(ctx context.Context, limit time.Duration) {
 		left := time.Until(deadline)
 		quiet := min(quietPeriod, left)
 		js := formatSettle(quiet, left)
-		var ok bool
-		err := chromedp.Run(ctx, chromedp.Evaluate(js, &ok, func(p *runtime.EvaluateParams) *runtime.EvaluateParams {
-			return p.WithAwaitPromise(true)
-		}))
+		_, err := chromedp.Run(ctx, chromedp.Evaluate[bool](js, func(p *runtime.EvaluateParams) { p.AwaitPromise = new(true) }))
 		if err == nil || isContextErr(err) {
 			return
 		}

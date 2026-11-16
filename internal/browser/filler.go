@@ -164,8 +164,8 @@ const findCandidatesJS = `(function(spec) {
 
 func (f *FormFiller) findCandidates(ctx context.Context, m FieldMapping) ([]candidate, error) {
 	spec, _ := json.Marshal(map[string]any{"selectors": m.Selectors, "patterns": m.Patterns})
-	var found []candidate
-	if err := chromedp.Run(ctx, chromedp.Evaluate(findCandidatesJS+string(spec)+`)`, &found)); err != nil {
+	found, err := chromedp.Run(ctx, chromedp.Evaluate[[]candidate](findCandidatesJS+string(spec)+`)`))
+	if err != nil {
 		if isContextErr(err) {
 			return nil, err
 		}
@@ -218,7 +218,7 @@ func singleLine(tag, value string) string {
 
 // typeInto clears the input and types the value.
 func (f *FormFiller) typeInto(ctx context.Context, selector, value string) (bool, error) {
-	if err := chromedp.Run(ctx, chromedp.Clear(selector), chromedp.SendKeys(selector, value)); err != nil {
+	if err := chromedp.Do(ctx, chromedp.Clear(selector), chromedp.SendKeys(selector, value)); err != nil {
 		if isContextErr(err) {
 			return false, err
 		}
@@ -243,8 +243,8 @@ func (f *FormFiller) chooseOption(ctx context.Context, selector, value string) (
 		return el.value === opt.value;
 	})(document.querySelector(%s), %s)`, sel, want)
 
-	var ok bool
-	if err := chromedp.Run(ctx, chromedp.Evaluate(js, &ok)); err != nil {
+	ok, err := chromedp.Run(ctx, chromedp.Evaluate[bool](js))
+	if err != nil {
 		if isContextErr(err) {
 			return false, err
 		}
@@ -267,8 +267,8 @@ func (f *FormFiller) setValue(ctx context.Context, selector, value string) (bool
 		el.dispatchEvent(new Event('change', {bubbles: true}));
 		return el.value === value;
 	})(document.querySelector(%s), %s)`, sel, want)
-	var ok bool
-	if err := chromedp.Run(ctx, chromedp.Evaluate(js, &ok)); err != nil {
+	ok, err := chromedp.Run(ctx, chromedp.Evaluate[bool](js))
+	if err != nil {
 		if isContextErr(err) {
 			return false, err
 		}

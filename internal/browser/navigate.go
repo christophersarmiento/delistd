@@ -46,11 +46,11 @@ func (b *Browser) NavigateAndFill(url string, brokerID string, autoSubmit bool) 
 	ctx, cancel := context.WithTimeout(b.ctx, b.config.Timeout)
 	defer cancel()
 
-	if err := chromedp.Run(ctx, chromedp.Navigate(url)); err != nil {
+	if err := chromedp.Do(ctx, chromedp.Navigate(url)); err != nil {
 		result.ErrorMessage = fmt.Sprintf("navigation failed: %v", err)
 		return result, err
 	}
-	if err := chromedp.Run(ctx, chromedp.WaitReady("body")); err != nil {
+	if err := chromedp.Do(ctx, chromedp.WaitReady("body")); err != nil {
 		result.ErrorMessage = fmt.Sprintf("page load failed: %v", err)
 		return result, err
 	}

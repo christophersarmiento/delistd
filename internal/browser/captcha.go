@@ -58,8 +58,8 @@ const detectCaptchaJS = `(function() {
 // detectCaptcha errors only on context failure (browser died or timed out),
 // never for "no CAPTCHA".
 func (b *Browser) detectCaptcha(ctx context.Context) (CaptchaInfo, error) {
-	var captchaType string
-	if err := chromedp.Run(ctx, chromedp.Evaluate(detectCaptchaJS, &captchaType)); err != nil {
+	captchaType, err := chromedp.Run(ctx, chromedp.Evaluate[string](detectCaptchaJS))
+	if err != nil {
 		if isContextErr(err) {
 			return CaptchaInfo{}, err
 		}

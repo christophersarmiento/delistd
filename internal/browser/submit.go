@@ -49,22 +49,20 @@ const clickTimeout = 5 * time.Second
 // submitForm submits the form: a visible submit control, else a button whose
 // text looks like one, else Enter.
 func (b *Browser) submitForm(ctx context.Context) error {
-	var selector string
-	if err := chromedp.Run(ctx, chromedp.Evaluate(fmtSelectors(visibleSubmitJS, submitSelectors), &selector)); err == nil && selector != "" {
+	if selector, err := chromedp.Run(ctx, chromedp.Evaluate[string](fmtSelectors(visibleSubmitJS, submitSelectors))); err == nil && selector != "" {
 		clickCtx, cancel := context.WithTimeout(ctx, clickTimeout)
-		err := chromedp.Run(clickCtx, chromedp.Click(selector, chromedp.NodeVisible))
+		err := chromedp.Do(clickCtx, chromedp.Click(selector, chromedp.NodeVisible))
 		cancel()
 		if err == nil {
 			return nil
 		}
 	}
 
-	var clicked bool
-	if err := chromedp.Run(ctx, chromedp.Evaluate(clickByTextJS, &clicked)); err == nil && clicked {
+	if clicked, err := chromedp.Run(ctx, chromedp.Evaluate[bool](clickByTextJS)); err == nil && clicked {
 		return nil
 	}
 
-	if err := chromedp.Run(ctx, chromedp.KeyEvent("\r")); err != nil {
+	if err := chromedp.Do(ctx, chromedp.KeyEvent("\r")); err != nil {
 		return errors.New("could not find or click submit button")
 	}
 	return nil

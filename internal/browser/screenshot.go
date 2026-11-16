@@ -18,8 +18,8 @@ func (b *Browser) takeScreenshot(ctx context.Context, brokerID, suffix string) (
 // quality 100 Chrome returns a PNG and anything lower is a JPEG, so the file
 // extension follows.
 func (b *Browser) takeScreenshotQuality(ctx context.Context, brokerID, suffix string, quality int) (string, error) {
-	var img []byte
-	if err := chromedp.Run(ctx, chromedp.FullScreenshot(&img, quality)); err != nil {
+	img, err := chromedp.Run(ctx, chromedp.FullScreenshot(quality))
+	if err != nil {
 		return "", err
 	}
 	// owner-only: a screenshot can hold personal data typed mid-fill

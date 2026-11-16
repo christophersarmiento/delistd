@@ -3,10 +3,11 @@ package browser
 import (
 	"context"
 	"fmt"
-	"time"
 
+	"github.com/chromedp/cdproto/cdp"
 	"github.com/chromedp/cdproto/emulation"
 	"github.com/chromedp/chromedp"
+	"github.com/chromedp/chromedp/remote"
 
 	"github.com/drumandbytes/delistd/internal/config"
 )
@@ -27,12 +28,6 @@ type Browser struct {
 // without its sandbox on CI runners that cannot provide one.
 var extraAllocatorOptions []chromedp.ExecAllocatorOption
 
-// chromeStartTimeout is how long a Chrome we launch gets to open its DevTools
-// socket. chromedp's own 20s is too short for a loaded machine (a shared CI
-// runner, a laptop just out of sleep), which then fails with "websocket url
-// timeout reached"; a Chrome that cannot start at all still fails, only later.
-const chromeStartTimeout = 60 * time.Second
-
 // New prepares a Browser; Chrome itself starts on the first page. A non-empty
 // allowedDomains limits which hosts NavigateAndFill will visit and fill with
 // personal data (see matchesAllowedDomain); empty means no check.
@@ -47,7 +42,7 @@ func New(cfg BrowserConfig, profile *config.Profile, allowedDomains []string) (*
 	if cfg.RemoteURL != "" {
 		// Chrome runs elsewhere (another container), so the launch flags do
 		// not apply; start sets the user agent and window over CDP instead
-		allocCtx, allocCancel = chromedp.NewRemoteAllocator(context.Background(), cfg.RemoteURL)
+		allocCtx, allocCancel = remote.NewAllocator(context.Background(), cfg.RemoteURL)
 	} else {
 		opts := []chromedp.ExecAllocatorOption{
 			chromedp.NoFirstRun,
@@ -55,7 +50,6 @@ func New(cfg BrowserConfig, profile *config.Profile, allowedDomains []string) (*
 			chromedp.DisableGPU,
 			chromedp.UserAgent(cfg.UserAgent),
 			chromedp.WindowSize(cfg.WindowWidth, cfg.WindowHeight),
-			chromedp.WSURLReadTimeout(chromeStartTimeout),
 		}
 		if cfg.Headless {
 			opts = append(opts, chromedp.Headless)
@@ -76,13 +70,16 @@ func New(cfg BrowserConfig, profile *config.Profile, allowedDomains []string) (*
 // would close Chrome when the call returned. Calling it again is harmless:
 // later runs reuse the connection and re-apply the same emulation.
 func (b *Browser) start() error {
-	var setup []chromedp.Action
+	var setup []chromedp.Action[chromedp.Void]
 	if b.config.RemoteURL != "" {
 		setup = append(setup,
-			emulation.SetUserAgentOverride(b.config.UserAgent),
+			chromedp.Func(func(ctx context.Context, t *chromedp.Target) error {
+				_, err := cdp.Call(ctx, t, emulation.SetUserAgentOverride, emulation.SetUserAgentOverrideParams{UserAgent: b.config.UserAgent})
+				return err
+			}),
 			chromedp.EmulateViewport(int64(b.config.WindowWidth), int64(b.config.WindowHeight)))
 	}
-	if err := chromedp.Run(b.ctx, setup...); err != nil {
+	if err := chromedp.Do(b.ctx, setup...); err != nil {
 		if b.config.RemoteURL == "" && config.InContainer() {
 			return fmt.Errorf("%w (this image has no browser: set %s to a Chrome DevTools endpoint, see docs/docker.md)", err, config.ChromeURLEnv)
 		}
