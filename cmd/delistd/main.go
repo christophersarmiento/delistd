@@ -83,7 +83,7 @@ SMTP provider (Gmail, Proton Mail Bridge, Fastmail and others).`,
 			}
 		}
 		if msg := schedule.LegacyNoticeOnce(filepath.Dir(resolveConfigPath())); msg != "" {
-			fmt.Fprintln(cmd.ErrOrStderr(), "NOTE:", msg)
+			_, _ = fmt.Fprintln(cmd.ErrOrStderr(), "NOTE:", msg)
 		}
 	}
 	// Bare `delistd` (e.g. double-clicking the binary) starts the web UI, which

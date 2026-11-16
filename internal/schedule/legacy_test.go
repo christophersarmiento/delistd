@@ -4,11 +4,13 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/drumandbytes/delistd/internal/testenv"
 )
 
 func TestLegacyNoticeIsShownOnceWhileAnOldJobExists(t *testing.T) {
 	home := t.TempDir()
-	t.Setenv("HOME", home)
+	testenv.SetHome(t, home)
 	t.Setenv("XDG_CONFIG_HOME", "")
 	for _, c := range []struct {
 		os, file string
