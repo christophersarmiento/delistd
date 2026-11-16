@@ -38,7 +38,7 @@ If you choose "send them yourself", skip ahead to [Step 5](#step-5-run-the-setup
 
 Many people ask: "Do I have to enter my Google password?" No. Delistd asks for an **app password**, a separate 16-character password Google generates for one app. It can send and read mail only, you can delete it at any time, and your real Google password stays private.
 
-Delistd does not use "Sign in with Google" (OAuth). Google requires an app review for that, which a self-hosted, open-source tool cannot reasonably pass. An app password is the supported alternative.
+Delistd does not use "Sign in with Google": Google requires an app review for that, which a self-hosted, open-source tool cannot reasonably pass.
 
 1. Go to [myaccount.google.com/security](https://myaccount.google.com/security) and sign in.
 2. Find **2-Step Verification**. If it says **Off**, turn it on and follow the prompts (a phone number or authenticator app is fine). App passwords are not available without it.
@@ -46,9 +46,9 @@ Delistd does not use "Sign in with Google" (OAuth). Google requires an app revie
 4. Type a name such as `Delistd` and click **Create**.
 5. Google shows a 16-character password in a yellow box, like `abcd efgh ijkl mnop`. Copy it now. Google will not show it again. Spaces don't matter when you paste it into Delistd.
 
-Keep that window open or paste the password somewhere temporary until Step 5.
+Keep it handy until Step 5.
 
-Using another provider? The [provider table in the README](../README.md#setting-up-your-email-account) lists what each one needs (iCloud and Fastmail also use app passwords; Proton Mail needs its Bridge app).
+Using another provider? The [provider table in the README](../README.md#email-account) lists what each one needs (iCloud and Fastmail also use app passwords; Proton Mail needs its Bridge app).
 
 ## Step 3: Download Delistd
 
@@ -65,7 +65,7 @@ brew install --cask drumandbytes/tap/delistd
 
 1. Open the [Releases page](https://github.com/drumandbytes/delistd/releases/latest).
 2. Under **Assets**, download the file for your system:
-   - Windows: the file ending in `_windows_amd64.exe` (for example `delistd_2.0.1_windows_amd64.exe`)
+   - Windows: the file ending in `_windows_amd64.exe` (`delistd_<version>_windows_amd64.exe`)
    - Mac with Apple chip (M1 or newer): `_darwin_arm64.tar.gz`
    - Mac with Intel chip: `_darwin_amd64.tar.gz`
    - Linux: `_linux_amd64.tar.gz` (or `_arm64` on ARM)
@@ -92,7 +92,6 @@ If your browser doesn't open by itself, open **<http://localhost:8080>**. This a
 The page walks you through three screens.
 
 **1. Welcome.** Click **Get Started**.
-
 
 ![Your Information screen](https://raw.githubusercontent.com/drumandbytes/delistd/main/docs/images/wizard-profile.png)
 
@@ -123,7 +122,7 @@ Brokers re-list people over time, so repeat every few weeks. To have Delistd do 
 
 ## Sending by hand
 
-With the Skip option chosen, Delistd never sends anything. On the **Brokers** page each broker has an **Email** link showing the ready-to-send message with an **Open in mail app** button. Send it from your normal mail app, then press **Mark sent** so Delistd tracks it. It is slower for 700+ brokers, so many people use it for a handful of important ones and let Delistd send the rest.
+With the Skip option chosen, Delistd never sends anything. On the **Brokers** page each broker has an **Email** link showing the ready-to-send message with an **Open in mail app** button. Send it from your normal mail app, then press **Mark sent** so Delistd tracks it. It is slow for 700+ brokers, so many people hand-send a few important ones and let Delistd send the rest.
 
 ## Troubleshooting
 

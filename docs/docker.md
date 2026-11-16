@@ -1,13 +1,11 @@
 # Running Delistd in Docker
 
-The Delistd image is distroless (about 40 MB): the static binary and nothing
-else. It runs every command except the browser ones: the web UI, `send`,
-`confirm`, `status`, scheduling. `fill` and the `mcp` browser tools use a
-second, optional container with headless Chromium (the stock
-`chromedp/headless-shell` image) that Delistd reaches over the DevTools port.
-
-Your config, history and screenshots live in a volume, so containers can be
-recreated or upgraded without losing anything.
+The image is distroless (about 40 MB): the static binary and nothing else. It
+runs every command except the browser ones (`fill`, the `mcp` browser tools),
+which use a second, optional container with headless Chromium (the stock
+`chromedp/headless-shell` image) reached over the DevTools port. Config,
+history and screenshots live in a volume, so containers can be recreated or
+upgraded without losing anything.
 
 ## Quick start
 
@@ -110,7 +108,7 @@ uid 65532.
 ### Encrypted passwords and `machine-id`
 
 Delistd encrypts `smtp.password` and `inbox.password` with a key derived from
-the machine ID and the user (see "Security Notes" in the README). A container
+the machine ID and the user (see "Security" in the [README](../README.md#security)). A container
 has no `/etc/machine-id` of its own and gets a new hostname on every run, so the
 image sets `DELISTD_MACHINE_ID_FILE` to `machine-id` in the volume. Delistd
 creates it on first use (safe when several containers start at once) and reuses
@@ -141,7 +139,7 @@ Delistd attaches to that DevTools endpoint instead of launching a local Chrome.
 The browser container is the stock
 [`chromedp/headless-shell`](https://hub.docker.com/r/chromedp/headless-shell)
 image, pinned by tag and digest in `compose.yaml`: Chromium without the desktop
-UI, the smallest full browser build I found (Alpine's and Browserless's are far larger). It runs with `--no-sandbox`
+UI, the smallest full browser build available (Alpine's and Browserless's are far larger). It runs with `--no-sandbox`
 because Chromium's own sandbox needs user namespaces, which Docker's default
 seccomp profile doesn't give an unprivileged process; the container (read-only
 filesystem, no capabilities) is the boundary instead. The stock image runs
@@ -220,12 +218,12 @@ If you run the published image instead, see the next section.
 ## Using the published image
 
 Each release pushes `ghcr.io/drumandbytes/delistd` (`linux/amd64`, `linux/arm64`)
-with the tags `v2.2.0` (exact release), `2.2` (latest patch of that minor,
+with the tags `v3.0.0` (exact release), `3.0` (latest patch of that minor,
 no `v`) and `latest`. To run it from the same
 `compose.yaml` without building, set `DELISTD_IMAGE`:
 
 ```bash
-export DELISTD_IMAGE=ghcr.io/drumandbytes/delistd:v2.2.0
+export DELISTD_IMAGE=ghcr.io/drumandbytes/delistd:v3.0.0
 docker compose up -d --pull always --no-build
 ```
 

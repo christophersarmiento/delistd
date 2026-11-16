@@ -7,8 +7,8 @@ sharing the pod's network. Read [docker.md](docker.md) first: the volume,
 `machine-id`, passphrase and browser notes there apply unchanged.
 
 Every release publishes the image to `ghcr.io/drumandbytes/delistd` for
-`linux/amd64` and `linux/arm64`, tagged with the exact release (`v2.2.0`), the minor
-line (`2.2`) and `latest`. Pin the full tag in the manifest below; `latest` moves on
+`linux/amd64` and `linux/arm64`, tagged with the exact release (`v3.0.0`), the minor
+line (`3.0`) and `latest`. Pin the full tag in the manifest below; `latest` moves on
 every release. The package is public, so the cluster needs no pull secret.
 
 ## Manifest
@@ -46,7 +46,7 @@ spec:
         seccompProfile: {type: RuntimeDefault}
       containers:
         - name: delistd
-          image: ghcr.io/drumandbytes/delistd:v2.2.0
+          image: ghcr.io/drumandbytes/delistd:v3.0.0
           ports:
             - {name: http, containerPort: 8080}
           env:

@@ -43,3 +43,14 @@ docker run --rm -v eraser-data:/from -v delistd-data:/to debian:trixie-slim cp -
 - **Web UI:** the session cookies are renamed, so open tabs sign you out once.
 
 The `eraser.drumandbytes.dev` redirect to delistd.dev stays.
+
+## Other changes in 3.0
+
+Much of the internals was rewritten (the reply classifier and link parser, the web core and templates, the history store, the browser automation and the IMAP monitor), each against a regression corpus recorded from the old code, so behaviour is the same except where noted:
+
+- **History times are stored in UTC.** A one-time conversion runs the first time `history.db` is opened. Downgrading afterwards isn't supported (see [stability.md](stability.md)).
+- **Reply classifier ties** (equal scores between two verdicts, about 9% of mixed replies) used to depend on map order; they are now settled the same way every time and sent to review.
+- **Mail in ISO-8859-x and windows-125x** is decoded (those bodies used to arrive empty). Outgoing mail has a `Date` header, RFC 2047 subjects and quoted-printable bodies for non-ASCII text.
+- **Archiving without IMAP MOVE** removes only the messages it archived when the server supports UIDPLUS; without it, other mail you flagged `\Deleted` can still go with them and Delistd warns.
+- **`config.yaml` and the broker lists are written atomically**, so a crash or a full disk can't truncate them.
+- **The Brokers page** lists 50 brokers at a time with "Show more" (about 200 KB instead of 2 MB).
