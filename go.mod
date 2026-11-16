@@ -9,6 +9,7 @@ require (
 	github.com/chromedp/cdproto v0.0.0-20260804232424-e85f50dbfd32
 	github.com/chromedp/chromedp v0.16.0
 	github.com/emersion/go-imap v1.2.1
+	github.com/emersion/go-imap-uidplus v0.0.0-20200503180755-e75854c361e9
 	github.com/emersion/go-message v0.18.2
 	github.com/go-chi/chi/v5 v5.5.0
 	github.com/modelcontextprotocol/go-sdk v1.8.0

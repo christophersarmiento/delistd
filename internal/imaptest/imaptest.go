@@ -31,13 +31,26 @@ type Server struct {
 // Start serves an empty INBOX (plus the memory backend's one sample message).
 // move adds MOVE support, which the memory backend lacks, so archiving can
 // take either the MOVE or the COPY+EXPUNGE path.
-func Start(t testing.TB, move bool) *Server {
+func Start(t testing.TB, move bool) *Server { return StartWith(t, Options{Move: move}) }
+
+// Options picks the extensions the test server offers.
+type Options struct {
+	Move    bool // MOVE (RFC 6851)
+	UIDPlus bool // UIDPLUS (RFC 4315): UID EXPUNGE
+}
+
+// StartWith is Start with a choice of extensions.
+func StartWith(t testing.TB, o Options) *Server {
 	t.Helper()
+	move := o.Move
 	s := &Server{backend: memory.New()}
 	ts := httptest.NewTLSServer(http.NotFoundHandler())
 	t.Cleanup(ts.Close)
 
 	srv := server.New(&wrapper{Backend: s.backend, move: move})
+	if o.UIDPlus {
+		srv.Enable(uidplusExt{})
+	}
 	srv.TLSConfig = ts.TLS.Clone()
 	srv.ErrorLog = log.New(io.Discard, "", 0)
 	ln, err := net.Listen("tcp", "127.0.0.1:0")

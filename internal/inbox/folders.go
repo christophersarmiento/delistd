@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/emersion/go-imap"
+	"github.com/emersion/go-imap-uidplus"
 )
 
 // EnsureFolderExists creates the folder unless one by that name (in any case)
@@ -86,11 +87,12 @@ func (m *Monitor) ArchiveEmails(uids []uint32, folder string) error {
 	return nil
 }
 
-// copyAndDelete is ArchiveEmails without MOVE. go-imap v1.2.1 has no UID
-// EXPUNGE and a plain EXPUNGE removes every \Deleted message, not just ours,
-// so a stray flag could lose mail. That cannot be closed from here: it warns
-// when other messages are already flagged and when the count that was
-// expunged is not ours.
+// copyAndDelete is ArchiveEmails without MOVE: copy, flag \Deleted, expunge.
+// With UIDPLUS (RFC 4315) the expunge is UID EXPUNGE, which removes only these
+// messages. Without it a plain EXPUNGE removes every \Deleted message in the
+// mailbox, so a flag another client left on other mail would lose that mail;
+// that cannot be closed from here, so it warns when other messages are already
+// flagged and when the number expunged is not ours.
 func (m *Monitor) copyAndDelete(set *imap.SeqSet, uids []uint32, folder string) error {
 	if err := m.client.UidCopy(set, folder); err != nil {
 		return fmt.Errorf("failed to copy emails to '%s': %w", folder, err)
@@ -99,10 +101,18 @@ func (m *Monitor) copyAndDelete(set *imap.SeqSet, uids []uint32, folder string) 
 		return fmt.Errorf("failed to mark emails as deleted: %w", err)
 	}
 
+	scoped := uidplus.NewClient(m.client)
+	if ok, _ := scoped.SupportUidPlus(); ok {
+		if err := scoped.UidExpunge(set, nil); err != nil {
+			return fmt.Errorf("failed to expunge archived emails: %w", err)
+		}
+		return nil
+	}
+
 	if others, err := m.deletedUIDsBesides(uids); err != nil {
 		log.Printf("Warning: could not verify \\Deleted flag scope before expunge: %v", err)
 	} else if len(others) > 0 {
-		log.Printf("WARNING: %d message(s) besides the %d just archived are already flagged \\Deleted and will ALSO be removed by this expunge (UIDs: %v) - go-imap v1.2.1 has no UID EXPUNGE to scope this call", len(others), len(uids), others)
+		log.Printf("WARNING: %d message(s) besides the %d just archived are already flagged \\Deleted and will ALSO be removed by this expunge (UIDs: %v) - this server has no UID EXPUNGE to scope the call", len(others), len(uids), others)
 	}
 
 	gone := make(chan uint32, len(uids)+8)

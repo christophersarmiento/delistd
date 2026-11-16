@@ -289,3 +289,33 @@ func TestArchiveEmailsWithoutStrayFlagsDoesNotWarn(t *testing.T) {
 		t.Errorf("unexpected warning:\n%s", logs.String())
 	}
 }
+
+// With UIDPLUS the expunge is scoped to our UIDs, so mail another client
+// flagged \Deleted survives and nothing warns.
+func TestArchiveEmailsWithUIDPlusLeavesOtherFlaggedMailAlone(t *testing.T) {
+	srv := imaptest.StartWith(t, imaptest.Options{UIDPlus: true})
+	f := &imapFixture{Server: srv, cfg: srv.Inbox, brokers: []broker.Broker{{ID: "acme", Name: "Acme", Email: "privacy@acme.example"}}}
+	f.Deliver(t, "INBOX", "privacy@acme.example", "Re: first", "first")
+	f.Deliver(t, "INBOX", "privacy@acme.example", "Re: second", "second")
+	f.Mailbox(t, "Delistd")
+
+	inbox := f.Mailbox(t, "INBOX")
+	n := len(inbox.Messages)
+	stray, ours := inbox.Messages[n-2], inbox.Messages[n-1]
+	stray.Flags = append(stray.Flags, imap.DeletedFlag)
+	before := f.Count(t, "INBOX")
+
+	var logs bytes.Buffer
+	log.SetOutput(&logs)
+	t.Cleanup(func() { log.SetOutput(os.Stderr) })
+
+	if err := f.connect(t).ArchiveEmails([]uint32{ours.Uid}, "Delistd"); err != nil {
+		t.Fatal(err)
+	}
+	if got := f.Count(t, "INBOX"); got != before-1 {
+		t.Errorf("INBOX has %d messages, want %d (the stray flagged one must stay)", got, before-1)
+	}
+	if strings.Contains(logs.String(), "WARNING") {
+		t.Errorf("unexpected warning:\n%s", logs.String())
+	}
+}
