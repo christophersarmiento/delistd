@@ -48,7 +48,7 @@ type formBlock struct {
 const (
 	hintClass  = "mt-1 text-sm text-muted"
 	hintSmall  = "mt-1 text-xs text-muted"
-	ruledBlock = "pt-6 border-t border-[var(--border)]"
+	ruledBlock = "pt-6 border-t"
 )
 
 // lines is how a textarea shows a list: one entry per line, each ended by a newline.

@@ -120,8 +120,8 @@ type filterOption struct {
 }
 
 type filterSelect struct {
-	Name, Label, AllLabel, MinWidth string
-	Options                         []filterOption
+	Name, Label, AllLabel, MinWidthClass string
+	Options                              []filterOption
 }
 
 func options(values []string, current string) []filterOption {
@@ -136,10 +136,10 @@ func options(values []string, current string) []filterOption {
 // query's current values.
 func (s *Server) brokerFilters(q brokerQuery) []filterSelect {
 	return []filterSelect{
-		{Name: "status", Label: "Status", AllLabel: "All Statuses", MinWidth: "120px", Options: []filterOption{
+		{Name: "status", Label: "Status", AllLabel: "All Statuses", MinWidthClass: "min-w-30", Options: []filterOption{
 			{"pending", "Pending", q.Status == "pending"}, {"sent", "Sent", q.Status == "sent"}, {"failed", "Failed", q.Status == "failed"}}},
-		{Name: "category", Label: "Category", AllLabel: "All Categories", MinWidth: "140px", Options: options(s.getUniqueCategories(), q.Category)},
-		{Name: "region", Label: "Region", AllLabel: "All Regions", MinWidth: "120px", Options: options(s.getUniqueRegions(), q.Region)},
+		{Name: "category", Label: "Category", AllLabel: "All Categories", MinWidthClass: "min-w-35", Options: options(s.getUniqueCategories(), q.Category)},
+		{Name: "region", Label: "Region", AllLabel: "All Regions", MinWidthClass: "min-w-30", Options: options(s.getUniqueRegions(), q.Region)},
 	}
 }
 

@@ -81,7 +81,6 @@ img { max-width: 100%; height: auto; }
 .h-7 { height: 1.75rem; }
 .h-8 { height: 2rem; }
 .h-full { height: 100%; }
-.min-h-\[80vh\] { min-height: 80vh; }
 .w-10 { width: 2.5rem; }
 .w-12 { width: 3rem; }
 .w-16 { width: 4rem; }
@@ -100,6 +99,8 @@ img { max-width: 100%; height: auto; }
 .w-auto { width: auto; }
 .w-full { width: 100%; }
 .min-w-0 { min-width: 0; }
+.min-w-30 { min-width: 7.5rem; }
+.min-w-35 { min-width: 8.75rem; }
 .max-w-4xl { max-width: 56rem; }
 .max-w-6xl { max-width: 72rem; }
 .max-w-lg { max-width: 32rem; }
@@ -118,6 +119,7 @@ img { max-width: 100%; height: auto; }
 .list-decimal { list-style-type: decimal; }
 .grid-cols-1 { grid-template-columns: repeat(1,minmax(0,1fr)); }
 .grid-cols-2 { grid-template-columns: repeat(2,minmax(0,1fr)); }
+.grid-cols-3 { grid-template-columns: repeat(3,minmax(0,1fr)); }
 .flex-col { flex-direction: column; }
 .flex-wrap { flex-wrap: wrap; }
 .items-start { align-items: flex-start; }
@@ -217,7 +219,6 @@ img { max-width: 100%; height: auto; }
 .ml-auto { margin-left: auto; }
 .self-center { align-self: center; }
 .items-baseline { align-items: baseline; }
-.text-\[17px\] { font-size: 17px; }
 .hover\:text-primary:hover { color: var(--text-primary); }
 .hover\:bg-elevated:hover { background-color: var(--bg-elevated); }
 @media (min-width:640px) {

@@ -101,46 +101,6 @@
     {{endcard}}
 </div>
 
-<style>
-    .filter-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 6px 12px;
-        font-size: 13px;
-        font-weight: 500;
-        color: var(--text-secondary);
-        background: var(--bg-elevated);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-
-    .filter-btn:hover {
-        color: var(--text-primary);
-        border-color: var(--text-muted);
-    }
-
-    .filter-btn.active {
-        color: var(--accent);
-        border-color: var(--accent);
-        background: var(--accent-muted);
-    }
-
-    .action-item {
-        transition: background 0.2s ease;
-    }
-
-    .action-item:hover {
-        background: var(--bg-elevated) !important;
-    }
-
-    .action-item.hidden {
-        display: none;
-    }
-</style>
-
 <script>
 // a row shows when its type matches the filter; finished rows only under
 // "completed", and "all" means every row that is not finished

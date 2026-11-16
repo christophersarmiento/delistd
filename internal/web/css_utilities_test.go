@@ -100,6 +100,29 @@ func TestTemplateUtilityClassesHaveRules(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	// class strings built in Go (chips, buttons, row tints, widths)
+	str := regexp.MustCompile("\"([^\"\\n]*)\"|`([^`]*)`")
+	err = filepath.WalkDir(".", func(path string, d os.DirEntry, err error) error {
+		if err != nil || d.IsDir() || !strings.HasSuffix(path, ".go") || strings.HasSuffix(path, "_test.go") {
+			return err
+		}
+		b, _ := os.ReadFile(path)
+		for _, m := range str.FindAllStringSubmatch(string(b), -1) {
+			for _, tok := range strings.Fields(m[1] + m[2]) {
+				if seen[tok] || !strings.Contains(tok, "-") || strings.HasSuffix(tok, "-src") || !utility.MatchString(tok) || strings.ContainsAny(tok, "{}<>=/\\") && !strings.HasPrefix(tok, "-") {
+					continue
+				}
+				seen[tok] = true
+				if !selectors[tok] && regexp.MustCompile(`^[a-z0-9:.\[\]()%-]+$`).MatchString(tok) {
+					missing = append(missing, tok+" ("+filepath.Base(path)+")")
+				}
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
 	if len(missing) > 0 {
 		t.Errorf("classes used in templates with no CSS rule:\n  %s", strings.Join(missing, "\n  "))
 	}

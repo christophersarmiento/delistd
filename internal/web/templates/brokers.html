@@ -80,7 +80,7 @@
                 </div>
                 <div class="flex flex-wrap items-center gap-3">
                     {{range .Filters}}
-                    <select name="{{.Name}}" aria-label="{{.Label}}" class="input w-auto min-w-[{{.MinWidth}}]">
+                    <select name="{{.Name}}" aria-label="{{.Label}}" class="input w-auto {{.MinWidthClass}}">
                         <option value="">{{.AllLabel}}</option>
                         {{range .Options}}<option value="{{.Value}}"{{if .Selected}} selected{{end}}>{{.Label}}</option>{{end}}
                     </select>
