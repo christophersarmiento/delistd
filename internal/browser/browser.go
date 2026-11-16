@@ -13,57 +13,64 @@ import (
 	"github.com/drumandbytes/delistd/internal/config"
 )
 
-// Browser is one Chrome session, started on first use and reused for every
-// page after, as `delistd fill --pending` fills several forms in a row.
+// Browser is one Chrome session, started on first use and kept for every page
+// after, as `delistd fill --pending` fills several forms in a row.
 type Browser struct {
-	allocCtx       context.Context
-	allocCancel    context.CancelFunc
-	ctx            context.Context
-	cancel         context.CancelFunc
 	config         BrowserConfig
 	profile        *config.Profile
 	allowedDomains []string
+
+	// the allocator launches or attaches to Chrome; ctx is the browser's own
+	// lifetime, which the first action must run on (see start)
+	allocCtx    context.Context
+	allocCancel context.CancelFunc
+	ctx         context.Context
+	cancel      context.CancelFunc
 }
 
-// extraAllocatorOptions is added to every launch; tests use it to run Chrome
+// extraAllocatorOptions is appended to every launch. Tests use it to run Chrome
 // without its sandbox on CI runners that cannot provide one.
 var extraAllocatorOptions []chromedp.ExecAllocatorOption
 
 // New prepares a Browser; Chrome itself starts on the first page. A non-empty
-// allowedDomains limits which hosts NavigateAndFill will visit and fill with
-// personal data (see matchesAllowedDomain); empty means no check.
+// allowedDomains limits the hosts NavigateAndFill visits and fills with personal
+// data (matchesAllowedDomain); empty means no check.
 func New(cfg BrowserConfig, profile *config.Profile, allowedDomains []string) (*Browser, error) {
-	// an explicit Chrome path means launch that one, whatever the environment says
+	// an explicit Chrome path means "launch that one", whatever the environment says
 	if cfg.RemoteURL == "" && cfg.ExecutablePath == "" {
 		cfg.RemoteURL = os.Getenv(config.ChromeURLEnv)
 	}
-
-	var allocCtx context.Context
-	var allocCancel context.CancelFunc
-	if cfg.RemoteURL != "" {
-		// Chrome runs elsewhere (another container), so the launch flags do
-		// not apply; start sets the user agent and window over CDP instead
-		allocCtx, allocCancel = remote.NewAllocator(context.Background(), cfg.RemoteURL)
-	} else {
-		opts := []chromedp.ExecAllocatorOption{
-			chromedp.NoFirstRun,
-			chromedp.NoDefaultBrowserCheck,
-			chromedp.DisableGPU,
-			chromedp.UserAgent(cfg.UserAgent),
-			chromedp.WindowSize(cfg.WindowWidth, cfg.WindowHeight),
-		}
-		if cfg.Headless {
-			opts = append(opts, chromedp.Headless)
-		}
-		opts = append(opts, extraAllocatorOptions...) // after the defaults, so tests can override them
-		if cfg.ExecutablePath != "" {
-			opts = append(opts, chromedp.ExecPath(cfg.ExecutablePath))
-		}
-		allocCtx, allocCancel = chromedp.NewExecAllocator(context.Background(), opts...)
-	}
+	allocCtx, allocCancel := newAllocator(cfg)
 	ctx, cancel := chromedp.NewContext(allocCtx)
-	return &Browser{allocCtx: allocCtx, allocCancel: allocCancel, ctx: ctx, cancel: cancel,
-		config: cfg, profile: profile, allowedDomains: allowedDomains}, nil
+	return &Browser{
+		config: cfg, profile: profile, allowedDomains: allowedDomains,
+		allocCtx: allocCtx, allocCancel: allocCancel, ctx: ctx, cancel: cancel,
+	}, nil
+}
+
+// newAllocator attaches to a remote Chrome (a container, say) or sets up a local
+// launch. A remote browser takes no launch flags, so start applies the user agent
+// and window size over the protocol instead.
+func newAllocator(cfg BrowserConfig) (context.Context, context.CancelFunc) {
+	root := context.Background()
+	if cfg.RemoteURL != "" {
+		return remote.NewAllocator(root, cfg.RemoteURL)
+	}
+	opts := []chromedp.ExecAllocatorOption{
+		chromedp.NoFirstRun,
+		chromedp.NoDefaultBrowserCheck,
+		chromedp.DisableGPU,
+		chromedp.WindowSize(cfg.WindowWidth, cfg.WindowHeight),
+		chromedp.UserAgent(cfg.UserAgent),
+	}
+	if cfg.Headless {
+		opts = append(opts, chromedp.Headless)
+	}
+	opts = append(opts, extraAllocatorOptions...) // after the defaults, so tests can override them
+	if cfg.ExecutablePath != "" {
+		opts = append(opts, chromedp.ExecPath(cfg.ExecutablePath))
+	}
+	return chromedp.NewExecAllocator(root, opts...)
 }
 
 // start connects to or launches Chrome. The first Run's context owns the
