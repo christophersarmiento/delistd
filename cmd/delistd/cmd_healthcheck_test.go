@@ -21,7 +21,7 @@ func TestCheckHealth(t *testing.T) {
 		t.Errorf("healthy server: %v", err)
 	}
 
-	broken := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { http.Error(w, "no", 503) }))
+	broken := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { http.Error(w, "no", http.StatusServiceUnavailable) }))
 	defer broken.Close()
 	if err := checkHealth(context.Background(), strings.TrimPrefix(broken.URL, "http://")); err == nil || !strings.Contains(err.Error(), "503") {
 		t.Errorf("503 = %v", err)
