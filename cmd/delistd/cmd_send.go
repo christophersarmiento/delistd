@@ -101,40 +101,21 @@ func capSends(brokers []broker.Broker, n int) []broker.Broker {
 	return brokers
 }
 
-func runSend() error {
-	cfg, err := config.Load(resolveConfigPath())
-	if err != nil {
-		return fmt.Errorf("failed to load config: %w", err)
-	}
-
-	manualMode := manualSend || cfg.IsManualSend()
-
-	if err := cfg.Validate(); err != nil && !manualMode {
-		return fmt.Errorf("invalid config: %w", err)
-	}
-
-	activeProfile, err := resolveProfile(cfg)
-	if err != nil {
-		return err
-	}
-
-	// Override dry-run from command line
-	if dryRun {
-		cfg.Options.DryRun = true
-	}
-
+// profileBrokers applies the list, region, category, exclusion and country
+// rules to the broker database. An empty result has already been explained.
+func profileBrokers(cfg *config.Config, activeProfile config.NamedProfile) ([]broker.Broker, error) {
 	if listFlag != "" {
 		cfg.Options.BrokerList = listFlag
 	}
 	if cfg.Options.BrokerList != "" && !strings.EqualFold(cfg.Options.BrokerList, "full") && !strings.EqualFold(cfg.Options.BrokerList, "verified") {
-		return fmt.Errorf("invalid broker list %q: must be full or verified", cfg.Options.BrokerList)
+		return nil, fmt.Errorf("invalid broker list %q: must be full or verified", cfg.Options.BrokerList)
 	}
 	brokerDB, err := broker.LoadList(brokerFile, cfg.Options.BrokerFile, cfg.Options.BrokerList)
 	if err != nil {
-		return fmt.Errorf("failed to load brokers: %w", err)
+		return nil, fmt.Errorf("failed to load brokers: %w", err)
 	}
 	if unknown := brokerDB.UnknownIDs(brokerIDs); len(unknown) > 0 {
-		return fmt.Errorf("unknown broker ID(s): %s", strings.Join(unknown, ", "))
+		return nil, fmt.Errorf("unknown broker ID(s): %s", strings.Join(unknown, ", "))
 	}
 
 	selectedRegions := cfg.Options.Regions
@@ -151,95 +132,65 @@ func runSend() error {
 	}
 	if len(brokers) == 0 {
 		fmt.Println("No brokers to process.")
-		return nil
 	}
+	return brokers, nil
+}
 
-	// Initialize history store early - needed for both the resend-cooldown
-	// skip and the daily send cap below.
-	store, err := openHistoryStore(history.DBPathFor(resolveConfigPath()))
-	if err != nil {
-		return fmt.Errorf("failed to initialize history: %w", err)
-	}
-	defer func() { _ = store.Close() }()
-
+// eligibleBrokers narrows brokers to the --status filter (everything with
+// --resend) and orders them by send priority. An empty result has already been
+// explained.
+func eligibleBrokers(store *history.Store, activeProfile config.NamedProfile, brokers []broker.Broker) ([]broker.Broker, error) {
 	statusFilter = strings.ToLower(strings.TrimSpace(statusFilter))
 	if statusFilter == "" {
 		statusFilter = "eligible"
 	}
 	if statusFilter != "eligible" && statusFilter != "never" && statusFilter != "failed" && statusFilter != "all" {
-		return fmt.Errorf("invalid status %q: must be eligible, never, failed, or all", statusFilter)
+		return nil, fmt.Errorf("invalid status %q: must be eligible, never, failed, or all", statusFilter)
 	}
 	if resend {
 		statusFilter = "all"
 	}
 	statuses, err := store.GetAllBrokerStatuses(activeProfile.ID)
 	if err != nil {
-		return fmt.Errorf("failed to check send history: %w", err)
+		return nil, fmt.Errorf("failed to check send history: %w", err)
 	}
 	brokers = filterBrokersByStatus(brokers, statuses, statusFilter, time.Now())
 	history.SortBySendPriority(brokers, func(b broker.Broker) time.Time { return statuses[b.ID].LastSent })
 
 	if len(brokers) == 0 {
 		fmt.Printf("Nothing to send - no brokers match status %q.\n", statusFilter)
-		return nil
 	}
+	return brokers, nil
+}
 
-	// Manual mode: never touch SMTP. Walk the list, show each email, and
-	// record the ones the user confirms they've sent by hand.
-	if manualMode && !cfg.Options.DryRun {
-		return runSendManual(cfg, activeProfile, brokers, store)
-	}
-
+// applyDailyCap enforces the rolling daily send cap so a large list cannot blow
+// past the provider's per-day limit or read as bulk spam. It returns nil
+// brokers when the cap is already used up.
+func applyDailyCap(store *history.Store, cfg *config.Config, activeProfile config.NamedProfile, brokers []broker.Broker) ([]broker.Broker, error) {
 	// Enforce the rolling daily send cap so a large broker list can't blow
 	// past the provider's per-day sending limit or read as bulk-spam
 	// behavior. Skipped entirely for --dry-run and --ignore-daily-limit.
-	if !cfg.Options.DryRun && !ignoreDailyLimit {
-		sentLast24h, err := store.CountSentSince(activeProfile.ID, time.Now().Add(-24*time.Hour))
-		if err != nil {
-			return fmt.Errorf("failed to check daily send count: %w", err)
-		}
-		budget := cfg.Options.DailySendLimit - sentLast24h
-		if budget <= 0 {
-			fmt.Printf("📅 Daily send limit reached (%d/%d sent in the last 24h). Run again later, or use --ignore-daily-limit to override.\n",
-				sentLast24h, cfg.Options.DailySendLimit)
-			return nil
-		}
-		if sendable := countWithEmail(brokers); budget < sendable {
-			fmt.Printf("📅 Daily send limit: sending %d of %d remaining brokers (%d already sent in the last 24h, cap is %d). Re-run later or tomorrow for the rest.\n",
-				budget, sendable, sentLast24h, cfg.Options.DailySendLimit)
-			brokers = capSends(brokers, budget)
-		}
-	}
-
-	tmplEngine, err := template.NewEngine()
+	sentLast24h, err := store.CountSentSince(activeProfile.ID, time.Now().Add(-24*time.Hour))
 	if err != nil {
-		return fmt.Errorf("failed to initialize templates: %w", err)
+		return nil, fmt.Errorf("failed to check daily send count: %w", err)
 	}
-	if err := tmplEngine.UseConfig(cfg); err != nil {
-		return fmt.Errorf("custom template: %w", err)
+	budget := cfg.Options.DailySendLimit - sentLast24h
+	if budget <= 0 {
+		fmt.Printf("📅 Daily send limit reached (%d/%d sent in the last 24h). Run again later, or use --ignore-daily-limit to override.\n",
+			sentLast24h, cfg.Options.DailySendLimit)
+		return nil, nil
 	}
-
-	// Resolve the SMTP account to send from: activeProfile's own mail.email
-	// override if it has one, otherwise the shared top-level email: block.
-	emailCfg := cfg.EmailForProfile(activeProfile)
-
-	// Initialize email sender (unless dry-run)
-	var sender *email.SMTPSender
-	if !cfg.Options.DryRun {
-		sender = email.NewSMTPSender(emailCfg.SMTP, emailCfg.From)
+	if sendable := countWithEmail(brokers); budget < sendable {
+		fmt.Printf("📅 Daily send limit: sending %d of %d remaining brokers (%d already sent in the last 24h, cap is %d). Re-run later or tomorrow for the rest.\n",
+			budget, sendable, sentLast24h, cfg.Options.DailySendLimit)
+		brokers = capSends(brokers, budget)
 	}
+	return brokers, nil
+}
 
-	if cfg.Options.DryRun {
-		fmt.Println("🔍 DRY RUN MODE - No emails will be sent")
-		fmt.Println()
-	}
-
-	if len(cfg.GetProfiles()) > 1 {
-		fmt.Printf("👤 Profile: %s (%s)\n", activeProfile.ID, activeProfile.FullName())
-	}
-	fmt.Printf("📤 Processing %d brokers...\n", len(brokers))
-	fmt.Println()
-
+// sendLoop emails each broker in turn, records the outcome, and stops early
+// after three consecutive authentication failures.
+func sendLoop(cfg *config.Config, activeProfile config.NamedProfile, emailCfg config.EmailConfig, brokers []broker.Broker, tmplEngine *template.Engine, sender *email.SMTPSender, store *history.Store) error {
 	successCount := 0
 	failCount := 0
 	authFails := 0
@@ -315,6 +266,91 @@ func runSend() error {
 	}
 
 	return nil
+}
+
+func runSend() error {
+	cfg, err := config.Load(resolveConfigPath())
+	if err != nil {
+		return fmt.Errorf("failed to load config: %w", err)
+	}
+
+	manualMode := manualSend || cfg.IsManualSend()
+
+	if err := cfg.Validate(); err != nil && !manualMode {
+		return fmt.Errorf("invalid config: %w", err)
+	}
+
+	activeProfile, err := resolveProfile(cfg)
+	if err != nil {
+		return err
+	}
+
+	// Override dry-run from command line
+	if dryRun {
+		cfg.Options.DryRun = true
+	}
+
+	brokers, err := profileBrokers(cfg, activeProfile)
+	if err != nil || len(brokers) == 0 {
+		return err
+	}
+
+	// Initialize history store early - needed for both the resend-cooldown
+	// skip and the daily send cap below.
+	store, err := openHistoryStore(history.DBPathFor(resolveConfigPath()))
+	if err != nil {
+		return fmt.Errorf("failed to initialize history: %w", err)
+	}
+	defer func() { _ = store.Close() }()
+
+	brokers, err = eligibleBrokers(store, activeProfile, brokers)
+	if err != nil || len(brokers) == 0 {
+		return err
+	}
+
+	// Manual mode: never touch SMTP. Walk the list, show each email, and
+	// record the ones the user confirms they've sent by hand.
+	if manualMode && !cfg.Options.DryRun {
+		return runSendManual(cfg, activeProfile, brokers, store)
+	}
+
+	if !cfg.Options.DryRun && !ignoreDailyLimit {
+		brokers, err = applyDailyCap(store, cfg, activeProfile, brokers)
+		if err != nil || len(brokers) == 0 {
+			return err
+		}
+	}
+
+	tmplEngine, err := template.NewEngine()
+	if err != nil {
+		return fmt.Errorf("failed to initialize templates: %w", err)
+	}
+	if err := tmplEngine.UseConfig(cfg); err != nil {
+		return fmt.Errorf("custom template: %w", err)
+	}
+
+	// Resolve the SMTP account to send from: activeProfile's own mail.email
+	// override if it has one, otherwise the shared top-level email: block.
+	emailCfg := cfg.EmailForProfile(activeProfile)
+
+	// Initialize email sender (unless dry-run)
+	var sender *email.SMTPSender
+	if !cfg.Options.DryRun {
+		sender = email.NewSMTPSender(emailCfg.SMTP, emailCfg.From)
+	}
+
+	if cfg.Options.DryRun {
+		fmt.Println("🔍 DRY RUN MODE - No emails will be sent")
+		fmt.Println()
+	}
+
+	if len(cfg.GetProfiles()) > 1 {
+		fmt.Printf("👤 Profile: %s (%s)\n", activeProfile.ID, activeProfile.FullName())
+	}
+	fmt.Printf("📤 Processing %d brokers...\n", len(brokers))
+	fmt.Println()
+
+	return sendLoop(cfg, activeProfile, emailCfg, brokers, tmplEngine, sender, store)
 }
 
 // runSendManual walks the broker list, prints each rendered email, and records
