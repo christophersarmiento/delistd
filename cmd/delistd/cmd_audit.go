@@ -118,8 +118,7 @@ Examples:
 		},
 	}
 
-	cmd.Flags().StringSliceVar(&regions, "region", nil, "Only audit brokers in these regions: us, eu, global (comma-separated or repeated)")
-	cmd.Flags().StringSliceVar(&categories, "category", nil, "Only audit brokers in these categories (comma-separated or repeated)")
+	addRegionCategoryFlags(cmd, &regions, &categories, "Only audit brokers")
 	cmd.Flags().IntVar(&timeoutSec, "timeout", 10, "Per-check timeout in seconds")
 	cmd.Flags().BoolVar(&failOnDead, "fail-on-dead", false, "Exit non-zero if any broker has a dead email domain or unreachable website (for scheduled CI)")
 	cmd.Flags().BoolVar(&fix, "fix", false, "Clear the email of every broker with a dead mail domain (keeps the row, adds a dated note) and save the broker file")

@@ -267,7 +267,7 @@ func Save(path string, cfg *Config) error {
 		return fmt.Errorf("failed to create config directory: %w", err)
 	}
 
-	out := cfg.cloneForSecrets() // cfg may be the live config others read
+	out := cfg.Clone() // cfg may be the live config others read
 	if err := out.secretFields(func(p *string) error {
 		if out.PassphraseProtected && *p != "" && !isEncrypted(*p) {
 			pass, err := passphrase()

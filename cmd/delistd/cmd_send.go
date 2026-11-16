@@ -54,8 +54,7 @@ safe to just re-run 'delistd send' until it reports nothing left to do.`,
 	cmd.Flags().BoolVar(&manualSend, "manual", false, "Don't send: show each email and let you mark it sent after you send it by hand (implied by options.send_mode: manual)")
 	cmd.Flags().StringVar(&listFlag, "list", "", "Which broker list to use: full (default) or verified (smaller, registry-sourced). Overrides options.broker_list")
 	cmd.Flags().StringSliceVar(&brokerIDs, "broker", nil, "Only send to these broker IDs (comma-separated or repeated)")
-	cmd.Flags().StringSliceVar(&regions, "region", nil, "Only send to these regions: us, eu, global (comma-separated or repeated)")
-	cmd.Flags().StringSliceVar(&categories, "category", nil, "Only send to these categories (comma-separated or repeated)")
+	addRegionCategoryFlags(cmd, &regions, &categories, "Only send to brokers")
 	cmd.Flags().StringSliceVar(&excludedIDs, "exclude", nil, "Skip these broker IDs for this run (comma-separated or repeated)")
 	cmd.Flags().StringVar(&statusFilter, "status", "eligible", "History filter: eligible, never, failed, or all")
 

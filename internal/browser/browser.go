@@ -3,6 +3,7 @@ package browser
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/chromedp/cdproto/cdp"
 	"github.com/chromedp/cdproto/emulation"
@@ -34,7 +35,7 @@ var extraAllocatorOptions []chromedp.ExecAllocatorOption
 func New(cfg BrowserConfig, profile *config.Profile, allowedDomains []string) (*Browser, error) {
 	// an explicit Chrome path means launch that one, whatever the environment says
 	if cfg.RemoteURL == "" && cfg.ExecutablePath == "" {
-		cfg.RemoteURL = config.Getenv(config.ChromeURLEnv)
+		cfg.RemoteURL = os.Getenv(config.ChromeURLEnv)
 	}
 
 	var allocCtx context.Context

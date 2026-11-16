@@ -26,8 +26,7 @@ func listBrokersCmd() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringSliceVar(&regions, "region", nil, "Only show brokers in these regions: us, eu, global (comma-separated or repeated)")
-	cmd.Flags().StringSliceVar(&categories, "category", nil, "Only show brokers in these categories (comma-separated or repeated)")
+	addRegionCategoryFlags(cmd, &regions, &categories, "Only show brokers")
 	cmd.Flags().StringVar(&search, "search", "", "Only show brokers whose name or ID contains this text")
 	cmd.Flags().BoolVar(&allCountries, "all-countries", false, "Also show brokers that only handle countries other than your profile's")
 	cmd.Flags().BoolVar(&missingEmail, "missing-email", false, "Only show brokers with no email on file (need manual follow-up)")
@@ -182,4 +181,11 @@ func runAddBroker() error {
 	fmt.Printf("✅ Added %s to broker database\n", b.Name)
 
 	return nil
+}
+
+// addRegionCategoryFlags adds --region and --category, which every command that
+// works on a slice of the broker list takes; subject completes their help text.
+func addRegionCategoryFlags(cmd *cobra.Command, regions, categories *[]string, subject string) {
+	cmd.Flags().StringSliceVar(regions, "region", nil, subject+" in these regions: us, eu, global (comma-separated or repeated)")
+	cmd.Flags().StringSliceVar(categories, "category", nil, subject+" in these categories (comma-separated or repeated)")
 }

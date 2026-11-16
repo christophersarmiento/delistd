@@ -107,8 +107,6 @@ func (j *Job) GetStatus() (status JobStatus) {
 	return status
 }
 
-func (j *Job) IsCancelled() bool { return j.GetStatus() == JobStatusCancelled }
-
 // finishedBefore reports a job that is no longer running and ended before
 // cutoff.
 func (j *Job) finishedBefore(cutoff time.Time) (old bool) {

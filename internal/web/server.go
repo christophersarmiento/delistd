@@ -118,7 +118,7 @@ func NewServer(port int, cfg *config.Config, configPath string, brokerDB *broker
 		}
 	}
 
-	tmpl, err := s.parseTemplates()
+	tmpl, err := loadTemplates()
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse templates: %w", err)
 	}

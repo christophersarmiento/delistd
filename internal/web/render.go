@@ -112,8 +112,6 @@ func loadTemplates() (map[string]*template.Template, error) {
 	return set, nil
 }
 
-func (s *Server) parseTemplates() (map[string]*template.Template, error) { return loadTemplates() }
-
 // writeHTML sends a rendered page. Rendering into a buffer first means a
 // template error gives a clean 500 instead of half a page followed by an
 // error message.
