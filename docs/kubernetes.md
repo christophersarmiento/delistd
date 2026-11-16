@@ -59,7 +59,7 @@ spec:
           volumeMounts:
             - {name: data, mountPath: /home/nonroot/.delistd}
           readinessProbe:
-            httpGet: {path: /setup, port: http, httpHeaders: [{name: Host, value: localhost}]}
+            httpGet: {path: /healthz, port: http, httpHeaders: [{name: Host, value: localhost}]}
           securityContext:
             readOnlyRootFilesystem: true
             allowPrivilegeEscalation: false

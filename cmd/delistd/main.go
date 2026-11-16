@@ -104,7 +104,7 @@ SMTP provider (Gmail, Proton Mail Bridge, Fastmail and others).`,
 		initCmd, sendCmd, serveCmd, mcpCmd, listBrokersCmd, statusCmd, addBrokerCmd,
 		monitorCmd, pipelineCmd, fillCmd, confirmCmd, cleanupBouncesCmd, markBouncedCmd,
 		auditBrokersCmd, profileCmd, exportCmd, draftCmd, markSentCmd, updateBrokersCmd,
-		validateBrokersCmd, guidesCmd, autoCmd, scheduleCmd, passphraseCmd, oauthCmd,
+		validateBrokersCmd, guidesCmd, healthcheckCmd, autoCmd, scheduleCmd, passphraseCmd, oauthCmd,
 	} {
 		rootCmd.AddCommand(build())
 	}

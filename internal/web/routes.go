@@ -53,6 +53,7 @@ func (s *Server) setupRouter() *chi.Mux {
 func (s *Server) pageRoutes() []route {
 	return []route{
 		{mGet, "/", s.handleDashboard},
+		{mGet, "/healthz", s.handleHealthz},
 
 		{mGet, "/brokers", s.handleBrokers},
 		{mGet, "/brokers/new", s.handleBrokerNew},

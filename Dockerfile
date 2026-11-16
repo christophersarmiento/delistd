@@ -58,6 +58,9 @@ ENV HOME=/home/nonroot \
 WORKDIR /home/nonroot/.delistd
 VOLUME ["/home/nonroot/.delistd"]
 EXPOSE 8080
+# No shell or curl in distroless, so the binary checks itself.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+    CMD ["/usr/local/bin/delistd", "healthcheck"]
 ENTRYPOINT ["/usr/local/bin/delistd"]
 # 0.0.0.0 inside the container only; publish it as 127.0.0.1:8080:8080.
 CMD ["serve", "--listen", "0.0.0.0"]

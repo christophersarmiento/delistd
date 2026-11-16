@@ -41,6 +41,10 @@ Without compose, `compose.yaml` is the reference for the flags: a private
 network, the loopback-only port, the `delistd-data` volume, and for the browser
 `--shm-size=1g` plus `-e DELISTD_CHROME_URL=http://chrome:9222`.
 
+The image has a health check (`delistd healthcheck`, which asks the web UI's `/healthz`), so
+`docker ps` shows `healthy` once the server is up and Docker Compose, Swarm and orchestrators
+can act on it. It looks at port 8080, the image's default.
+
 ## Security: keep the port on 127.0.0.1
 
 > [!WARNING]
