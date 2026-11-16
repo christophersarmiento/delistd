@@ -20,7 +20,7 @@ services:
       context: .
       target: delistd
     # Builds from this clone by default. To run the published image instead:
-    #   DELISTD_IMAGE=ghcr.io/drumandbytes/delistd:v2.2.0 docker compose up -d --pull always --no-build
+    #   DELISTD_IMAGE=ghcr.io/drumandbytes/delistd:v3.0.0 docker compose up -d --pull always --no-build
     image: ${DELISTD_IMAGE:-delistd:local}
     container_name: delistd
     # 127.0.0.1 only: the web UI has no login and holds your mail credentials.

@@ -34,6 +34,11 @@ RUN install -d -m 0700 -o 65532 -g 65532 /rootfs/home/nonroot/.delistd
 
 
 FROM gcr.io/distroless/static-debian13:nonroot AS delistd
+LABEL org.opencontainers.image.title="delistd" \
+      org.opencontainers.image.description="Sends data removal requests to data brokers from your own email account" \
+      org.opencontainers.image.source="https://github.com/drumandbytes/delistd" \
+      org.opencontainers.image.url="https://delistd.dev/" \
+      org.opencontainers.image.licenses="MIT"
 COPY --from=build /out/delistd /usr/local/bin/delistd
 COPY --from=build --chown=65532:65532 /rootfs/home /home
 # ~/.delistd holds config.yaml, history.db, screenshots and the downloaded
