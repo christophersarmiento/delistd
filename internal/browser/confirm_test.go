@@ -87,13 +87,11 @@ func TestClickConfirmationLink_AllowsRedirectToAllowedDomain(t *testing.T) {
 	}
 }
 
-// isSuccessResponse is pure text/status matching - the redirect tests above
+// confirmationSucceeded is pure text/status matching - the redirect tests above
 // only exercise its "success" branch via a real HTTP round-trip; these check
 // the failure-pattern and ambiguous-response branches directly, without
 // needing a server.
-func TestIsSuccessResponse(t *testing.T) {
-	h := NewConfirmationHandler(nil)
-
+func TestConfirmationSucceeded(t *testing.T) {
 	tests := []struct {
 		name       string
 		statusCode int
@@ -120,8 +118,8 @@ func TestIsSuccessResponse(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := h.isSuccessResponse(tt.statusCode, tt.body); got != tt.want {
-				t.Errorf("isSuccessResponse(%d, %q) = %v, want %v", tt.statusCode, tt.body, got, tt.want)
+			if got := confirmationSucceeded(tt.statusCode, tt.body); got != tt.want {
+				t.Errorf("confirmationSucceeded(%d, %q) = %v, want %v", tt.statusCode, tt.body, got, tt.want)
 			}
 		})
 	}

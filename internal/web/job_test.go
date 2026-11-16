@@ -210,3 +210,11 @@ func TestCreateIfNoActiveIsRaceSafe(t *testing.T) {
 		t.Fatalf("expected exactly 1 of %d concurrent CreateIfNoActive calls to win, got %d", attempts, wins)
 	}
 }
+
+// Create starts a job without looking for a running one, which tests use to
+// hold several at once.
+func (jm *JobManager) Create(total int, profileID string) *Job {
+	jm.mu.Lock()
+	defer jm.mu.Unlock()
+	return jm.add(total, profileID)
+}

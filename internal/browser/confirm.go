@@ -148,10 +148,6 @@ func confirmationSucceeded(status int, body string) bool {
 	return containsAny(text, successPhrases) || status == http.StatusOK
 }
 
-func (h *ConfirmationHandler) isSuccessResponse(status int, body string) bool {
-	return confirmationSucceeded(status, body)
-}
-
 // ExtractConfirmationStatus summarises a failed confirmation for a person.
 func (h *ConfirmationHandler) ExtractConfirmationStatus(result *ConfirmationResult) string {
 	if result.Success {

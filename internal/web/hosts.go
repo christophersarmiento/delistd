@@ -9,17 +9,6 @@ import (
 
 // The Host-header guard against DNS rebinding, and the bind address.
 
-// requireLoopbackHost rejects non-loopback Host headers (DNS rebinding).
-func requireLoopbackHost(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if !hostAllowed(r.Host) {
-			http.Error(w, "Forbidden: this server only accepts requests addressed to localhost", http.StatusForbidden)
-			return
-		}
-		next.ServeHTTP(w, r)
-	})
-}
-
 // requireAllowedHost rejects Host headers that are not loopback, private IPs (when listening non-loopback),
 // or explicitly allowed (DNS rebinding guard).
 func (s *Server) requireAllowedHost(next http.Handler) http.Handler {
@@ -47,11 +36,6 @@ func IsLoopbackListen(host string) bool {
 	}
 	ip := net.ParseIP(host)
 	return ip != nil && ip.IsLoopback()
-}
-
-// hostAllowed reports whether a Host header names loopback.
-func hostAllowed(host string) bool {
-	return isHostAllowed(host, nil)
 }
 
 // hostAllowed reports whether host is permitted by this server.

@@ -333,11 +333,11 @@ func TestJobLifecycleHelpers(t *testing.T) {
 	}
 
 	running := jm.Create(1, "p")
-	jm.Cleanup(time.Hour)
+	jm.evict(time.Hour)
 	if jm.Get(j.ID) == nil {
 		t.Error("Cleanup evicted a job that finished just now")
 	}
-	jm.Cleanup(-time.Hour) // cutoff in the future: everything finished is old
+	jm.evict(-time.Hour) // cutoff in the future: everything finished is old
 	if jm.Get(j.ID) != nil {
 		t.Error("Cleanup kept an expired finished job")
 	}

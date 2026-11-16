@@ -243,14 +243,14 @@ func TestHostAllowed(t *testing.T) {
 		{"0.0.0.0:8080", false},
 	}
 	for _, tc := range cases {
-		if got := hostAllowed(tc.host); got != tc.want {
-			t.Errorf("hostAllowed(%q) = %v, want %v", tc.host, got, tc.want)
+		if got := isHostAllowed(tc.host, nil); got != tc.want {
+			t.Errorf("isHostAllowed(%q) = %v, want %v", tc.host, got, tc.want)
 		}
 	}
 }
 
 func TestRequireLoopbackHostBlocksNonLoopback(t *testing.T) {
-	handler := requireLoopbackHost(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	handler := (&Server{}).requireAllowedHost(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	}))
 

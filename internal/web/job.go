@@ -158,14 +158,6 @@ type JobManager struct {
 
 func NewJobManager() *JobManager { return &JobManager{jobs: map[string]*Job{}} }
 
-// Create starts a job for profileID. It does not look for a running one: use
-// CreateIfNoActive when only one job per profile may run.
-func (jm *JobManager) Create(total int, profileID string) *Job {
-	jm.mu.Lock()
-	defer jm.mu.Unlock()
-	return jm.add(total, profileID)
-}
-
 // add inserts a new job; the caller holds jm.mu.
 func (jm *JobManager) add(total int, profileID string) *Job {
 	jm.evict(jobRetention)
@@ -217,13 +209,6 @@ func (jm *JobManager) AnyActive() bool {
 	jm.mu.RLock()
 	defer jm.mu.RUnlock()
 	return jm.running("") != nil
-}
-
-// Cleanup drops finished jobs older than maxAge.
-func (jm *JobManager) Cleanup(maxAge time.Duration) {
-	jm.mu.Lock()
-	defer jm.mu.Unlock()
-	jm.evict(maxAge)
 }
 
 func (jm *JobManager) evict(maxAge time.Duration) {
