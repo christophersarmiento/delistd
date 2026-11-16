@@ -147,6 +147,12 @@ uses without a rule, and on a rule nothing uses. `utilities.css` is linked *afte
 `app.css` on purpose - same-specificity rules are decided by source order, and a utility
 like `.w-auto` has to win over a component class like `.input { width: 100% }`.
 
+Before a CSS or template refactor, record the computed style of every element on every
+page with `go run ./scripts/stylesnap` (see its header for the three commands), then
+record again afterwards and `-compare` the two: it lists exactly which properties changed
+on how many elements, which is how a dropped rule shows up. It needs Chrome and a running
+`delistd serve` on demo data, so it is a local tool, not a CI step.
+
 ### Flow
 1. Load user config from `~/.delistd/config.yaml`, resolve the active profile (see [multi-profile.md](multi-profile.md))
 2. Load brokers from `data/brokers.yaml`
