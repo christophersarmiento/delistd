@@ -7,7 +7,7 @@
             <!-- Header -->
             <div class="mb-8">
                 <h1 class="font-display font-semibold mb-2 text-2xl text-primary">Test Your Setup</h1>
-                <p class="text-secondary">Let's make sure everything works</p>
+                <p class="text-secondary">One quick check that sending works</p>
             </div>
 
             <!-- Configuration Summary -->
@@ -15,9 +15,9 @@
                 <h3 class="font-medium mb-3 text-primary">Your Configuration</h3>
                 <div class="gap-2 grid grid-cols-2 text-sm">
                     <span class="text-muted">Name:</span>
-                    <span class="text-primary">{{.Profile.FirstName}} {{.Profile.LastName}}</span>
+                    <span class="text-primary" id="test-name">{{.Profile.FirstName}} {{.Profile.LastName}}</span>
                     <span class="text-muted">Email:</span>
-                    <span class="text-primary">{{.Profile.Email}}</span>
+                    <span class="text-primary" id="test-email">{{.Profile.Email}}</span>
                     <span class="text-muted">Provider:</span>
                     <span class="text-primary">{{providerName .Email.SMTP.Host}}</span>
                 </div>
@@ -26,7 +26,7 @@
             <!-- Test Email Section -->
             <div class="mb-8 space-y-4">
                 <p class="text-secondary">
-                    We'll send a test email to <strong class="text-primary">{{.Profile.Email}}</strong> to verify your setup.
+                    A test email goes to <strong class="text-primary">{{.Profile.Email}}</strong> so you can confirm it arrives.
                 </p>
 
                 <div id="test-result"></div>

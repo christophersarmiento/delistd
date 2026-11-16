@@ -82,8 +82,8 @@
                     {{icon "check-circle" "w-8 h-8 text-success"}}
                 </div>
                 <h2 class="font-semibold mb-2 text-lg text-primary">All caught up!</h2>
-                <p class="text-secondary">No pending action items at the moment.</p>
-                <a href="/pipeline" class="btn btn-secondary mt-4">View Pipeline</a>
+                <p class="text-secondary">Nothing is waiting for you right now.</p>
+                <a class="btn btn-secondary mt-4" href="/pipeline">View Pipeline</a>
             </div>
             {{end}}
         </div>
@@ -106,11 +106,11 @@
 // "completed", and "all" means every row that is not finished
 function filterItems(type) {
     document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.filter === type));
-    document.querySelectorAll('.action-item').forEach(item => {
+    for (const item of document.querySelectorAll('.action-item')) {
         const finished = item.dataset.status === 'completed';
         const show = type === 'completed' ? finished : !finished && (type === 'all' || item.dataset.type === type);
         item.classList.toggle('hidden', !show);
-    });
+    }
 }
 </script>
 {{end}}

@@ -7,17 +7,17 @@
     <div class="bg-elevated p-3 rounded-lg">
         <div class="row">
             {{if eq .ResponseType "success"}}
-            <span class="status-dot status-dot-success"></span>
+            <span class="status-dot status-dot-success" aria-hidden="true"></span>
             {{else if eq .ResponseType "form_required"}}
-            <span class="status-dot status-dot-warning"></span>
+            <span class="status-dot status-dot-warning" aria-hidden="true"></span>
             {{else if eq .ResponseType "confirmation_required"}}
             <span class="status-dot status-dot-accent"></span>
             {{else if eq .ResponseType "no_data_held"}}
             <span class="status-dot status-dot-accent"></span>
             {{else if eq .ResponseType "rejected"}}
-            <span class="status-dot status-dot-error"></span>
+            <span class="status-dot status-dot-error" aria-hidden="true"></span>
             {{else}}
-            <span class="status-dot status-dot-warning"></span>
+            <span class="status-dot status-dot-warning" aria-hidden="true"></span>
             {{end}}
             <div class="flex-1 min-w-0">
                 <a href="/pipeline/responses/{{.ID}}" class="font-medium hover:underline text-primary text-sm">{{.BrokerName}}</a>

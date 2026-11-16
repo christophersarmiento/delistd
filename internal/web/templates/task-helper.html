@@ -38,9 +38,9 @@
                 <ol class="list-decimal list-inside space-y-2 text-secondary">
                     <li>Click <strong>"Open Form in New Tab"</strong> under your information</li>
                     <li>Solve the CAPTCHA on the form</li>
-                    <li>Use the copy buttons above to fill in your information</li>
-                    <li>Submit the form on the broker's website</li>
-                    <li>Return here and click <strong>"Mark Complete"</strong></li>
+                    <li>Copy your details from the buttons above into the form</li>
+                    <li>Send the form on the broker's own site</li>
+                    <li>Come back and press <strong>"Mark Complete"</strong></li>
                 </ol>
             {{endcard}}
 
@@ -73,18 +73,18 @@
 </div>
 
 <script>
-// clicking a field copies its value and tints it briefly
-document.querySelectorAll('.copy-field').forEach(field => {
+// clicking a field copies its value and flashes it green for half a second
+for (const field of document.querySelectorAll('.copy-field')) {
     field.addEventListener('click', async () => {
         try {
             await navigator.clipboard.writeText(field.dataset.value);
-            field.style.background = 'rgba(34, 197, 94, 0.15)';
-            setTimeout(() => { field.style.background = 'var(--bg-elevated)'; }, 500);
+            field.classList.add('tint-success');
+            setTimeout(() => field.classList.remove('tint-success'), 500);
         } catch (err) {
             console.error('Failed to copy:', err);
         }
     });
-});
+}
 </script>
 {{end}}
 

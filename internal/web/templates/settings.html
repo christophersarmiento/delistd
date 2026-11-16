@@ -38,7 +38,7 @@
                 {{if .Config.Email.Configured}}{{template "partials/info-row.html" (dict "Label" "SMTP Server" "Value" (print .Config.Email.SMTP.Host ":" .Config.Email.SMTP.Port) "Last" true)}}{{end}}
             </div>
             {{else}}
-            <p class="text-muted">No email configured.</p>
+            <p class="text-muted">No email account set up yet.</p>
             {{end}}
             <div class="mt-6"><a href="/setup/email" class="btn btn-secondary">{{icon "pencil" "w-4 h-4"}} Edit Email Settings</a></div>
         {{endcard}}
@@ -168,7 +168,7 @@
                 </form>
             </div>
             {{else}}
-            <p class="text-muted">No options configured.</p>
+            <p class="text-muted">Nothing set here yet.</p>
             {{end}}
         {{endcard}}
 

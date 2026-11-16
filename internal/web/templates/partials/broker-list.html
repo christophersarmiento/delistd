@@ -31,7 +31,7 @@
                 </td>
                 <td>
                     {{if .Category}}
-                    <span class="badge badge-neutral">{{.Category}}</span>
+                    <span class="badge badge-neutral" title="Category">{{.Category}}</span>
                     {{else}}
                     <span class="text-muted">—</span>
                     {{end}}
@@ -74,10 +74,10 @@
         </div>
         <div class="flex flex-wrap gap-2 items-center mb-3 text-sm">
             {{if .Category}}
-            <span class="badge badge-neutral">{{.Category}}</span>
+            <span class="badge badge-neutral" title="Category">{{.Category}}</span>
             {{end}}
             {{if .Region}}
-            <span class="text-muted uppercase">{{.Region}}</span>
+            <span class="text-muted uppercase" title="Region">{{.Region}}</span>
             {{end}}
             {{if .Countries}}<span class="badge badge-neutral" title="Only handles requests from these countries">Only {{range $i, $c := .Countries}}{{if $i}}, {{end}}{{$c}}{{end}}</span>{{end}}
         </div>

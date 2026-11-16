@@ -59,7 +59,7 @@
             {{icon "info" "w-5 h-5 flex-shrink-0 mt-0.5"}}
             <div>
                 <p class="text-sm">
-                    <strong>Sending {{.Filtered}} emails will take multiple days.</strong>
+                    <strong>Sending {{.Filtered}} emails will take several days.</strong>
                     To avoid email provider rate limits, Delistd sends up to {{.DailyLimit}} emails per day.
                     The rest go out with the next automatic run (<a href="/settings#automation" class="underline">Settings &rarr; Automation</a>), or click Send all again the next day.
                 </p>
@@ -69,7 +69,7 @@
     {{end}}
 
     <!-- Send progress area -->
-    <div id="send-all-progress" class="mb-6"></div>
+    <div class="mb-6" id="send-all-progress"></div>
 
     <div class="card mb-6 p-4">
         <form id="broker-filters" hx-get="/api/brokers" hx-target="#broker-list" hx-trigger="change, submit, keyup changed delay:300ms from:#broker-search">
@@ -130,7 +130,7 @@
 
     <!-- Help text -->
     <p class="mt-6 text-center text-muted text-sm">
-        Use search and filters to narrow down the list before sending.
+        Narrow the list with search and filters before you send.
     </p>
 </div>
 

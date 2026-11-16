@@ -118,6 +118,7 @@ summary { min-height: 24px; }
 .tint-info { background: var(--accent-muted); color: var(--accent); }
 .tint-success { background: color-mix(in oklab, var(--success) 14%, transparent); }
 .tint-error { background: color-mix(in oklab, var(--error) 14%, transparent); }
+.bg-elevated.tint-success { background: color-mix(in oklab, var(--success) 14%, transparent); }
 .border-error { border-color: color-mix(in oklab, var(--error) 28%, transparent); }
 
 .alert { padding: 12px 16px; border-radius: var(--radius-control); font-size: var(--fs-sm); border: 1px solid transparent; }
