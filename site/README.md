@@ -11,14 +11,14 @@ data, `site/`, or the guide generator.
 ./site/build.sh            # or: ./site/build.sh serve
 ```
 
-That runs `delistd guides` to generate `content/brokers/*.md` +
-`static/brokers.json`, copies `data/authorities.yaml` in, and runs `hugo --minify`
+That runs `delistd guides` to write `data/guides.json` and `data/brokers.json`
+(Hugo builds the guide pages from them in `content/brokers/_content.gotmpl`), copies `data/authorities.yaml` in, and runs `hugo --minify`
 into `site/public/`. All generated files are gitignored.
 
 ## Layout
 
 - `content/` — hand-written pages (`_index.md`, `guides/*.md`, `authorities.md`);
-  `content/brokers/*.md` is generated.
+  the guide pages under `/brokers/` come from `content/brokers/_content.gotmpl`.
 - `layouts/` — the theme, ~6 small templates.
 - `static/css/site.css` — one stylesheet; its palette mirrors the app's light
   tokens (`internal/web/static/css/tokens.css`).

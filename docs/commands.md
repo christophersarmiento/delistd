@@ -25,7 +25,7 @@ go test ./...
 ./delistd audit-brokers [--region eu] [--category financial-b2b] [--timeout 15] [--fail-on-dead] [--fix]  # MX/website liveness check; --fix clears dead email domains
 ./delistd validate-brokers [file]      # structural check: ids, names, regions, emails, URLs (exit non-zero on any problem); no arg checks both built-in lists
 ./delistd update-brokers [--check]      # fetch the latest broker list (conditional; writes ~/.delistd/brokers.yaml)
-./delistd guides [-o site/content] [--format md|html]  # generate opt-out guide pages + a JSON broker directory
+./delistd guides [-o site/data]  # write the broker data the site builds its opt-out guide pages from
 ./delistd monitor                       # IMAP inbox monitoring for broker replies
 ./delistd auto [--once] [--every 6h]    # unattended cycle: send what's due (all profiles), then scan inboxes
 ./delistd schedule install|remove|status  # have launchd/systemd run 'auto --once' every 6 hours

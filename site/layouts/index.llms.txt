@@ -1,6 +1,6 @@
 # Delistd
 
-> Open-source, local-first tool that sends GDPR and CCPA data removal requests to {{ len .Site.Data.brokers.brokers }} data brokers from your own machine. Free, no account, no telemetry. This site holds the broker directory, opt-out guides, docs and the list of EU/EEA data protection authorities.
+> Open-source, local-first tool that sends GDPR and CCPA data removal requests to {{ len hugo.Data.brokers.brokers }} data brokers from your own machine. Free, no account, no telemetry. This site holds the broker directory, opt-out guides, docs and the list of EU/EEA data protection authorities.
 
 ## Start here
 
@@ -16,7 +16,7 @@
 {{ end }}
 ## Broker opt-out guides
 
-{{ range where (where .Site.RegularPages "Section" "brokers") "Params.robots" "!=" "noindex,follow" }}- [{{ .Title }}]({{ .Permalink }})
+{{ range (where (where .Site.RegularPages "Section" "brokers") "Params.robots" "!=" "noindex,follow").ByParam "broker_id" }}- [{{ .Title }}]({{ .Permalink }})
 {{ end }}
 ## Optional
 

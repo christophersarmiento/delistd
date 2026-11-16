@@ -330,20 +330,18 @@ func TestValidateBrokers(t *testing.T) {
 	}
 }
 
-func TestGuidesHTML(t *testing.T) {
+func TestGuidesCommandWritesSiteData(t *testing.T) {
 	e := newCLIEnv(t, "")
 	dir := t.TempDir()
-	out, err := e.run(t, "", "guides", "--format", "html", "-o", dir)
+	out, err := e.run(t, "", "guides", "-o", dir)
 	if err != nil {
 		t.Fatal(err)
 	}
-	mustContain(t, out, "Guides generated")
-	matches, _ := filepath.Glob(filepath.Join(dir, "*", "*.html"))
-	if len(matches) == 0 {
-		t.Fatalf("no html pages under %s", dir)
-	}
-	if _, err := e.run(t, "", "guides", "--format", "pdf", "-o", dir); err == nil {
-		t.Error("unknown format accepted")
+	mustContain(t, out, "Guide data written")
+	for _, f := range []string{"guides.json", "brokers.json"} {
+		if _, err := os.Stat(filepath.Join(dir, f)); err != nil {
+			t.Errorf("%s not written: %v", f, err)
+		}
 	}
 }
 
