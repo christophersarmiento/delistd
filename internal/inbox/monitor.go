@@ -20,7 +20,6 @@ type Monitor struct {
 	brokers map[string]broker.Broker // by the domain mail comes from
 }
 
-// Email is a parsed message.
 type Email struct {
 	UID        uint32 // the IMAP UID, for moving or deleting it afterwards
 	MessageID  string

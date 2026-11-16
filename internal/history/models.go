@@ -63,7 +63,6 @@ type Record struct {
 	SentMethod     string         // "smtp" when Delistd sent it, "manual" when the user did
 }
 
-// BrokerResponse is a classified reply from a broker.
 type BrokerResponse struct {
 	ID           int64
 	ProfileID    string

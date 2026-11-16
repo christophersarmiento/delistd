@@ -18,7 +18,6 @@ import (
 //go:embed templates/*.tmpl
 var embeddedTemplates embed.FS
 
-// EmailData contains all data available to email templates
 type EmailData struct {
 	// User profile
 	FirstName      string
@@ -50,13 +49,11 @@ type EmailData struct {
 	Template string
 }
 
-// Email represents a rendered email ready to send
 type Email struct {
 	Subject string
 	Body    string
 }
 
-// Engine handles email template rendering
 type Engine struct {
 	mu        sync.RWMutex
 	templates map[string]*template.Template
@@ -66,7 +63,6 @@ type Engine struct {
 // CustomName is the template name backed by Options.CustomTemplate.
 const CustomName = "custom"
 
-// NewEngine creates a new template engine
 func NewEngine() (*Engine, error) {
 	e := &Engine{
 		templates: make(map[string]*template.Template),

@@ -70,7 +70,6 @@ type BatchResult struct {
 	Left                  int // brokers not handled when it stopped early
 }
 
-// Run handles brokers in order.
 func (b *Batch) Run(ctx context.Context, brokers []broker.Broker) BatchResult {
 	var res BatchResult
 	authFails := 0

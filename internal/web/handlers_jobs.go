@@ -299,7 +299,6 @@ func (s *Server) processSendJob(job *Job, toSend []BrokerWithStatus, sender *ema
 	}
 }
 
-// handleAPIJobActive returns the currently running job (if any)
 func (s *Server) handleAPIJobActive(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
@@ -312,7 +311,6 @@ func (s *Server) handleAPIJobActive(w http.ResponseWriter, r *http.Request) {
 	_ = json.NewEncoder(w).Encode(map[string]any{"job": job})
 }
 
-// handleAPIJobStatus returns the status of a specific job
 func (s *Server) handleAPIJobStatus(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 

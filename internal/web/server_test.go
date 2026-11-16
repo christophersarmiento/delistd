@@ -119,10 +119,6 @@ func TestServerConfigConcurrentAccess(t *testing.T) {
 	}
 }
 
-// TestServerConfigLoadCopyMutateStoreIsolation confirms that storing a
-// mutated copy never affects a config pointer obtained by an earlier
-// getConfig() call - i.e. writers really do produce a new *config.Config
-// rather than mutating the one readers may still be holding.
 func TestServerConfigLoadCopyMutateStoreIsolation(t *testing.T) {
 	s := newTestServer(t, testConfig())
 

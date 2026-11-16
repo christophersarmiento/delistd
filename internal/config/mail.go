@@ -53,7 +53,6 @@ func (c *Config) ConfiguredInboxes() []InboxConfig {
 	return result
 }
 
-// InboxConfig holds IMAP settings for monitoring broker responses
 type InboxConfig struct {
 	Enabled       bool   `yaml:"enabled"`
 	Provider      string `yaml:"provider,omitempty"`  // preset id (see Providers) that fills Server/Port; optional when they're set

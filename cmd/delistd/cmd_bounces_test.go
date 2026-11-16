@@ -9,10 +9,8 @@ import (
 	"github.com/drumandbytes/delistd/internal/history"
 )
 
-// TestEverSentBrokerIDs is the regression test for cleanup-bounces' anti-spoofing
-// guard: it must only ever name brokers a configured profile has genuinely
-// emailed, across every profile, and it must not choke if one profile's
-// history lookup fails.
+// everSentBrokerIDs is cleanup-bounces' anti-spoofing guard: only brokers a profile
+// really emailed, across every profile, even when one profile's history lookup fails.
 func TestEverSentBrokerIDs(t *testing.T) {
 	store, err := history.NewStore(filepath.Join(t.TempDir(), "history.db"))
 	if err != nil {
@@ -67,10 +65,7 @@ func TestEverSentBrokerIDs(t *testing.T) {
 	}
 }
 
-// TestEverSentBrokerIDsSingleProfileConfig covers the legacy single-Profile
-// config shape (no explicit profiles: list) - GetProfiles() wraps it as the
-// synthetic "default" profile, and everSentBrokerIDs must still find its
-// history under that ID.
+// A legacy single-profile config is wrapped as the "default" profile; its history must still be found.
 func TestEverSentBrokerIDsSingleProfileConfig(t *testing.T) {
 	store, err := history.NewStore(filepath.Join(t.TempDir(), "history.db"))
 	if err != nil {

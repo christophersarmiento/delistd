@@ -6,7 +6,6 @@ import (
 	"github.com/chromedp/chromedp"
 )
 
-// CaptchaInfo is the result of detectCaptcha.
 type CaptchaInfo struct {
 	Found bool
 	Type  string // one of the CaptchaType constants
@@ -86,7 +85,6 @@ var captchaDescriptions = map[string]string{
 	CaptchaTypeUnknown:      "Unknown CAPTCHA type - Manual inspection required",
 }
 
-// GetCaptchaDescription returns a human-readable description
 func (c CaptchaInfo) GetCaptchaDescription() string {
 	if !c.Found {
 		return "No CAPTCHA detected"

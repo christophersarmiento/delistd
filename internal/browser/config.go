@@ -4,7 +4,6 @@ package browser
 
 import "time"
 
-// BrowserConfig holds the automation settings.
 type BrowserConfig struct {
 	ExecutablePath string // Chrome or Chromium to launch instead of the one chromedp finds
 	RemoteURL      string // attach to a running Chrome's DevTools endpoint instead of launching one; defaults to $DELISTD_CHROME_URL

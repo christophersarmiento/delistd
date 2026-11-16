@@ -58,7 +58,6 @@ type Schedule struct {
 	Enabled bool `yaml:"enabled,omitempty"`
 }
 
-// Pipeline holds settings for the automation pipeline
 type Pipeline struct {
 	// BrowserHeadless is a pointer so an explicit false survives loading (a
 	// plain bool was forced back to true). Read it via Headless().
