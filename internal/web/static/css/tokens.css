@@ -1,11 +1,7 @@
-/* Hallmark · shape: app screen · genre: modern-minimal · theme: Coral (deal 1/3, seed warm-friendly-approachable-privacy-56c0·a637ac34·2026-11-15·r0) · redesign: full
- * hero: none (app screens) · nav: top bar with a tab strip · footer: none · imagery: none, the product is the content · signature: the reply ledger on the dashboard
- * axes: light/grotesk-sans/warm · posture: restrained · contrast: pass · fold: n/a · v2.0.0 */
-/* Hallmark · pre-emit critique: P4 H4 E4 S4 R4 V4 · weakest: dark mode is a warm dark derived from Coral, not a dealt theme, so its elevation steps are tuned by eye */
-/* Hallmark · dropped "Quick Actions" · it repeated the top navigation; its three links stay on the dashboard as plain links */
 /* Design tokens: colour, elevation, type scale and corners. Nothing else names a
-   raw colour or a font size. Both themes redefine the same custom properties;
-   the `.light` class on <html> (set by theme.js) selects the light values. */
+   raw colour or a font size. Both themes (Coral) redefine the same custom
+   properties; the `.light` class on <html> (set by theme.js) selects the light
+   values. Dark is a warm dark derived from light, its elevation tuned by eye. */
 
 /* Dark theme (default): warm charcoal, never blue-black */
 :root {
