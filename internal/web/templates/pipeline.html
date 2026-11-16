@@ -1,22 +1,22 @@
 {{define "content"}}
 <div class="fade-in-up">
     <!-- Header -->
-    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-8">
+    <div class="flex flex-col gap-6 items-start justify-between mb-8 md:flex-row md:items-center">
         <div>
-            <h1 class="font-display text-3xl font-semibold text-primary">Removal Pipeline</h1>
-            <p class="text-secondary mt-1">Track broker responses and automate follow-ups</p>
+            <h1 class="page-title">Removal Pipeline</h1>
+            <p class="lede">Track broker responses and automate follow-ups</p>
         </div>
-        <div class="flex items-center gap-3">
+        <div class="row">
             {{if .InboxConfigured}}
             {{range .InboxActions}}
-            <div class="relative group">
+            <div class="group relative">
                 <button id="{{.ID}}" class="{{.Class}}" hx-post="{{.Post}}" hx-target="#scan-result" hx-swap="innerHTML"{{if .Spinner}} hx-indicator="#{{.Spinner}}"{{end}}>
                     {{if .Icon}}{{icon .Icon "w-5 h-5"}}{{end}}
                     {{if .Spinner}}{{spinner .Spinner "w-5 h-5"}}{{end}}
                     {{.Label}}
                 </button>
                 <div class="absolute right-0 mt-2 {{.TipWidth}} p-3 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10 bg-elevated border">
-                    <p class="text-xs text-secondary">{{.Tip}}</p>
+                    <p class="text-secondary text-xs">{{.Tip}}</p>
                 </div>
             </div>
             {{end}}
@@ -35,20 +35,20 @@
     {{if .InboxConfigured}}
     <!-- How It Works (collapsible) -->
     <details class="card mb-6">
-        <summary class="px-4 py-3 cursor-pointer flex items-center gap-2 text-sm font-medium text-secondary hover:text-primary">
+        <summary class="cursor-pointer flex font-medium gap-2 hover:text-primary items-center px-4 py-3 text-secondary text-sm">
             {{icon "info" "w-4 h-4"}}
             How to track broker responses
         </summary>
-        <div class="px-4 pb-4 border-t">
-            <ol class="mt-3 space-y-2 text-sm text-secondary">
+        <div class="border-t pb-4 px-4">
+            <ol class="mt-3 space-y-2 text-secondary text-sm">
                 {{range $i, $step := .Steps}}
-                <li class="flex items-start gap-2">
-                    <span class="flex-shrink-0 w-5 h-5 rounded-full text-xs flex items-center justify-center font-medium tint-info">{{add $i 1}}</span>
+                <li class="flex gap-2 items-start">
+                    <span class="flex flex-shrink-0 font-medium h-5 items-center justify-center rounded-full text-xs tint-info w-5">{{add $i 1}}</span>
                     <span><strong>{{$step.Lead}}</strong>{{$step.Rest}}</span>
                 </li>
                 {{end}}
             </ol>
-            <p class="mt-3 text-xs text-muted">
+            <p class="mt-3 text-muted text-xs">
                 <strong>Tip:</strong> If form links aren't appearing, click "Reclassify" to re-analyze emails with the improved extractor.
             </p>
         </div>
@@ -57,7 +57,7 @@
 
     {{if not .InboxConfigured}}
     <div class="alert alert-info mb-6">
-        <p class="text-sm">To fetch new broker responses, <a href="/settings" class="text-accent hover:underline">configure inbox monitoring in Settings</a>.</p>
+        <p class="text-sm">To fetch new broker responses, <a href="/settings" class="link">configure inbox monitoring in Settings</a>.</p>
     </div>
     {{end}}
 

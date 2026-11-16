@@ -1,14 +1,14 @@
 {{define "content"}}
-<div class="space-y-6 fade-in-up">
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div class="flex items-center gap-4">
+<div class="fade-in-up space-y-6">
+    <div class="page-head">
+        <div class="flex gap-4 items-center">
             <a href="/tasks" class="btn btn-ghost p-2">{{icon "arrow-left" "w-5 h-5"}}</a>
             <div>
-                <h1 class="font-display text-2xl font-bold text-primary">Task Details</h1>
-                <p class="text-secondary mt-1">{{.Task.BrokerName}}</p>
+                <h1 class="font-bold font-display text-2xl text-primary">Task Details</h1>
+                <p class="lede">{{.Task.BrokerName}}</p>
             </div>
         </div>
-        <div class="flex items-center gap-3">
+        <div class="row">
             {{if .Task.FormURL}}
             <a href="{{.Task.FormURL}}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">{{icon "external-link" "w-4 h-4"}} Open Form</a>
             {{end}}
@@ -21,33 +21,33 @@
         </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="gap-6 grid grid-cols-1 lg:grid-cols-3">
         <div class="lg:col-span-2 space-y-6">
             {{card "Task Information"}}
                 <div class="space-y-4">
                     <div>
-                        <p class="text-sm text-muted">Task Type</p>
-                        <p class="text-lg font-semibold text-primary capitalize">{{.Task.TaskType}}</p>
+                        <p class="note">Task Type</p>
+                        <p class="capitalize font-semibold text-lg text-primary">{{.Task.TaskType}}</p>
                     </div>
-                    <div class="grid grid-cols-2 gap-4 pt-4 border-t">
+                    <div class="border-t gap-4 grid grid-cols-2 pt-4">
                         <div>
-                            <p class="text-sm text-muted">Broker ID</p>
-                            <p class="text-sm font-medium text-primary">{{.Task.BrokerID}}</p>
+                            <p class="note">Broker ID</p>
+                            <p class="font-medium text-primary text-sm">{{.Task.BrokerID}}</p>
                         </div>
                         <div>
-                            <p class="text-sm text-muted">Status</p>
+                            <p class="note">Status</p>
                             {{if eq .Task.Status "pending"}}{{template "partials/status-dot.html" (dict "Text" .Task.Status "Color" "text-warning" "Dot" "status-dot-warning")}}
                             {{else if eq .Task.Status "completed"}}{{template "partials/status-dot.html" (dict "Text" .Task.Status "Color" "text-success" "Dot" "status-dot-success")}}
                             {{else}}{{template "partials/status-dot.html" (dict "Text" .Task.Status "Color" "text-muted" "Dot" "status-dot")}}{{end}}
                         </div>
                         <div>
-                            <p class="text-sm text-muted">Created</p>
-                            <p class="text-sm font-medium text-primary">{{formatTime .Task.CreatedAt}}</p>
+                            <p class="note">Created</p>
+                            <p class="font-medium text-primary text-sm">{{formatTime .Task.CreatedAt}}</p>
                         </div>
                         {{if .Task.CompletedAt.Valid}}
                         <div>
-                            <p class="text-sm text-muted">Completed</p>
-                            <p class="text-sm font-medium text-primary">{{formatTime .Task.CompletedAt.Time}}</p>
+                            <p class="note">Completed</p>
+                            <p class="font-medium text-primary text-sm">{{formatTime .Task.CompletedAt.Time}}</p>
                         </div>
                         {{end}}
                     </div>
@@ -56,22 +56,22 @@
 
             {{if .Task.FormURL}}
             {{card "Form URL"}}
-                <div class="p-4 rounded-lg font-mono text-sm break-all bg-elevated">
-                    <a href="{{.Task.FormURL}}" target="_blank" rel="noopener noreferrer" class="text-accent hover:underline">{{.Task.FormURL}}</a>
+                <div class="bg-elevated break-all font-mono p-4 rounded-lg text-sm">
+                    <a href="{{.Task.FormURL}}" target="_blank" rel="noopener noreferrer" class="link">{{.Task.FormURL}}</a>
                 </div>
-                <p class="text-xs text-muted mt-2">Click the link above or use the "Open Form" button to navigate to the opt-out form.</p>
+                <p class="mt-2 text-muted text-xs">Click the link above or use the "Open Form" button to navigate to the opt-out form.</p>
             {{endcard}}
             {{end}}
 
             {{if .Task.Notes}}
             {{card "Notes"}}
-                <div class="p-4 rounded-lg text-sm text-secondary bg-elevated">{{.Task.Notes}}</div>
+                <div class="bg-elevated p-4 rounded-lg text-secondary text-sm">{{.Task.Notes}}</div>
             {{endcard}}
             {{end}}
 
             {{if .Task.ScreenshotPath}}
             {{card "Screenshot"}}
-                <div class="rounded-lg overflow-hidden border">
+                <div class="border overflow-hidden rounded-lg">
                     <img src="/tasks/{{.Task.ID}}/screenshot" alt="Form screenshot" class="w-full">
                 </div>
             {{endcard}}
@@ -80,16 +80,16 @@
 
         <div class="space-y-6">
             {{card "Instructions"}}
-                {{if .Steps}}{{template "partials/steps.html" .Steps}}{{else}}<p class="text-sm text-secondary">{{.Note}}</p>{{end}}
+                {{if .Steps}}{{template "partials/steps.html" .Steps}}{{else}}<p class="note-secondary">{{.Note}}</p>{{end}}
             {{endcard}}
 
             {{card "Quick Actions"}}
                 <div class="space-y-2">
                     {{if .Task.FormURL}}
-                    <a href="{{.Task.FormURL}}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary w-full justify-start">{{icon "external-link" "w-4 h-4"}} Open Form in New Tab</a>
+                    <a href="{{.Task.FormURL}}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary justify-start w-full">{{icon "external-link" "w-4 h-4"}} Open Form in New Tab</a>
                     {{end}}
-                    <a href="/brokers?search={{.Task.BrokerID}}" class="btn btn-secondary w-full justify-start">{{icon "building" "w-4 h-4"}} View Broker Details</a>
-                    <a href="/history?broker={{.Task.BrokerID}}" class="btn btn-secondary w-full justify-start">{{icon "clock" "w-4 h-4"}} View History</a>
+                    <a href="/brokers?search={{.Task.BrokerID}}" class="btn btn-secondary justify-start w-full">{{icon "building" "w-4 h-4"}} View Broker Details</a>
+                    <a href="/history?broker={{.Task.BrokerID}}" class="btn btn-secondary justify-start w-full">{{icon "clock" "w-4 h-4"}} View History</a>
                 </div>
             {{endcard}}
         </div>

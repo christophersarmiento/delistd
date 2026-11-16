@@ -1,54 +1,54 @@
 {{define "content"}}
 <div class="page-center">
-    <div class="max-w-lg w-full fade-in-up">
+    <div class="fade-in-up narrow">
         <div class="card p-8 text-center">
             <!-- Success Animation -->
             <div class="mb-8">
-                <div class="w-24 h-24 mx-auto rounded-full flex items-center justify-center tint-success pulse-glow">
+                <div class="flex h-24 items-center justify-center mx-auto pulse-glow rounded-full tint-success w-24">
                     {{icon "check-circle" "w-12 h-12 text-success"}}
                 </div>
             </div>
 
-            <h1 class="font-display text-3xl font-bold text-primary mb-3">You're All Set!</h1>
-            <p class="text-secondary mb-8">
+            <h1 class="font-bold font-display mb-3 text-3xl text-primary">You're All Set!</h1>
+            <p class="mb-8 text-secondary">
                 Welcome, {{.Profile.FirstName}}! Delistd is ready to protect your privacy.
             </p>
 
             <!-- What's Next -->
-            <div class="text-left p-5 rounded-xl mb-8 bg-elevated">
-                <h3 class="font-medium text-primary mb-4">What happens next:</h3>
+            <div class="bg-elevated mb-8 p-5 rounded-xl text-left">
+                <h3 class="font-medium mb-4 text-primary">What happens next:</h3>
                 <div class="space-y-4">
-                    <div class="flex items-start gap-3">
-                        <div class="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold tint-info">1</div>
+                    <div class="row-top">
+                        <div class="flex flex-shrink-0 font-bold h-7 items-center justify-center rounded-full text-sm tint-info w-7">1</div>
                         <span class="text-secondary">Browse the list of 700+ data brokers in our database</span>
                     </div>
-                    <div class="flex items-start gap-3">
-                        <div class="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold tint-info">2</div>
+                    <div class="row-top">
+                        <div class="flex flex-shrink-0 font-bold h-7 items-center justify-center rounded-full text-sm tint-info w-7">2</div>
                         <span class="text-secondary">Click "Send to All" to start sending removal requests</span>
                     </div>
-                    <div class="flex items-start gap-3">
-                        <div class="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold tint-info">3</div>
+                    <div class="row-top">
+                        <div class="flex flex-shrink-0 font-bold h-7 items-center justify-center rounded-full text-sm tint-info w-7">3</div>
                         <span class="text-secondary">Track your progress and responses in the dashboard</span>
                     </div>
                 </div>
             </div>
 
             <!-- Tip -->
-            <div class="text-left p-4 rounded-xl mb-8 flex items-start gap-3 bg-accent-muted">
+            <div class="bg-accent-muted flex gap-3 items-start mb-8 p-4 rounded-xl text-left">
                 {{icon "info" "w-5 h-5 text-accent flex-shrink-0 mt-0.5"}}
-                <p class="text-sm text-secondary">
+                <p class="note-secondary">
                     <strong class="text-primary">Tip:</strong> Data brokers often re-add your information. Run Delistd monthly to keep your data removed.
                 </p>
             </div>
 
             <!-- CTA -->
-            <a href="/" class="btn btn-primary w-full py-3 text-lg">
+            <a href="/" class="btn btn-primary py-3 text-lg w-full">
                 Go to Dashboard
                 {{icon "arrow-right" "w-5 h-5"}}
             </a>
         </div>
 
-        <p class="text-center text-sm text-muted mt-6">
+        <p class="mt-6 text-center text-muted text-sm">
             Your configuration has been saved locally.
         </p>
     </div>

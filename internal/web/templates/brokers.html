@@ -1,12 +1,12 @@
 {{define "content"}}
 <div class="fade-in-up">
     <!-- Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+    <div class="flex flex-col gap-4 justify-between mb-8 sm:flex-row sm:items-center">
         <div>
-            <h1 class="font-display text-3xl font-semibold text-primary">Data Brokers</h1>
-            <p class="text-secondary mt-1">{{.Total}} brokers in database</p>
+            <h1 class="page-title">Data Brokers</h1>
+            <p class="lede">{{.Total}} brokers in database</p>
         </div>
-        <div class="flex flex-wrap items-center gap-2 sm:ml-auto">
+        <div class="flex flex-wrap gap-2 items-center sm:ml-auto">
         <a href="/export/drafts.zip" class="btn btn-secondary" title="Download every in-scope removal email as a .eml file to send by hand, then use Mark sent">Download drafts (.zip)</a>
         <a href="/brokers/new" class="btn btn-secondary" title="Add a broker that's missing from the list - kept on your machine, safe from list updates">+ Add broker</a>
         {{if not .ManualMode}}
@@ -41,7 +41,7 @@
 
     {{if .ManualMode}}
     <div class="alert alert-info mb-6">
-        <div class="flex items-start gap-3">
+        <div class="row-top">
             {{icon "info" "w-5 h-5 flex-shrink-0 mt-0.5"}}
             <p class="text-sm">
                 <strong>Manual mode.</strong> Delistd won't send anything. For each broker,
@@ -55,7 +55,7 @@
     <!-- Daily limit info banner -->
     {{if and (not .ManualMode) (gt .Filtered .DailyLimit)}}
     <div class="alert alert-info mb-6">
-        <div class="flex items-start gap-3">
+        <div class="row-top">
             {{icon "info" "w-5 h-5 flex-shrink-0 mt-0.5"}}
             <div>
                 <p class="text-sm">
@@ -71,25 +71,25 @@
     <!-- Send progress area -->
     <div id="send-all-progress" class="mb-6"></div>
 
-    <div class="card p-4 mb-6">
+    <div class="card mb-6 p-4">
         <form id="broker-filters" hx-get="/api/brokers" hx-target="#broker-list" hx-trigger="change, submit, keyup changed delay:300ms from:#broker-search">
-            <div class="flex flex-col md:flex-row gap-4">
+            <div class="flex flex-col gap-4 md:flex-row">
                 <div class="flex-1 relative">
                     {{icon "search" "absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted pointer-events-none"}}
                     <input type="text" id="broker-search" name="search" placeholder="Search by ID, name, or email..." value="{{.Search}}" class="input pl-10">
                 </div>
-                <div class="flex flex-wrap items-center gap-3">
+                <div class="flex flex-wrap gap-3 items-center">
                     {{range .Filters}}
                     <select name="{{.Name}}" aria-label="{{.Label}}" class="input w-auto {{.MinWidthClass}}">
                         <option value="">{{.AllLabel}}</option>
                         {{range .Options}}<option value="{{.Value}}"{{if .Selected}} selected{{end}}>{{.Label}}</option>{{end}}
                     </select>
                     {{end}}
-                    <label class="flex items-center gap-2 text-sm text-secondary select-none cursor-pointer whitespace-nowrap">
+                    <label class="cursor-pointer flex gap-2 items-center select-none text-secondary text-sm whitespace-nowrap">
                         <input type="checkbox" name="missing_email" value="true"{{if .MissingEmail}} checked{{end}}>
                         Missing email only
                     </label>
-                    <label class="flex items-center gap-2 text-sm text-secondary select-none cursor-pointer whitespace-nowrap">
+                    <label class="cursor-pointer flex gap-2 items-center select-none text-secondary text-sm whitespace-nowrap">
                         <input type="checkbox" name="show_excluded" value="true"{{if .ShowExcluded}} checked{{end}}>
                         Show excluded
                     </label>
@@ -98,10 +98,10 @@
         </form>
         {{if not .ManualMode}}
         <details class="mt-4">
-            <summary class="text-sm font-medium text-secondary cursor-pointer">Advanced send filters</summary>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
+            <summary class="cursor-pointer font-medium text-secondary text-sm">Advanced send filters</summary>
+            <div class="gap-3 grid grid-cols-1 md:grid-cols-3 mt-3">
                 <div>
-                    <label for="send-status" class="block text-xs text-muted mb-1">History status</label>
+                    <label for="send-status" class="block mb-1 text-muted text-xs">History status</label>
                     <select id="send-status" class="input">
                         <option value="eligible">Eligible (25-day cooldown)</option>
                         <option value="never">Never sent</option>
@@ -110,15 +110,15 @@
                     </select>
                 </div>
                 <div>
-                    <label for="send-broker-ids" class="block text-xs text-muted mb-1">Only broker IDs</label>
+                    <label for="send-broker-ids" class="block mb-1 text-muted text-xs">Only broker IDs</label>
                     <input id="send-broker-ids" class="input" placeholder="spokeo, pipl">
                 </div>
                 <div>
-                    <label for="send-exclude-ids" class="block text-xs text-muted mb-1">Exclude broker IDs</label>
+                    <label for="send-exclude-ids" class="block mb-1 text-muted text-xs">Exclude broker IDs</label>
                     <input id="send-exclude-ids" class="input" placeholder="broker-a, broker-b">
                 </div>
             </div>
-            <p class="text-xs text-muted mt-2">Search, category, and region above are also applied. “All” ignores send history; review the list before sending.</p>
+            <p class="mt-2 text-muted text-xs">Search, category, and region above are also applied. “All” ignores send history; review the list before sending.</p>
         </details>
         {{end}}
     </div>
@@ -129,7 +129,7 @@
     <div id="broker-list" class="card overflow-hidden" aria-live="polite">{{template "partials/broker-list.html" .}}</div>
 
     <!-- Help text -->
-    <p class="text-center text-sm text-muted mt-6">
+    <p class="mt-6 text-center text-muted text-sm">
         Use search and filters to narrow down the list before sending.
     </p>
 </div>

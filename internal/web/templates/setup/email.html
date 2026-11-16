@@ -1,12 +1,12 @@
 {{define "content"}}
 <div class="page-center py-8">
-    <div class="max-w-lg w-full fade-in-up">
+    <div class="fade-in-up narrow">
         <div class="card p-8">
             {{template "partials/setup-steps.html" 3}}
 
             <!-- Header -->
             <div class="mb-6">
-                <h1 class="font-display text-2xl font-semibold text-primary mb-2">Connect Your Email</h1>
+                <h1 class="font-display font-semibold mb-2 text-2xl text-primary">Connect Your Email</h1>
                 <p class="text-secondary">We'll send removal requests from your own email account</p>
             </div>
 
@@ -27,8 +27,8 @@
                     </button>
                 </div>
 
-                <div class="text-center pt-2">
-                    <button type="submit" name="manual" value="1" class="text-sm text-muted hover:text-primary hover:underline">
+                <div class="pt-2 text-center">
+                    <button type="submit" name="manual" value="1" class="hover:text-primary hover:underline text-muted text-sm">
                         Skip &mdash; I'll send the emails myself
                     </button>
                 </div>
@@ -36,7 +36,7 @@
         </div>
 
         <!-- Security Note -->
-        <p class="text-center text-xs text-muted mt-4 px-4">
+        <p class="mt-4 px-4 text-center text-muted text-xs">
             Your password is stored on your computer and only used to talk to your email provider.
             Or skip this step and send the removal emails from your own mail client.
         </p>

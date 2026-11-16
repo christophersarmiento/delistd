@@ -1,35 +1,35 @@
 {{define "content"}}
 <div class="max-w-4xl mx-auto">
     <div class="mb-6">
-        <a href="/tasks" class="text-sm text-accent hover:underline">&larr; Back to Action Needed</a>
-        <h1 class="font-display text-2xl font-bold text-primary mt-2">CAPTCHA Task: {{.Task.BrokerName}}</h1>
-        <p class="text-secondary mt-1">Complete this form manually after solving the CAPTCHA</p>
+        <a href="/tasks" class="hover:underline text-accent text-sm">&larr; Back to Action Needed</a>
+        <h1 class="font-bold font-display mt-2 text-2xl text-primary">CAPTCHA Task: {{.Task.BrokerName}}</h1>
+        <p class="lede">Complete this form manually after solving the CAPTCHA</p>
     </div>
 
-    <div class="rounded-lg p-4 mb-6 bg-elevated">
+    <div class="bg-elevated mb-6 p-4 rounded-lg">
         <div class="flex flex-wrap gap-6 text-sm">
-            <div><span class="text-muted">Created:</span> <span class="font-medium text-primary">{{formatTime .Task.CreatedAt}}</span></div>
-            {{if .Task.OpenedAt.Valid}}<div><span class="text-muted">First Opened:</span> <span class="font-medium text-primary">{{formatTime .Task.OpenedAt.Time}}</span></div>{{end}}
+            <div><span class="text-muted">Created:</span> <span class="emph">{{formatTime .Task.CreatedAt}}</span></div>
+            {{if .Task.OpenedAt.Valid}}<div><span class="text-muted">First Opened:</span> <span class="emph">{{formatTime .Task.OpenedAt.Time}}</span></div>{{end}}
             {{if .Task.CompletedAt.Valid}}<div><span class="text-muted">Completed:</span> <span class="font-medium text-success">{{formatTime .Task.CompletedAt.Time}}</span></div>{{end}}
         </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="gap-6 grid grid-cols-1 lg:grid-cols-2">
         {{card "Your Information"}}
-            <p class="text-sm text-muted mb-4">Click any field to copy it to your clipboard</p>
+            <p class="mb-4 text-muted text-sm">Click any field to copy it to your clipboard</p>
             <div class="space-y-3">
                 {{range .OrderedProfile}}
-                <div class="copy-field flex items-center justify-between p-3 rounded-lg transition-colors cursor-pointer bg-elevated" data-value="{{.value}}">
+                <div class="bg-elevated copy-field cursor-pointer flex items-center justify-between p-3 rounded-lg transition-colors" data-value="{{.value}}">
                     <div>
-                        <span class="text-xs text-muted uppercase tracking-wide">{{.key}}</span>
-                        <p class="font-medium text-primary">{{.value}}</p>
+                        <span class="text-muted text-xs tracking-wide uppercase">{{.key}}</span>
+                        <p class="emph">{{.value}}</p>
                     </div>
-                    <button class="text-accent hover:bg-accent-muted p-2 rounded-md transition-colors" title="Copy to clipboard">{{icon "clipboard-copy" "w-5 h-5"}}</button>
+                    <button class="hover:bg-accent-muted p-2 rounded-md text-accent transition-colors" title="Copy to clipboard">{{icon "clipboard-copy" "w-5 h-5"}}</button>
                 </div>
                 {{end}}
             </div>
             <div class="mt-6">
-                <a href="{{.Task.FormURL}}" target="_blank" rel="noopener noreferrer" class="btn btn-primary w-full justify-center">Open Form in New Tab</a>
+                <a href="{{.Task.FormURL}}" target="_blank" rel="noopener noreferrer" class="btn btn-primary justify-center w-full">Open Form in New Tab</a>
             </div>
         {{endcard}}
 
@@ -46,7 +46,7 @@
 
             {{if .Task.ScreenshotPath}}
             {{card "Form Screenshot"}}
-                <img src="/tasks/{{.Task.ID}}/screenshot" alt="Form screenshot" class="w-full rounded-lg border">
+                <img src="/tasks/{{.Task.ID}}/screenshot" alt="Form screenshot" class="border rounded-lg w-full">
             {{endcard}}
             {{end}}
 
@@ -57,9 +57,9 @@
                     <form action="/tasks/{{.Task.ID}}/skip" method="POST" class="inline">{{.CSRFField}}<button type="submit" class="btn btn-secondary">Skip</button></form>
                 </div>
                 {{else if eq .Task.Status "completed"}}
-                <div class="flex items-center gap-2 text-success">{{icon "check" "w-5 h-5"}} <span class="font-medium">This task has been completed</span></div>
+                <div class="flex gap-2 items-center text-success">{{icon "check" "w-5 h-5"}} <span class="font-medium">This task has been completed</span></div>
                 {{else if eq .Task.Status "skipped"}}
-                <div class="flex items-center gap-2 text-muted">{{icon "chevron-double-right" "w-5 h-5"}} <span class="font-medium">This task has been skipped</span></div>
+                <div class="flex gap-2 items-center text-muted">{{icon "chevron-double-right" "w-5 h-5"}} <span class="font-medium">This task has been skipped</span></div>
                 {{end}}
             {{endcard}}
         </div>

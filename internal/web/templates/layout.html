@@ -22,18 +22,18 @@
     <a href="#main" class="skip-link">Skip to main content</a>
     <nav class="site-nav" aria-label="Main">
         <div class="max-w-6xl mx-auto px-4 site-nav-inner">
-            <a href="/" class="flex items-center gap-2">
+            <a href="/" class="row-tight">
                 <img src="/static/favicon.svg" alt="" class="brand-mark" width="26" height="26">
-                <span class="font-display text-lg font-semibold text-primary">delistd</span>
+                <span class="font-display font-semibold text-lg text-primary">delistd</span>
             </a>
 
-            <div class="hidden sm:flex items-stretch gap-1 desktop-nav h-full">
+            <div class="desktop-nav gap-1 h-full hidden items-stretch sm:flex">
                 {{range .Nav}}<a href="{{.Href}}" class="nav-link{{if eq $.Title .Title}} active{{end}}">{{.Label}}</a>{{end}}
             </div>
 
-            <div class="flex items-center gap-2">
+            <div class="row-tight">
                 <!-- shown on any page while a send job runs, whichever page started it -->
-                <a id="global-job-indicator" href="/brokers" class="hidden items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full tint-info">
+                <a id="global-job-indicator" href="/brokers" class="font-medium gap-1.5 hidden items-center px-2.5 py-1 rounded-full text-xs tint-info">
                     <span class="spinner spinner-sm"></span>
                     <span id="global-job-indicator-text">Sending...</span>
                 </a>
@@ -43,18 +43,18 @@
             </div>
         </div>
 
-        <div id="mobile-nav" class="hidden sm:hidden border-t bg-surface">
-            <div class="max-w-6xl mx-auto px-4 py-3 flex flex-col gap-1">
-                <div class="flex items-center justify-between mb-2 px-3"><span class="text-sm text-muted">Theme</span>{{template "partials/theme-switch.html" "theme-switch-menu"}}</div>
+        <div id="mobile-nav" class="bg-surface border-t hidden sm:hidden">
+            <div class="flex flex-col gap-1 max-w-6xl mx-auto px-4 py-3">
+                <div class="flex items-center justify-between mb-2 px-3"><span class="note">Theme</span>{{template "partials/theme-switch.html" "theme-switch-menu"}}</div>
                 {{template "partials/profile-switcher.html" (dict "Page" . "FormClass" "mb-2" "SelectClass" "w-full")}}
                 {{range .Nav}}<a href="{{.Href}}" class="nav-link-mobile{{if eq $.Title .Title}} active{{end}}">{{.Label}}</a>{{end}}
             </div>
         </div>
     </nav>
 
-    <main id="main" tabindex="-1" class="max-w-6xl mx-auto pt-8 pb-12 px-4">
+    <main id="main" tabindex="-1" class="max-w-6xl mx-auto pb-12 pt-8 px-4">
         {{with .UpgradeNotice}}
-        <div class="notice mb-6" role="status">
+        <div class="mb-6 notice" role="status">
             <div class="notice-icon" aria-hidden="true">{{icon "check" "w-5 h-5"}}</div>
             <div class="notice-body">
                 <p class="notice-title">Config upgraded to 2.0</p>
@@ -70,14 +70,14 @@
     </main>
 
     <footer class="border-t mt-auto">
-        <div class="max-w-6xl mx-auto py-6 px-4">
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div class="flex items-center gap-2">
+        <div class="max-w-6xl mx-auto px-4 py-6">
+            <div class="flex flex-col gap-4 items-center justify-between sm:flex-row">
+                <div class="row-tight">
                     {{icon "shield-check" "w-5 h-5 text-accent"}}
-                    <span class="text-sm text-muted">Delistd - Open Source Privacy Protection</span>
+                    <span class="note">Delistd - Open Source Privacy Protection</span>
                 </div>
-                <div class="flex items-center gap-4 text-sm text-muted">
-                    <a href="https://github.com/drumandbytes/delistd" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 hover:text-primary transition-colors">{{icon "github" "w-4 h-4"}}Source code</a>
+                <div class="flex gap-4 items-center text-muted text-sm">
+                    <a href="https://github.com/drumandbytes/delistd" target="_blank" rel="noopener" class="gap-1.5 hover:text-primary inline-flex items-center transition-colors">{{icon "github" "w-4 h-4"}}Source code</a>
                     <span>{{.Version}}</span>
                 </div>
             </div>

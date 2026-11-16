@@ -103,7 +103,6 @@ img { max-width: 100%; height: auto; }
 .min-w-35 { min-width: 8.75rem; }
 .max-w-4xl { max-width: 56rem; }
 .max-w-6xl { max-width: 72rem; }
-.max-w-lg { max-width: 32rem; }
 .max-w-md { max-width: 28rem; }
 .flex-1 { flex: 1 1 0%; }
 .flex-shrink-0 { flex-shrink: 0; }
@@ -228,7 +227,6 @@ img { max-width: 100%; height: auto; }
   .sm\:grid-cols-4 { grid-template-columns: repeat(4,minmax(0,1fr)); }
   .sm\:flex-row { flex-direction: row; }
   .sm\:items-center { align-items: center; }
-  .sm\:justify-between { justify-content: space-between; }
 }
 @media (min-width:768px) {
   .md\:items-end { align-items: flex-end; }

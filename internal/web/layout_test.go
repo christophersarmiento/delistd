@@ -3,6 +3,7 @@ package web
 import (
 	"net/http"
 	"net/http/httptest"
+	"regexp"
 	"strings"
 	"testing"
 )
@@ -18,7 +19,7 @@ func dashboard(t *testing.T, s *Server) string {
 // override the job pill is visible on every page even when nothing is sending.
 func TestJobPillStaysHiddenWithoutAJob(t *testing.T) {
 	body := dashboard(t, smokeServer(t))
-	if !strings.Contains(body, `id="global-job-indicator" href="/brokers" class="hidden`) {
+	if !regexp.MustCompile(`id="global-job-indicator"[^>]*class="(?:[^"]* )?hidden[ "]`).MatchString(body) {
 		t.Fatal("job indicator should render hidden")
 	}
 	css, err := staticFS.ReadFile("static/css/app.css")

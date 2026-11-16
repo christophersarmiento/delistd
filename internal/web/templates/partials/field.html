@@ -11,6 +11,6 @@
     <input type="{{.Type}}" name="{{.Name}}" id="{{.Name}}"{{if .Autocomplete}} autocomplete="{{.Autocomplete}}"{{end}}{{if .Required}} required{{end}}{{if .Attrs}} {{.Attrs}}{{end}}
         value="{{.Value}}" class="input{{if .Error}} border-error{{end}}"{{if .Placeholder}} placeholder="{{.Placeholder}}"{{end}}>
     {{- end}}
-    {{if .Error}}<p class="mt-1 text-sm text-error">{{.Error}}</p>{{end}}
+    {{if .Error}}<p class="field-error">{{.Error}}</p>{{end}}
     {{if .Hint}}<p class="{{.HintClass}}">{{.Hint}}</p>{{end}}
 </div>
