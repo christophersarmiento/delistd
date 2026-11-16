@@ -3,24 +3,23 @@ package web
 import (
 	"context"
 	"crypto/rand"
+	"errors"
 	"fmt"
-	"github.com/drumandbytes/delistd/internal/datadir"
 	"html/template"
 	"net"
 	"net/http"
 	"os"
-	"os/exec"
 	"path/filepath"
-	"runtime"
 	"sync"
 	"sync/atomic"
 	"time"
 
 	"github.com/drumandbytes/delistd/internal/broker"
 	"github.com/drumandbytes/delistd/internal/config"
+	"github.com/drumandbytes/delistd/internal/datadir"
 	"github.com/drumandbytes/delistd/internal/history"
 	"github.com/drumandbytes/delistd/internal/schedule"
-	emaTemplate "github.com/drumandbytes/delistd/internal/template"
+	emailtmpl "github.com/drumandbytes/delistd/internal/template"
 )
 
 const (
@@ -29,163 +28,162 @@ const (
 	defaultSessionTTL = 30 * time.Minute
 )
 
-// Version is the build version shown in the web UI footer. main sets it from
-// its own -ldflags-injected version at startup; it stays "dev" otherwise.
+// Version is the build version shown in the footer. main sets it from its
+// -ldflags value at startup; it stays "dev" otherwise.
 var Version = "dev"
 
+// Server is the local web UI.
 type Server struct {
-	config     atomic.Pointer[config.Config]
-	configPath string
-	reloadMu   sync.Mutex                            // guards cfgStamp
-	cfgStamp   string                                // version of config.yaml the current config came from
-	brokerDB   atomic.Pointer[broker.BrokerDatabase] // swapped by the "update broker list" action; read via brokers()
-	// BrokerOverride is serve's --brokers flag, so a reload resolves the list
-	// the same way startup did.
-	BrokerOverride string
-	// ListenHost is serve's --listen flag: the interface to bind. Empty means
-	// 127.0.0.1. Only a container should set anything else (see listenAddr).
-	ListenHost string
-	// AllowedHosts is serve's --allowed-hosts flag (or DELISTD_ALLOWED_HOSTS):
-	// hostnames/IPs permitted in Host headers. Wildcard "*" allows any.
-	AllowedHosts    []string
-	brokerUpdateURL string // broker.DefaultUpdateURL; tests point it at a local server
-	historyStore    *history.Store
-	tmplEngine      *emaTemplate.Engine
-	templates       map[string]*template.Template
-	httpServer      *http.Server
-	port            int
-	csrfKey         []byte
-	sessions        *SessionStore
-	rateLimiter     *RateLimiter
-	jobManager      *JobManager
-	dataDir         string // config directory: schedule lock and state
+	// Settings the caller sets after NewServer.
+	BrokerOverride string   // serve's --brokers, so a reload resolves the list as startup did
+	ListenHost     string   // serve's --listen; empty binds 127.0.0.1, anything else is for containers
+	AllowedHosts   []string // serve's --allowed-hosts / DELISTD_ALLOWED_HOSTS; "*" allows any Host
 
-	// In-app scheduler (scheduler.go). The OS hooks are fields so tests
-	// don't touch the real launchd/systemd setup.
-	cycleMu       sync.Mutex
-	cycleRunning  bool
+	// State shared with the handlers. config and brokerDB are swapped whole,
+	// so read them through getConfig and brokers.
+	config       atomic.Pointer[config.Config]
+	brokerDB     atomic.Pointer[broker.BrokerDatabase]
+	configPath   string
+	dataDir      string // the config directory: schedule lock and state live here
+	reloadMu     sync.Mutex
+	cfgStamp     string // version of config.yaml the current config came from (guarded by reloadMu)
+	historyStore *history.Store
+	tmplEngine   *emailtmpl.Engine
+	templates    map[string]*template.Template
+	csrfKey      []byte
+	sessions     *SessionStore
+	rateLimiter  *RateLimiter
+	jobManager   *JobManager
+	port         int
+
+	brokerUpdateURL string // broker.DefaultUpdateURL; tests point it at a local server
+
+	// Lifecycle, guarded by lifeMu.
+	lifeMu        sync.Mutex
+	httpServer    *http.Server
 	stopScheduler context.CancelFunc
-	lifeMu        sync.Mutex // httpServer, stopScheduler, shutDown
 	shutDown      bool
-	osInstalled   func() bool
-	installOS     func(schedule.Job) error
-	removeOS      func() error
+
+	// The in-app scheduler (scheduler.go). The OS hooks are fields so tests
+	// never touch the real launchd or systemd.
+	cycleMu      sync.Mutex
+	cycleRunning bool
+	osInstalled  func() bool
+	installOS    func(schedule.Job) error
+	removeOS     func() error
 }
 
-func NewServer(port int, cfg *config.Config, configPath string, brokerDB *broker.BrokerDatabase, historyStore *history.Store, tmplEngine *emaTemplate.Engine) (*Server, error) {
-	csrfKey := make([]byte, 32)
-	if _, err := rand.Read(csrfKey); err != nil {
+// NewServer wires a server around an already loaded config, broker list,
+// history store and template engine. configPath is empty only in tests.
+func NewServer(port int, cfg *config.Config, configPath string, brokerDB *broker.BrokerDatabase, store *history.Store, engine *emailtmpl.Engine) (*Server, error) {
+	key := make([]byte, 32)
+	if _, err := rand.Read(key); err != nil {
 		return nil, fmt.Errorf("failed to generate CSRF key: %w", err)
 	}
-
-	// job file next to the config, like history.DBPathFor; configPath is
-	// "" only in tests
-	dataDir := filepath.Dir(configPath)
-	if configPath == "" {
-		home, _ := os.UserHomeDir()
-		dataDir = datadir.Of(home)
-	}
-
-	s := &Server{
-		configPath:   configPath,
-		historyStore: historyStore,
-		tmplEngine:   tmplEngine,
-		port:         port,
-		csrfKey:      csrfKey,
-		sessions:     NewSessionStore(defaultSessionTTL),
-		rateLimiter:  NewRateLimiter(defaultRateLimit, defaultRateWindow),
-		jobManager:   NewJobManager(),
-		dataDir:      dataDir,
-		osInstalled:  schedule.Installed,
-		installOS:    schedule.Install,
-		removeOS:     schedule.Remove,
-	}
-	s.config.Store(cfg)
-	if configPath != "" {
-		// "none" (no file yet) differs from any real stamp, so a config.yaml
-		// created later by the CLI is picked up.
-		if s.cfgStamp = fileStamp(configPath); s.cfgStamp == "" {
-			s.cfgStamp = "none"
-		}
-	}
-
-	// Paused send jobs used to be saved here for resume-on-restart; that's
-	// gone, so drop any leftovers.
-	if configPath != "" {
-		leftovers, _ := filepath.Glob(filepath.Join(dataDir, "pending_job*.json"))
-		for _, f := range leftovers {
-			_ = os.Remove(f)
-		}
-	}
-
-	tmpl, err := loadTemplates()
+	pages, err := loadTemplates()
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse templates: %w", err)
 	}
-	s.templates = tmpl
+
+	s := &Server{
+		configPath:      configPath,
+		dataDir:         dataDirFor(configPath),
+		historyStore:    store,
+		tmplEngine:      engine,
+		templates:       pages,
+		csrfKey:         key,
+		sessions:        NewSessionStore(defaultSessionTTL),
+		rateLimiter:     NewRateLimiter(defaultRateLimit, defaultRateWindow),
+		jobManager:      NewJobManager(),
+		port:            port,
+		brokerUpdateURL: broker.DefaultUpdateURL,
+		osInstalled:     schedule.Installed,
+		installOS:       schedule.Install,
+		removeOS:        schedule.Remove,
+	}
+	s.config.Store(cfg)
 	s.brokerDB.Store(brokerDB)
-	s.brokerUpdateURL = broker.DefaultUpdateURL
+
+	if configPath != "" {
+		// "none" (no file yet) differs from every real stamp, so a config.yaml
+		// the CLI creates later is picked up.
+		if s.cfgStamp = fileStamp(configPath); s.cfgStamp == "" {
+			s.cfgStamp = "none"
+		}
+		removeStaleJobFiles(s.dataDir)
+	}
 	return s, nil
 }
 
-// brokers returns the current broker list; see getConfig for why it's atomic.
-func (s *Server) brokers() *broker.BrokerDatabase {
-	return s.brokerDB.Load()
+// dataDirFor is the config's directory, or the default data directory when
+// there is no config path (tests).
+func dataDirFor(configPath string) string {
+	if configPath != "" {
+		return filepath.Dir(configPath)
+	}
+	home, _ := os.UserHomeDir()
+	return datadir.Of(home)
 }
 
-// getConfig returns the current config. It's an atomic.Pointer because
-// settings handlers write it while handlers and send jobs read it; writers
-// load-copy-mutate-store.
-func (s *Server) getConfig() *config.Config {
-	return s.config.Load()
+// removeStaleJobFiles drops the files paused send jobs were once saved to for
+// resuming after a restart; nothing writes or reads them any more.
+func removeStaleJobFiles(dir string) {
+	stale, _ := filepath.Glob(filepath.Join(dir, "pending_job*.json"))
+	for _, f := range stale {
+		_ = os.Remove(f)
+	}
 }
 
-// Start starts the web server and opens the browser
+// brokers is the current broker list.
+func (s *Server) brokers() *broker.BrokerDatabase { return s.brokerDB.Load() }
+
+// getConfig is the current config. Settings handlers write it while other
+// handlers and the send job read it, so writers load, copy, mutate and store.
+func (s *Server) getConfig() *config.Config { return s.config.Load() }
+
+// Start serves until Shutdown. It returns at once if Shutdown already ran.
 func (s *Server) Start() error {
 	router := s.setupRouter()
 
-	// serve's Ctrl+C handler can call Shutdown before or during this
 	s.lifeMu.Lock()
 	if s.shutDown {
 		s.lifeMu.Unlock()
 		return nil
 	}
-	s.httpServer = &http.Server{
+	srv := &http.Server{
 		Addr:         listenAddr(s.ListenHost, s.port),
 		Handler:      router,
 		ReadTimeout:  15 * time.Second,
 		WriteTimeout: 15 * time.Second,
 		IdleTimeout:  60 * time.Second,
 	}
-	ctx, cancel := context.WithCancel(context.Background())
-	s.stopScheduler = cancel
-	srv := s.httpServer
+	s.httpServer = srv
+	schedCtx, stopSched := context.WithCancel(context.Background())
+	s.stopScheduler = stopSched
 	s.lifeMu.Unlock()
 
-	// listen first: open the browser only once there's a server to load
+	// Listen before opening the browser, so there is a server to load.
 	ln, err := net.Listen("tcp", srv.Addr)
 	if err != nil {
-		cancel()
+		stopSched()
 		return fmt.Errorf("server error: %w", err)
 	}
 
-	go s.runScheduler(ctx)
-	// a non-loopback bind means a container: there's no browser to open
-	if IsLoopbackListen(s.ListenHost) {
+	go s.runScheduler(schedCtx)
+	if IsLoopbackListen(s.ListenHost) { // a non-loopback bind is a container: no browser there
 		go OpenBrowser(fmt.Sprintf("http://localhost:%d", s.port))
 	}
-
 	fmt.Printf("Starting Delistd web UI at http://localhost:%d\n", s.port)
 	fmt.Println("Press Ctrl+C to stop")
 
-	if err := srv.Serve(ln); err != nil && err != http.ErrServerClosed {
+	if err := srv.Serve(ln); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		return fmt.Errorf("server error: %w", err)
 	}
-
 	return nil
 }
 
-// Shutdown stops the server; called before Start, Start returns at once.
+// Shutdown stops the scheduler and the server. Called before Start, it makes
+// Start return immediately.
 func (s *Server) Shutdown(ctx context.Context) error {
 	s.lifeMu.Lock()
 	defer s.lifeMu.Unlock()
@@ -198,48 +196,3 @@ func (s *Server) Shutdown(ctx context.Context) error {
 	}
 	return s.httpServer.Shutdown(ctx)
 }
-
-// OpenBrowser opens url in the default browser; tests replace it.
-var OpenBrowser = func(url string) {
-	if cmd, args := browserCommand(runtime.GOOS, url); cmd != "" {
-		_ = exec.Command(cmd, args...).Start()
-	}
-}
-
-// browserCommand is the command that opens url on goos ("" = unsupported).
-func browserCommand(goos, url string) (string, []string) {
-	switch goos {
-	case "darwin":
-		return "open", []string{url}
-	case "linux":
-		return "xdg-open", []string{url}
-	case "windows":
-		return "cmd", []string{"/c", "start", url}
-	}
-	return "", nil
-}
-
-// activeProfileCookie holds the web UI's profile choice. Not HttpOnly/Secure:
-// no secret, and it's validated against the config (bad value = first profile).
-const activeProfileCookie = "delistd_profile"
-
-// activeProfile is the request's profile: the cookie if it names a configured
-// one, else the first. Unlike --profile, never ambiguous. Use this, not
-// s.config.Profile.
-func (s *Server) activeProfile(r *http.Request) config.NamedProfile {
-	cfg := s.getConfig()
-	if cfg == nil {
-		return config.NamedProfile{ID: config.DefaultProfileID}
-	}
-	profiles := cfg.GetProfiles()
-	if cookie, err := r.Cookie(activeProfileCookie); err == nil {
-		for _, p := range profiles {
-			if p.ID == cookie.Value {
-				return p
-			}
-		}
-	}
-	return profiles[0]
-}
-
-// Helper methods

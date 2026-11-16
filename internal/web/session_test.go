@@ -103,7 +103,7 @@ func TestExpiredSessionsAreSweptOnCreate(t *testing.T) {
 		t.Fatal(err)
 	}
 	store.mu.Lock()
-	remaining := len(store.sessions)
+	remaining := len(store.byID)
 	store.mu.Unlock()
 	if remaining != 1 {
 		t.Fatalf("%d sessions left, want only the new one", remaining)
