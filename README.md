@@ -187,12 +187,14 @@ The Pipeline page (or `delistd pipeline`) lists what needs attention. Select a s
 
 ## How it compares
 
-| Service | Price | Brokers | Open source |
+| | Incogni | DeleteMe | Delistd |
 |---|---|---|---|
-| **Delistd** | Free | 700+ | Yes |
-| Incogni | $77/year | 180+ | No |
-| DeleteMe | $129/year | 750+ | No |
-| Privacy Duck | $500+/year | 500+ | No |
+| Price | $95.88/year (Standard) or $179.88/year (Unlimited), billed annually | $129/year for one person | Free, MIT licence |
+| Who sends the requests | Incogni | DeleteMe | You, from your own email account |
+| Where your details are kept | With the service | With the service | On your machine only |
+| Coverage | 420+ broker sites | Automated plus manual custom removals | 700+ brokers in a published list you can extend |
+
+A paid service saves you time and handles replies and ID checks for you; Delistd gives you control and costs nothing. Prices checked 10 November 2026; the [full comparison](https://delistd.dev/compare/?ref=delistd-readme) has the details, sources and when a paid service is the better choice.
 
 ## More
 
