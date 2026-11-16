@@ -119,9 +119,8 @@ func runInit() error {
 
 	defaultTemplate := existing.Options.Template
 	if defaultTemplate == "" {
-		// This fork is customized for GDPR Article 17 use (see EU-NOTES.md);
-		// upstream defaulted fresh configs to "generic" for its US/CCPA
-		// audience. An existing config's own template choice always wins.
+		// New configs default to gdpr, since the tool is aimed at GDPR Article 17
+		// use (EU-NOTES.md). An existing config's own template choice wins.
 		defaultTemplate = "gdpr"
 	}
 	cfg.Options.Template = promptWithDefault(reader, "Default template (gdpr/ccpa/generic/custom)", defaultTemplate)

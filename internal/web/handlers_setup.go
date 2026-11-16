@@ -231,9 +231,7 @@ func (s *Server) handleSetupComplete(w http.ResponseWriter, r *http.Request) {
 	cfg := &config.Config{
 		Profiles: []config.NamedProfile{{ID: config.DefaultProfileID, Profile: session.Profile}},
 		Options: config.Options{
-			// This fork is customized for GDPR Article 17 use (see EU-NOTES.md) -
-			// default fresh setups to gdpr, not upstream's US/CCPA-oriented
-			// "generic". Matches the CLI's `init` default.
+			// gdpr, like the CLI's `init` default (EU-NOTES.md).
 			Template:    "gdpr",
 			RateLimitMs: 2000,
 		},
