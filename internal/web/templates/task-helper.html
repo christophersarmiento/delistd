@@ -6,7 +6,7 @@
         <p class="text-secondary mt-1">Complete this form manually after solving the CAPTCHA</p>
     </div>
 
-    <div class="rounded-lg p-4 mb-6" style="background: var(--bg-elevated);">
+    <div class="rounded-lg p-4 mb-6 bg-elevated">
         <div class="flex flex-wrap gap-6 text-sm">
             <div><span class="text-muted">Created:</span> <span class="font-medium text-primary">{{formatTime .Task.CreatedAt}}</span></div>
             {{if .Task.OpenedAt.Valid}}<div><span class="text-muted">First Opened:</span> <span class="font-medium text-primary">{{formatTime .Task.OpenedAt.Time}}</span></div>{{end}}
@@ -19,12 +19,12 @@
             <p class="text-sm text-muted mb-4">Click any field to copy it to your clipboard</p>
             <div class="space-y-3">
                 {{range .OrderedProfile}}
-                <div class="copy-field flex items-center justify-between p-3 rounded-lg transition-colors cursor-pointer" data-value="{{.value}}" style="background: var(--bg-elevated);">
+                <div class="copy-field flex items-center justify-between p-3 rounded-lg transition-colors cursor-pointer bg-elevated" data-value="{{.value}}">
                     <div>
                         <span class="text-xs text-muted uppercase tracking-wide">{{.key}}</span>
                         <p class="font-medium text-primary">{{.value}}</p>
                     </div>
-                    <button class="text-accent hover:bg-[var(--accent-muted)] p-2 rounded-md transition-colors" title="Copy to clipboard">{{icon "clipboard-copy" "w-5 h-5"}}</button>
+                    <button class="text-accent hover:bg-accent-muted p-2 rounded-md transition-colors" title="Copy to clipboard">{{icon "clipboard-copy" "w-5 h-5"}}</button>
                 </div>
                 {{end}}
             </div>
@@ -46,7 +46,7 @@
 
             {{if .Task.ScreenshotPath}}
             {{card "Form Screenshot"}}
-                <img src="/tasks/{{.Task.ID}}/screenshot" alt="Form screenshot" class="w-full rounded-lg border-[var(--border)]" style="border-width: 1px;">
+                <img src="/tasks/{{.Task.ID}}/screenshot" alt="Form screenshot" class="w-full rounded-lg border">
             {{endcard}}
             {{end}}
 

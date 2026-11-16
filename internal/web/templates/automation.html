@@ -46,7 +46,7 @@
         <div>
             <h3 class="text-sm font-semibold text-primary">Emails to send</h3>
             {{range .Emails}}
-            <div class="mt-2 p-3 rounded-lg" style="background: var(--bg-surface);">
+            <div class="mt-2 p-3 rounded-lg bg-surface">
                 <p class="text-sm text-primary">To: {{.To}} <span class="text-muted">from {{.From}}</span></p>
                 <p class="text-sm text-secondary">Subject: {{.Subject}}</p>
                 <pre class="text-xs text-secondary whitespace-pre-wrap mt-2">{{.Body}}</pre>

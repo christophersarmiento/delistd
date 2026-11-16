@@ -33,8 +33,8 @@
 
             <div class="flex items-center gap-2">
                 <!-- shown on any page while a send job runs, whichever page started it -->
-                <a id="global-job-indicator" href="/brokers" class="hidden items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full" style="background: var(--accent-muted); color: var(--accent);">
-                    <span class="spinner" style="width: 0.75rem; height: 0.75rem;"></span>
+                <a id="global-job-indicator" href="/brokers" class="hidden items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full tint-info">
+                    <span class="spinner spinner-sm"></span>
                     <span id="global-job-indicator-text">Sending...</span>
                 </a>
                 {{template "partials/profile-switcher.html" (dict "Page" . "FormClass" "" "SelectClass" "")}}
@@ -43,7 +43,7 @@
             </div>
         </div>
 
-        <div id="mobile-nav" class="hidden sm:hidden border-t border-[var(--border)] bg-[var(--bg-surface)]">
+        <div id="mobile-nav" class="hidden sm:hidden border-t bg-surface">
             <div class="max-w-6xl mx-auto px-4 py-3 flex flex-col gap-1">
                 <div class="flex items-center justify-between mb-2 px-3"><span class="text-sm text-muted">Theme</span>{{template "partials/theme-switch.html" "theme-switch-menu"}}</div>
                 {{template "partials/profile-switcher.html" (dict "Page" . "FormClass" "mb-2" "SelectClass" "w-full")}}
@@ -69,7 +69,7 @@
         {{template "content" .}}
     </main>
 
-    <footer class="border-t border-[var(--border)] mt-auto">
+    <footer class="border-t mt-auto">
         <div class="max-w-6xl mx-auto py-6 px-4">
             <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div class="flex items-center gap-2">

@@ -15,7 +15,7 @@
                     {{if .Spinner}}{{spinner .Spinner "w-5 h-5"}}{{end}}
                     {{.Label}}
                 </button>
-                <div class="absolute right-0 mt-2 {{.TipWidth}} p-3 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10" style="background: var(--bg-elevated); border: 1px solid var(--border);">
+                <div class="absolute right-0 mt-2 {{.TipWidth}} p-3 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10 bg-elevated border">
                     <p class="text-xs text-secondary">{{.Tip}}</p>
                 </div>
             </div>
@@ -39,11 +39,11 @@
             {{icon "info" "w-4 h-4"}}
             How to track broker responses
         </summary>
-        <div class="px-4 pb-4 border-t" style="border-color: var(--border);">
+        <div class="px-4 pb-4 border-t">
             <ol class="mt-3 space-y-2 text-sm text-secondary">
                 {{range $i, $step := .Steps}}
                 <li class="flex items-start gap-2">
-                    <span class="flex-shrink-0 w-5 h-5 rounded-full text-xs flex items-center justify-center font-medium icon-box-info">{{add $i 1}}</span>
+                    <span class="flex-shrink-0 w-5 h-5 rounded-full text-xs flex items-center justify-center font-medium tint-info">{{add $i 1}}</span>
                     <span><strong>{{$step.Lead}}</strong>{{$step.Rest}}</span>
                 </li>
                 {{end}}

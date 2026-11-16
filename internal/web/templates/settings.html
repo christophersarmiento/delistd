@@ -9,7 +9,7 @@
         {{section "users" "Profiles" ""}}
             <div class="space-y-3 mb-6">
                 {{range .Profiles}}
-                <div class="flex items-center justify-between py-3 border-b border-[var(--border-subtle)]">
+                <div class="flex items-center justify-between py-3 border-b border-subtle">
                     <div>
                         <p class="text-primary font-medium">{{.FirstName}} {{if .MiddleName}}{{.MiddleName}} {{end}}{{.LastName}}</p>
                         <p class="text-sm text-muted">{{.Email}} &middot; <code>{{.ID}}</code></p>
@@ -53,7 +53,7 @@
             </div>
             <button type="button" data-toggle="#inbox-form" class="btn btn-secondary w-full">{{icon "pencil" "w-4 h-4"}} Edit Settings</button>
             {{else}}
-            <div class="p-4 rounded-xl mb-6" style="background: var(--bg-elevated);">
+            <div class="p-4 rounded-xl mb-6 bg-elevated">
                 <p class="text-secondary text-sm">Enable inbox monitoring to automatically detect broker responses like confirmation links and form requirements.</p>
             </div>
             {{end}}
@@ -72,7 +72,7 @@
         {{with .Automation}}
         {{section "clock" "Automation" (print "Send due requests and check the inbox " .Every ", for every profile") "automation"}}
             <div class="space-y-4 mb-6">
-                <div class="flex items-center justify-between py-3 border-b border-[var(--border-subtle)]">
+                <div class="flex items-center justify-between py-3 border-b border-subtle">
                     <div>
                         <p class="text-sm text-muted">Status</p>
                         <p class="text-primary font-medium">{{if .Installed}}Scheduled by your OS - runs even when this web app is closed{{else if .Enabled}}On while this web app is running{{else}}Off{{end}}</p>
@@ -149,7 +149,7 @@
         {{section "sliders" "Request Options" ""}}
             {{if .Config}}
             <div class="space-y-4">
-                <form method="POST" action="/settings/options" class="space-y-4 py-3 border-b border-[var(--border-subtle)]">
+                <form method="POST" action="/settings/options" class="space-y-4 py-3 border-b border-subtle">
                     {{.CSRFField}}
                     {{range .OptionsBefore}}{{template "partials/opt.html" .}}{{end}}
                     <label class="flex items-start gap-2 text-secondary">
@@ -183,9 +183,9 @@
             {{template "partials/flash.html" (dict "Text" .BrokersMessage "OK" .BrokersSuccess)}}
         {{endcard}}
 
-        <div class="card p-6" style="border-color: rgba(239, 68, 68, 0.3);">
+        <div class="card p-6 border-error">
             <div class="flex items-center gap-3 mb-6">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(239, 68, 68, 0.15);">{{icon "warning" "w-5 h-5 text-error"}}</div>
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center tint-error">{{icon "warning" "w-5 h-5 text-error"}}</div>
                 <div>
                     <h2 class="font-display text-lg font-semibold text-error">Danger Zone</h2>
                     <p class="text-sm text-muted">These actions are irreversible</p>

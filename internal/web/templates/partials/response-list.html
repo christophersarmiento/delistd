@@ -4,20 +4,20 @@
 {{if .Responses}}
 <div class="space-y-3">
     {{range .Responses}}
-    <div class="p-3 rounded-lg" style="background: var(--bg-elevated);">
+    <div class="p-3 rounded-lg bg-elevated">
         <div class="flex items-center gap-3">
             {{if eq .ResponseType "success"}}
             <span class="status-dot status-dot-success"></span>
             {{else if eq .ResponseType "form_required"}}
             <span class="status-dot status-dot-warning"></span>
             {{else if eq .ResponseType "confirmation_required"}}
-            <span class="status-dot" style="background: var(--accent);"></span>
+            <span class="status-dot status-dot-accent"></span>
             {{else if eq .ResponseType "no_data_held"}}
-            <span class="status-dot" style="background: var(--accent);"></span>
+            <span class="status-dot status-dot-accent"></span>
             {{else if eq .ResponseType "rejected"}}
             <span class="status-dot status-dot-error"></span>
             {{else}}
-            <span class="status-dot" style="background: var(--warning);"></span>
+            <span class="status-dot status-dot-warning"></span>
             {{end}}
             <div class="flex-1 min-w-0">
                 <a href="/pipeline/responses/{{.ID}}" class="text-sm font-medium text-primary hover:underline">{{.BrokerName}}</a>
@@ -67,10 +67,10 @@
 </div>
 {{else}}
 <div class="text-center py-8">
-    <div class="w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4" style="background: var(--bg-elevated);">
+    <div class="w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4 bg-elevated">
         {{icon "mail" "w-8 h-8 text-muted"}}
     </div>
     <p class="text-secondary mb-1">{{if .Filtered}}No matching results{{else}}No responses yet{{end}}</p>
-    <p class="text-sm text-muted">Run <code class="px-1 py-0.5 rounded" style="background: var(--bg-elevated);">delistd monitor</code> to check for broker responses</p>
+    <p class="text-sm text-muted">Run <code class="px-1 py-0.5 rounded bg-elevated">delistd monitor</code> to check for broker responses</p>
 </div>
 {{end}}

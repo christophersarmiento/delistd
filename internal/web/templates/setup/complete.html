@@ -4,7 +4,7 @@
         <div class="card p-8 text-center">
             <!-- Success Animation -->
             <div class="mb-8">
-                <div class="w-24 h-24 mx-auto rounded-full flex items-center justify-center" style="background: rgba(34, 197, 94, 0.15); animation: pulseGlow 2s ease-in-out infinite;">
+                <div class="w-24 h-24 mx-auto rounded-full flex items-center justify-center tint-success pulse-glow">
                     {{icon "check-circle" "w-12 h-12 text-success"}}
                 </div>
             </div>
@@ -15,26 +15,26 @@
             </p>
 
             <!-- What's Next -->
-            <div class="text-left p-5 rounded-xl mb-8" style="background: var(--bg-elevated);">
+            <div class="text-left p-5 rounded-xl mb-8 bg-elevated">
                 <h3 class="font-medium text-primary mb-4">What happens next:</h3>
                 <div class="space-y-4">
                     <div class="flex items-start gap-3">
-                        <div class="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold" style="background: var(--accent-muted); color: var(--accent);">1</div>
+                        <div class="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold tint-info">1</div>
                         <span class="text-secondary">Browse the list of 700+ data brokers in our database</span>
                     </div>
                     <div class="flex items-start gap-3">
-                        <div class="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold" style="background: var(--accent-muted); color: var(--accent);">2</div>
+                        <div class="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold tint-info">2</div>
                         <span class="text-secondary">Click "Send to All" to start sending removal requests</span>
                     </div>
                     <div class="flex items-start gap-3">
-                        <div class="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold" style="background: var(--accent-muted); color: var(--accent);">3</div>
+                        <div class="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold tint-info">3</div>
                         <span class="text-secondary">Track your progress and responses in the dashboard</span>
                     </div>
                 </div>
             </div>
 
             <!-- Tip -->
-            <div class="text-left p-4 rounded-xl mb-8 flex items-start gap-3" style="background: var(--accent-muted);">
+            <div class="text-left p-4 rounded-xl mb-8 flex items-start gap-3 bg-accent-muted">
                 {{icon "info" "w-5 h-5 text-accent flex-shrink-0 mt-0.5"}}
                 <p class="text-sm text-secondary">
                     <strong class="text-primary">Tip:</strong> Data brokers often re-add your information. Run Delistd monthly to keep your data removed.

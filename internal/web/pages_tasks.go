@@ -52,7 +52,7 @@ type taskFigure struct {
 type taskFilter struct {
 	Key, Label, Icon string
 	Count            int
-	Pill, PillStyle  string
+	Pill             string
 }
 
 func (s *Server) handleTasks(w http.ResponseWriter, r *http.Request) {
@@ -112,7 +112,7 @@ func (s *Server) handleTasks(w http.ResponseWriter, r *http.Request) {
 			{"Completed", completedCount, "completed"},
 		},
 		"Filters": []taskFilter{
-			{Key: "all", Label: "All", Count: actions.Total(), Pill: "ml-1 text-xs px-1.5 py-0.5 rounded-full", PillStyle: "background: var(--bg-elevated);"},
+			{Key: "all", Label: "All", Count: actions.Total(), Pill: "ml-1 text-xs px-1.5 py-0.5 rounded-full bg-elevated"},
 			{Key: "form", Label: "Forms", Icon: "document-text", Count: actions.FormsToFill(), Pill: "ml-1 rounded-full " + chipInfo},
 			{Key: "captcha", Label: "CAPTCHA", Icon: "shield-check", Count: captcha, Pill: "ml-1 rounded-full " + chipWarn},
 			{Key: "confirmation", Label: "Confirmation", Icon: "mail", Count: -1},

@@ -29,7 +29,7 @@
                         <p class="text-sm text-muted">Task Type</p>
                         <p class="text-lg font-semibold text-primary capitalize">{{.Task.TaskType}}</p>
                     </div>
-                    <div class="grid grid-cols-2 gap-4 pt-4 border-t border-[var(--border)]">
+                    <div class="grid grid-cols-2 gap-4 pt-4 border-t">
                         <div>
                             <p class="text-sm text-muted">Broker ID</p>
                             <p class="text-sm font-medium text-primary">{{.Task.BrokerID}}</p>
@@ -38,7 +38,7 @@
                             <p class="text-sm text-muted">Status</p>
                             {{if eq .Task.Status "pending"}}{{template "partials/status-dot.html" (dict "Text" .Task.Status "Color" "text-warning" "Dot" "status-dot-warning")}}
                             {{else if eq .Task.Status "completed"}}{{template "partials/status-dot.html" (dict "Text" .Task.Status "Color" "text-success" "Dot" "status-dot-success")}}
-                            {{else}}{{template "partials/status-dot.html" (dict "Text" .Task.Status "Color" "text-muted" "Dot" "status-dot" "Style" "background: var(--text-muted);")}}{{end}}
+                            {{else}}{{template "partials/status-dot.html" (dict "Text" .Task.Status "Color" "text-muted" "Dot" "status-dot")}}{{end}}
                         </div>
                         <div>
                             <p class="text-sm text-muted">Created</p>
@@ -56,7 +56,7 @@
 
             {{if .Task.FormURL}}
             {{card "Form URL"}}
-                <div class="p-4 rounded-lg font-mono text-sm break-all" style="background: var(--bg-elevated);">
+                <div class="p-4 rounded-lg font-mono text-sm break-all bg-elevated">
                     <a href="{{.Task.FormURL}}" target="_blank" rel="noopener noreferrer" class="text-accent hover:underline">{{.Task.FormURL}}</a>
                 </div>
                 <p class="text-xs text-muted mt-2">Click the link above or use the "Open Form" button to navigate to the opt-out form.</p>
@@ -65,13 +65,13 @@
 
             {{if .Task.Notes}}
             {{card "Notes"}}
-                <div class="p-4 rounded-lg text-sm text-secondary" style="background: var(--bg-elevated);">{{.Task.Notes}}</div>
+                <div class="p-4 rounded-lg text-sm text-secondary bg-elevated">{{.Task.Notes}}</div>
             {{endcard}}
             {{end}}
 
             {{if .Task.ScreenshotPath}}
             {{card "Screenshot"}}
-                <div class="rounded-lg overflow-hidden border border-[var(--border)]">
+                <div class="rounded-lg overflow-hidden border">
                     <img src="/tasks/{{.Task.ID}}/screenshot" alt="Form screenshot" class="w-full">
                 </div>
             {{endcard}}

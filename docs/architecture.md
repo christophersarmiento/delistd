@@ -132,23 +132,20 @@ Three email templates (`internal/template/templates/`):
 ### Web UI static assets
 `internal/web/static/` (embedded via `//go:embed static/*`) holds:
 - `js/htmx.min.js` - vendored as-is.
-- `css/tokens.css` - design tokens (colour / elevation / type custom properties for
-  both themes). The only place raw hex values are named. Linked first in `layout.html`.
-- `css/utilities.css` - a hand-maintained stylesheet: a preflight reset plus the
-  layout / spacing / sizing / flex / grid utilities the templates use. It began as
-  Tailwind v3.4.17 output, but there is **no Tailwind toolchain** any more - no config,
-  no CLI, no build step. If a template needs a utility class that isn't in the file,
-  add the rule by hand (the spacing scale is 0.25rem steps: `.p-2` = 0.5rem, `.p-4` =
-  1rem, ...).
-- Component classes (`.btn`, `.card`, `.badge`, `.nav-link`, ...) live in the `<style>`
-  block at the top of `layout.html`, not in `utilities.css`.
+- `css/tokens.css` - design tokens for both themes: colour and elevation, the type scale
+  (`--fs-*`, in rem) and the corner radii (`--radius-*`). The only place raw colour values
+  and font sizes are named. Linked first in `layout.html`.
+- `css/app.css` - the component classes (`.btn`, `.card`, `.badge`, `.nav-link`, ...), the
+  status tints (`.tint-*`, `.bg-*`, `.border-*`) and the page layouts, written against the tokens.
+- `css/utilities.css` - a small, hand-written reset plus the layout / spacing / sizing /
+  flex / grid utilities the templates use (`.p-4`, `.flex`, `.gap-2`, ...). There is no
+  Tailwind or any other CSS toolchain: add a rule by hand when a template needs one, and
+  size it from the scale in `tokens.css`. No inline `style=` attributes: name a class.
 
-The `<link>` for `utilities.css` in `layout.html` is deliberately placed *after* the
-hand-authored `<style>` block - same-specificity rules are decided by source order, and
-a utility like `.w-auto` needs to win over a same-specificity component class like
-`.input{width:100%}`. Moving it earlier silently breaks every element that combines a
-component class with a sizing utility (this happened once already - see the comment
-above the `<link>` in `layout.html`).
+`css_utilities_test.go` keeps the three in step: it fails on a utility class a template
+uses without a rule, and on a rule nothing uses. `utilities.css` is linked *after*
+`app.css` on purpose - same-specificity rules are decided by source order, and a utility
+like `.w-auto` has to win over a component class like `.input { width: 100% }`.
 
 ### Flow
 1. Load user config from `~/.delistd/config.yaml`, resolve the active profile (see [multi-profile.md](multi-profile.md))
