@@ -14,8 +14,10 @@ func TestMigrationsFailOnAClosedDatabase(t *testing.T) {
 		"migrateTimestamps": s.migrateTimestamps,
 		"migrateApprovals":  s.migrateApprovals,
 		"migrateAutomation": s.migrateAutomation,
-		"MigrateNoData":     func() error { return s.MigrateNoData(func(BrokerResponse) (bool, float64, bool) { return true, 1, true }) },
-		"ResolveNoData":     func() error { return s.ResolveNoData("p", "b", true) },
+		"MigrateNoData": func() error {
+			return s.MigrateNoData(func(BrokerResponse) (bool, float64, bool) { return true, 1, true })
+		},
+		"ResolveNoData": func() error { return s.ResolveNoData("p", "b", true) },
 	}
 	for name, step := range steps {
 		if err := step(); err == nil {
