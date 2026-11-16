@@ -4,12 +4,15 @@ import (
 	"context"
 	"crypto/rand"
 	"crypto/tls"
+	"errors"
 	"fmt"
+	"io"
 	"mime"
 	"mime/quotedprintable"
 	"net"
 	"net/mail"
 	"net/smtp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -23,6 +26,8 @@ type SMTPSender struct {
 	from   string
 }
 
+// NewSMTPSender returns a sender for the account; from is kept for callers
+// that want to show it.
 func NewSMTPSender(cfg config.SMTPConfig, from string) *SMTPSender {
 	return &SMTPSender{config: cfg, from: from}
 }
@@ -53,9 +58,8 @@ func (s *SMTPSender) Send(ctx context.Context, msg Message) Result {
 	}
 	messageID := "<" + rand.Text() + "@" + domain + ">"
 
-	addr := fmt.Sprintf("%s:%d", s.config.Host, s.config.Port)
 	raw := []byte(formatMessage(msg, messageID, time.Now()))
-	if err := s.send(ctx, addr, auth, msg.From, msg.To, raw, s.config.TLS()); err != nil {
+	if err := s.transact(ctx, auth, msg.From, msg.To, raw, s.config.TLS()); err != nil {
 		return fail(sanitizeSMTPError(err))
 	}
 	return Result{Success: true, MessageID: messageID}
@@ -130,134 +134,146 @@ func plainEnough(text string) bool {
 	return true
 }
 
-func sanitizeSMTPError(err error) error {
-	s := strings.ToLower(err.Error())
-	if strings.Contains(s, "auth") {
-		return fmt.Errorf("SMTP authentication failed")
-	}
-	if strings.Contains(s, "certificate") {
-		return fmt.Errorf("TLS certificate error")
-	}
-	// "actively refused" is how Windows words the same error.
-	if strings.Contains(s, "connection refused") || strings.Contains(s, "actively refused") {
-		return fmt.Errorf("could not connect to the SMTP server (wrong host/port, or a local bridge like Proton Mail Bridge isn't running)")
-	}
-	if strings.Contains(s, "starttls") {
-		return fmt.Errorf("SMTP server does not support STARTTLS on this port")
-	}
-	return fmt.Errorf("SMTP error: check your configuration")
+// smtpErrors turns a low-level error into a message that is safe to store and
+// show: no server banners, hostnames or credentials. The first matching
+// fragment wins.
+var smtpErrors = []struct {
+	fragments []string
+	message   string
+}{
+	{[]string{"auth"}, "SMTP authentication failed"},
+	{[]string{"certificate"}, "TLS certificate error"},
+	// "actively refused" is how Windows words a refused connection.
+	{[]string{"connection refused", "actively refused"}, "could not connect to the SMTP server (wrong host/port, or a local bridge like Proton Mail Bridge isn't running)"},
+	{[]string{"starttls"}, "SMTP server does not support STARTTLS on this port"},
 }
 
-// connect dials and secures the connection (TLS from the first byte on 465,
-// else mandatory STARTTLS). net/smtp has no context support, so a silent
-// server would hang forever and ignore timeouts and Cancel; closing the conn
-// on ctx.Done unblocks its reads and writes. stop must be called when done.
-func (s *SMTPSender) connect(ctx context.Context, addr string, useTLS bool) (client *smtp.Client, stop func(), err error) {
-	var d net.Dialer
-	conn, err := d.DialContext(ctx, "tcp", addr)
+func sanitizeSMTPError(err error) error {
+	text := strings.ToLower(err.Error())
+	for _, rule := range smtpErrors {
+		for _, f := range rule.fragments {
+			if strings.Contains(text, f) {
+				return errors.New(rule.message)
+			}
+		}
+	}
+	return errors.New("SMTP error: check your configuration")
+}
+
+func (s *SMTPSender) address() string {
+	return net.JoinHostPort(s.config.Host, strconv.Itoa(s.config.Port))
+}
+
+// connect dials the server and secures the connection: TLS from the first byte
+// on port 465, mandatory STARTTLS elsewhere, never opportunistic, because the
+// login must not cross in plaintext. net/smtp ignores contexts, so a silent
+// server would hang forever; closing the connection when ctx ends unblocks its
+// reads and writes. Call stop when finished.
+func (s *SMTPSender) connect(ctx context.Context, useTLS bool) (*smtp.Client, func(), error) {
+	var dialer net.Dialer
+	conn, err := dialer.DialContext(ctx, "tcp", s.address())
 	if err != nil {
 		return nil, nil, fmt.Errorf("connection failed: %w", err)
 	}
 	if deadline, ok := ctx.Deadline(); ok {
 		_ = conn.SetDeadline(deadline)
 	}
-
-	done := make(chan struct{})
+	finished := make(chan struct{})
 	go func() {
 		select {
 		case <-ctx.Done():
-			_ = conn.Close() // unblocks any in-flight Read/Write below
-		case <-done:
+			_ = conn.Close()
+		case <-finished:
 		}
 	}()
-	stop = func() { close(done) }
-
-	// 465 is TLS from the first byte; any other port upgrades with STARTTLS.
-	implicit := useTLS && config.ImplicitTLS(s.config.Port)
-	smtpConn := conn
-	if implicit {
-		tlsConn := tls.Client(conn, config.TLSFor(s.config.Host))
-		if err := tlsConn.HandshakeContext(ctx); err != nil {
-			_ = conn.Close()
-			stop()
-			return nil, nil, fmt.Errorf("TLS handshake failed: %w", err)
-		}
-		smtpConn = tlsConn
-	}
-
-	client, err = smtp.NewClient(smtpConn, s.config.Host)
-	if err != nil {
-		_ = smtpConn.Close()
+	stop := func() { close(finished) }
+	abort := func(c io.Closer, err error) (*smtp.Client, func(), error) {
+		_ = c.Close()
 		stop()
-		return nil, nil, fmt.Errorf("SMTP client creation failed: %w", err)
+		return nil, nil, err
 	}
 
-	if useTLS && !implicit {
-		// Required, never opportunistic: auth must not go out in plaintext.
+	var wire net.Conn = conn
+	implicitTLS := useTLS && config.ImplicitTLS(s.config.Port)
+	if implicitTLS {
+		secured := tls.Client(conn, config.TLSFor(s.config.Host))
+		if err := secured.HandshakeContext(ctx); err != nil {
+			return abort(conn, fmt.Errorf("TLS handshake failed: %w", err))
+		}
+		wire = secured
+	}
+	client, err := smtp.NewClient(wire, s.config.Host)
+	if err != nil {
+		return abort(wire, fmt.Errorf("SMTP client creation failed: %w", err))
+	}
+	if useTLS && !implicitTLS {
 		if ok, _ := client.Extension("STARTTLS"); !ok {
-			_ = client.Close()
-			stop()
-			return nil, nil, fmt.Errorf("server does not offer STARTTLS on port %d", s.config.Port)
+			return abort(client, fmt.Errorf("server does not offer STARTTLS on port %d", s.config.Port))
 		}
 		if err := client.StartTLS(config.TLSFor(s.config.Host)); err != nil {
-			_ = client.Close()
-			stop()
-			return nil, nil, fmt.Errorf("STARTTLS failed: %w", err)
+			return abort(client, fmt.Errorf("STARTTLS failed: %w", err))
 		}
 	}
 	return client, stop, nil
 }
 
-// VerifyLogin connects and authenticates without sending anything, so setup
-// can tell a bad login from a working one. The error keeps the server's own
-// words (unlike Send's sanitized one) because the caller shows it to the
-// person who just set the account up.
+// VerifyLogin connects and authenticates without sending anything, so setup can
+// tell a bad login from a working one. The error keeps the server's own words
+// (Send's is sanitized) because it is shown to the person who just set the
+// account up.
 func (s *SMTPSender) VerifyLogin(ctx context.Context) error {
 	if !s.config.TLS() {
-		return fmt.Errorf("SMTP login needs TLS")
+		return errors.New("SMTP login needs TLS")
 	}
 	auth, err := s.authenticator(ctx)
 	if err != nil {
 		return err
 	}
-	client, stop, err := s.connect(ctx, fmt.Sprintf("%s:%d", s.config.Host, s.config.Port), true)
+	client, stop, err := s.connect(ctx, true)
 	if err != nil {
 		return err
 	}
 	defer stop()
-	defer func() { _ = client.Close() }()
+	defer client.Close()
 	if err := client.Auth(auth); err != nil {
 		return err
 	}
 	return client.Quit()
 }
 
-// send runs the SMTP transaction under ctx.
-func (s *SMTPSender) send(ctx context.Context, addr string, auth smtp.Auth, from, to string, msg []byte, useTLS bool) error {
-	client, stop, err := s.connect(ctx, addr, useTLS)
+// transact runs one SMTP transaction under ctx: login if auth is set, then
+// MAIL FROM, RCPT TO and DATA.
+func (s *SMTPSender) transact(ctx context.Context, auth smtp.Auth, from, to string, data []byte, useTLS bool) error {
+	client, stop, err := s.connect(ctx, useTLS)
 	if err != nil {
 		return err
 	}
 	defer stop()
-	defer func() { _ = client.Close() }()
+	defer client.Close()
 
 	if auth != nil {
 		if err := client.Auth(auth); err != nil {
 			return fmt.Errorf("authentication failed: %w", err)
 		}
 	}
-	if err := client.Mail(from); err != nil {
-		return fmt.Errorf("sender rejected: %w", err)
+	steps := []struct {
+		what string
+		run  func() error
+	}{
+		{"sender rejected", func() error { return client.Mail(from) }},
+		{"recipient rejected", func() error { return client.Rcpt(to) }},
 	}
-	if err := client.Rcpt(to); err != nil {
-		return fmt.Errorf("recipient rejected: %w", err)
+	for _, step := range steps {
+		if err := step.run(); err != nil {
+			return fmt.Errorf("%s: %w", step.what, err)
+		}
 	}
 
 	w, err := client.Data()
 	if err != nil {
 		return fmt.Errorf("data command failed: %w", err)
 	}
-	if _, err = w.Write(msg); err != nil {
+	if _, err := w.Write(data); err != nil {
 		return fmt.Errorf("message write failed: %w", err)
 	}
 	if err := w.Close(); err != nil {

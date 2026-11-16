@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"cmp"
 	"fmt"
 	"io"
 	"os"
@@ -44,20 +45,19 @@ func resolveBrokerWritePath() string {
 // data/brokers.yaml. ok=false for an installed copy, whose own additions and
 // corrections belong in broker.LocalPath (update-brokers replaces the list).
 func listFileWritePath() (string, bool) {
-	if brokerFile != "" {
+	const checkout = "data/brokers.yaml"
+	switch _, err := os.Stat(checkout); {
+	case brokerFile != "":
 		return brokerFile, true
-	}
-	if _, err := os.Stat("data/brokers.yaml"); err == nil {
-		return "data/brokers.yaml", true
+	case err == nil:
+		return checkout, true
 	}
 	return "", false
 }
 
+// resolveConfigPath is --config, else the default location.
 func resolveConfigPath() string {
-	if cfgFile != "" {
-		return cfgFile
-	}
-	return config.DefaultConfigPath()
+	return cmp.Or(cfgFile, config.DefaultConfigPath())
 }
 
 // newRootCmd builds the CLI; each call binds the flag globals afresh, so
@@ -87,35 +87,14 @@ SMTP provider (Gmail, Proton Mail Bridge, Fastmail and others).`,
 	rootCmd.PersistentFlags().StringVar(&brokerFile, "brokers", "", "broker list file (default: ~/.delistd/brokers.yaml if `update-brokers` has written one, else the list built into the binary)")
 	rootCmd.PersistentFlags().StringVar(&profileFlag, "profile", "", "Profile ID to operate as (default: the only configured profile; required if you've configured more than one via 'delistd profile add')")
 
-	rootCmd.PersistentPreRun = func(cmd *cobra.Command, args []string) {
+	for _, build := range []func() *cobra.Command{
+		initCmd, sendCmd, serveCmd, mcpCmd, listBrokersCmd, statusCmd, addBrokerCmd,
+		monitorCmd, pipelineCmd, fillCmd, confirmCmd, cleanupBouncesCmd, markBouncedCmd,
+		auditBrokersCmd, profileCmd, exportCmd, draftCmd, markSentCmd, updateBrokersCmd,
+		validateBrokersCmd, guidesCmd, autoCmd, scheduleCmd, passphraseCmd, oauthCmd,
+	} {
+		rootCmd.AddCommand(build())
 	}
-
-	rootCmd.AddCommand(initCmd())
-	rootCmd.AddCommand(sendCmd())
-	rootCmd.AddCommand(serveCmd())
-	rootCmd.AddCommand(mcpCmd())
-	rootCmd.AddCommand(listBrokersCmd())
-	rootCmd.AddCommand(statusCmd())
-	rootCmd.AddCommand(addBrokerCmd())
-	rootCmd.AddCommand(monitorCmd())
-	rootCmd.AddCommand(pipelineCmd())
-	rootCmd.AddCommand(fillCmd())
-	rootCmd.AddCommand(confirmCmd())
-	rootCmd.AddCommand(cleanupBouncesCmd())
-	rootCmd.AddCommand(markBouncedCmd())
-	rootCmd.AddCommand(auditBrokersCmd())
-	rootCmd.AddCommand(profileCmd())
-	rootCmd.AddCommand(exportCmd())
-	rootCmd.AddCommand(draftCmd())
-	rootCmd.AddCommand(markSentCmd())
-	rootCmd.AddCommand(updateBrokersCmd())
-	rootCmd.AddCommand(validateBrokersCmd())
-	rootCmd.AddCommand(guidesCmd())
-	rootCmd.AddCommand(autoCmd())
-	rootCmd.AddCommand(scheduleCmd())
-	rootCmd.AddCommand(passphraseCmd())
-	rootCmd.AddCommand(oauthCmd())
-
 	return rootCmd
 }
 
@@ -126,13 +105,14 @@ func main() {
 	}
 }
 
+// prompt prints message and returns the trimmed line read, or "" at end of input.
 func prompt(reader *bufio.Reader, message string) string {
 	fmt.Print(message)
-	input, err := reader.ReadString('\n')
+	line, err := reader.ReadString('\n')
 	if err != nil {
 		return ""
 	}
-	return strings.TrimSpace(input)
+	return strings.TrimSpace(line)
 }
 
 // serveFn starts the web UI; tests replace it.
