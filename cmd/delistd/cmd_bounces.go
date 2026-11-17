@@ -78,7 +78,11 @@ func runCleanupBounces(remove bool, days int) error {
 	fmt.Println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 	fmt.Println()
 
-	rep, err := bounces.Scan(context.Background(), inboxes, brokerDB, everSentBrokerIDs(cfg, store), days)
+	// Bounces are classified from unauthenticated From/Subject text and every
+	// broker address is public, so anyone could forge an NDR and have --remove
+	// clear a real contact. Limiting to brokers we've actually emailed shrinks
+	// that to the user's own contacts.
+	rep, err := bounces.Scan(context.Background(), inboxes, brokerDB, bounces.EverSent(cfg, store), days)
 	if err != nil {
 		return err
 	}
@@ -224,14 +228,4 @@ func runMarkBounced(brokerIDs []string, note string) error {
 		fmt.Printf("Updated %d broker(s).\n", updated)
 	}
 	return nil
-}
-
-// everSentBrokerIDs returns brokers any profile has ever sent to.
-//
-// Bounces are classified from unauthenticated From/Subject text and every
-// broker address is public, so anyone could forge an NDR and have --remove
-// clear a real contact. Limiting to brokers we've actually emailed shrinks
-// that to the user's own contacts.
-func everSentBrokerIDs(cfg *config.Config, store *history.Store) map[string]bool {
-	return bounces.EverSent(cfg, store)
 }

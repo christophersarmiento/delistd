@@ -5,11 +5,12 @@ import (
 	"testing"
 	"time"
 
+	"github.com/drumandbytes/delistd/internal/bounces"
 	"github.com/drumandbytes/delistd/internal/config"
 	"github.com/drumandbytes/delistd/internal/history"
 )
 
-// everSentBrokerIDs is cleanup-bounces' anti-spoofing guard: only brokers a profile
+// EverSent is cleanup-bounces' anti-spoofing guard: only brokers a profile
 // really emailed, across every profile, even when one profile's history lookup fails.
 func TestEverSentBrokerIDs(t *testing.T) {
 	store, err := history.NewStore(filepath.Join(t.TempDir(), "history.db"))
@@ -46,11 +47,11 @@ func TestEverSentBrokerIDs(t *testing.T) {
 		},
 	}
 
-	got := everSentBrokerIDs(cfg, store)
+	got := bounces.EverSent(cfg, store)
 
 	want := map[string]bool{"spokeo": true, "whitepages": true}
 	if len(got) != len(want) {
-		t.Fatalf("everSentBrokerIDs() = %v, want %v", got, want)
+		t.Fatalf("EverSent() = %v, want %v", got, want)
 	}
 	for id := range want {
 		if !got[id] {
@@ -84,8 +85,8 @@ func TestEverSentBrokerIDsSingleProfileConfig(t *testing.T) {
 		Profiles: []config.NamedProfile{{ID: config.DefaultProfileID, Profile: config.Profile{FirstName: "Test", LastName: "User", Email: "test@example.com"}}},
 	}
 
-	got := everSentBrokerIDs(cfg, store)
+	got := bounces.EverSent(cfg, store)
 	if !got["spokeo"] {
-		t.Errorf("everSentBrokerIDs() = %v, want spokeo present via the default profile", got)
+		t.Errorf("EverSent() = %v, want spokeo present via the default profile", got)
 	}
 }
