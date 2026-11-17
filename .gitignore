@@ -54,6 +54,3 @@ vendor/
 /scripts/import-registries/review.md
 /candidates.yaml
 /review.md
-
-# Docs screenshot tooling
-scripts/doc-images/node_modules/
