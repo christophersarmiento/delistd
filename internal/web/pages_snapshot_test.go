@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -298,7 +299,9 @@ func undate(s string) string {
 	s = regexp.MustCompile(regexp.QuoteMeta(today)+` \d{1,2}:\d{2} [AP]M`).ReplaceAllString(s, "<now>")
 	s = regexp.MustCompile(`Generated \d{1,2} \w+ \d{4}, \d{2}:\d{2} UTC`).ReplaceAllString(s, "Generated <now>") // evidence report
 	s = strings.ReplaceAll(s, today, "<today>")
-	return strings.ReplaceAll(s, time.Now().Format("January 2, 2006"), "<today>") // template {{.Date}}
+	long := time.Now().Format("January 2, 2006") // template {{.Date}}
+	s = strings.ReplaceAll(s, long, "<today>")
+	return strings.ReplaceAll(s, url.PathEscape(long), "<today>") // the same date inside a mailto: link
 }
 
 func clip(s string) string {
