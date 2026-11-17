@@ -2,7 +2,6 @@ package web
 
 import (
 	"context"
-	"crypto/rand"
 	"errors"
 	"fmt"
 	"html/template"
@@ -50,7 +49,6 @@ type Server struct {
 	historyStore *history.Store
 	tmplEngine   *emailtmpl.Engine
 	templates    map[string]*template.Template
-	csrfKey      []byte
 	sessions     *SessionStore
 	rateLimiter  *RateLimiter
 	jobManager   *JobManager
@@ -76,10 +74,6 @@ type Server struct {
 // NewServer wires a server around an already loaded config, broker list,
 // history store and template engine. configPath is empty only in tests.
 func NewServer(port int, cfg *config.Config, configPath string, brokerDB *broker.BrokerDatabase, store *history.Store, engine *emailtmpl.Engine) (*Server, error) {
-	key := make([]byte, 32)
-	if _, err := rand.Read(key); err != nil {
-		return nil, fmt.Errorf("failed to generate CSRF key: %w", err)
-	}
 	pages, err := loadTemplates()
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse templates: %w", err)
@@ -91,7 +85,6 @@ func NewServer(port int, cfg *config.Config, configPath string, brokerDB *broker
 		historyStore:    store,
 		tmplEngine:      engine,
 		templates:       pages,
-		csrfKey:         key,
 		sessions:        NewSessionStore(defaultSessionTTL),
 		rateLimiter:     NewRateLimiter(defaultRateLimit, defaultRateWindow),
 		jobManager:      NewJobManager(),

@@ -4,7 +4,6 @@ import (
 	"io/fs"
 	"net/http"
 
-	csrf "filippo.io/csrf/gorilla"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
@@ -36,10 +35,10 @@ func (s *Server) setupRouter() *chi.Mux {
 	r.Use(middleware.Compress(5))
 	r.Use(s.requireAllowedHost)
 	r.Use(securityHeaders)
-	// filippo.io/csrf checks Sec-Fetch-Site rather than tokens, and is not the
-	// unmaintained gorilla/csrf (CVE-2025-47909). A DNS-rebound name still
-	// looks same-origin to it, which is why requireAllowedHost checks Host too.
-	r.Use(csrf.Protect(s.csrfKey))
+	// CrossOriginProtection checks Sec-Fetch-Site (Origin as the fallback)
+	// rather than tokens. A DNS-rebound name still looks same-origin to it,
+	// which is why requireAllowedHost checks Host too.
+	r.Use(http.NewCrossOriginProtection().Handler)
 
 	assets, _ := fs.Sub(staticFS, "static")
 	r.Handle("/static/*", http.StripPrefix("/static/", http.FileServer(http.FS(assets))))

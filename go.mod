@@ -5,7 +5,6 @@ go 1.26.0
 toolchain go1.26.11
 
 require (
-	filippo.io/csrf v0.2.1
 	github.com/chromedp/cdproto v0.160.3
 	github.com/chromedp/chromedp v0.23.1
 	github.com/emersion/go-imap v1.2.1
