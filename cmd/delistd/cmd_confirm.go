@@ -108,7 +108,7 @@ func runConfirm(confirmURL, brokerID string, pending, validateDomain, dryRun boo
 		if link.BrokerID != "" {
 			fmt.Printf("       Broker: %s\n", link.BrokerID)
 		}
-		fmt.Printf("       URL: %s\n", truncateURL(link.URL, 60))
+		fmt.Printf("       URL: %s\n", truncate(link.URL, 60))
 
 		switch clickOne(handler, store, activeProfile.ID, link, validateDomain, dryRun) {
 		case clickOK:
@@ -169,7 +169,7 @@ func clickOne(handler *browser.ConfirmationHandler, store *history.Store, profil
 		fmt.Printf("       Redirects: %d hops\n", len(result.RedirectPath)-1)
 	}
 	if result.FinalURL != link.URL {
-		fmt.Printf("       Final URL: %s\n", truncateURL(result.FinalURL, 60))
+		fmt.Printf("       Final URL: %s\n", truncate(result.FinalURL, 60))
 	}
 
 	status := handler.ExtractConfirmationStatus(result)
@@ -184,11 +184,12 @@ func clickOne(handler *browser.ConfirmationHandler, store *history.Store, profil
 	return outcome
 }
 
-// truncateURL shortens a URL for display to maxLen characters, ending in "...".
-func truncateURL(url string, maxLen int) string {
-	r := []rune(url)
+// truncate shortens s for display to maxLen characters (runes, so a multi-byte
+// character is never cut in half), ending in "...".
+func truncate(s string, maxLen int) string {
+	r := []rune(s)
 	if len(r) <= maxLen {
-		return url
+		return s
 	}
 	return string(r[:maxLen-3]) + "..."
 }

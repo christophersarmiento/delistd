@@ -444,15 +444,15 @@ func TestServeStartupErrors(t *testing.T) {
 	mustContain(t, out, "Config exists but failed to load", "setup wizard")
 }
 
-func TestTruncateHelpers(t *testing.T) {
-	if got := truncateString("abcdefghij", 6); got != "abc..." {
-		t.Errorf("truncateString = %q", got)
-	}
-	if got := truncateURL("https://broker.example/very/long", 12); got != "https://b..." {
-		t.Errorf("truncateURL = %q", got)
-	}
-	if got := truncateURL("short", 12); got != "short" {
-		t.Errorf("truncateURL short = %q", got)
+func TestTruncate(t *testing.T) {
+	for in, want := range map[string]string{
+		"https://broker.example/very/long": "https://b...",
+		"short":                            "short",
+		"Investigación de crédito":         "Investiga...",
+	} {
+		if got := truncate(in, 12); got != want {
+			t.Errorf("truncate(%q) = %q, want %q", in, got, want)
+		}
 	}
 }
 

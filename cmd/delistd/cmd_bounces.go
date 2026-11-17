@@ -99,7 +99,7 @@ func runCleanupBounces(remove bool, days int) error {
 		case bounces.Dead:
 			fmt.Printf("❌ %s\n", it.Email)
 			fmt.Printf("   Broker: %s (%s)\n", it.Broker.Name, it.Broker.ID)
-			fmt.Printf("   Subject: %s\n", truncateString(it.Subject, 60))
+			fmt.Printf("   Subject: %s\n", truncate(it.Subject, 60))
 			fmt.Printf("   Date: %s\n", it.ReceivedAt.Format("2006-01-02"))
 			fmt.Println()
 		}
@@ -234,12 +234,4 @@ func runMarkBounced(brokerIDs []string, note string) error {
 // that to the user's own contacts.
 func everSentBrokerIDs(cfg *config.Config, store *history.Store) map[string]bool {
 	return bounces.EverSent(cfg, store)
-}
-
-// truncateString truncates a string to the specified length
-func truncateString(s string, maxLen int) string {
-	if len(s) <= maxLen {
-		return s
-	}
-	return s[:maxLen-3] + "..."
 }
