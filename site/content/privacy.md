@@ -63,7 +63,6 @@ Live setup sessions are not recorded. During a session we can see your screen, w
 | --- | --- | --- |
 | Stripe | Your payment details and the invoice | Taking payment, receipts and any tax |
 | Our email provider | Your messages to and from us | Answering you |
-| Our booking tool | Your name, email and chosen time | Scheduling the session |
 
 Some of these providers may process data outside the EEA. Where they do, they rely on safeguards the law recognises, such as an adequacy decision or standard contractual clauses. We don't sell your details or use them for marketing, and we make no automated decisions about you.
 

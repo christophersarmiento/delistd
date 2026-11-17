@@ -14,6 +14,7 @@
 body { font-size: 1.125rem; }
 a { text-decoration-color: var(--color-accent); }
 a:hover { text-decoration-thickness: 2px; }
+a:active { text-decoration-thickness: 3px; }
 .grid12 { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap-columns); }
 
 /* controls */

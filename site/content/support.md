@@ -39,7 +39,7 @@ The standard setup is **€39**: one person, one Windows, macOS or Linux compute
 - **Home server, NAS or Docker:** €69. It is installed on your own hardware and reachable only from your own devices, through a VPN such as Tailscale or an SSH tunnel. We don't put the web interface on the public internet: it holds your details and has no login, because it is built for local use.
 - **Evidence and complaint walkthrough** (the export report, writing to a data protection authority): €29
 - **An extra session later:** €19
-- **Short notice:** the calendar offers slots at least 24 hours ahead at no extra cost. If you need one sooner, write to us first; if we can fit you in it is +€10, and it is booked only once we have agreed it
+- **Short notice:** we offer slots at least 24 hours ahead at no extra cost. If you need one sooner, write to us first; if we can fit you in it is +€10, and it is booked only once we have agreed it
 - **Three months of check-ins** (see below): €69
 
 You get the final price in writing before you pay.

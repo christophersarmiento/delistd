@@ -70,7 +70,7 @@ During the session we can see your screen. Nothing is recorded. You type your ma
 
 ### How do I book, pay and change a booking?
 
-You get a quote with the final price, then book a slot and pay by card. The calendar offers slots at least 24 hours ahead. Anything sooner is only by agreement, for an extra €10. You can move a session free of charge with 24 hours' notice. The full wording is in the [terms](/support/terms/).
+You get a quote with the final price, then we agree a slot by email and you pay by card. Slots are offered at least 24 hours ahead. Anything sooner is only by agreement, for an extra €10. You can move a session free of charge with 24 hours' notice. The full wording is in the [terms](/support/terms/).
 
 ### Do you offer a hosted version?
 
