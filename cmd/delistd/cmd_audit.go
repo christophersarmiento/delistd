@@ -5,7 +5,7 @@ import (
 	"net"
 	"net/http"
 	"net/url"
-	"sort"
+	"slices"
 	"strings"
 	"sync"
 	"time"
@@ -332,7 +332,7 @@ func printAuditResults(results []auditResult) {
 	fmt.Printf("- skipped: %d\n", counts[verdictSkipped])
 
 	if len(emailDead) > 0 {
-		sort.Strings(emailDead)
+		slices.Sort(emailDead)
 		fmt.Println()
 		fmt.Println("Email domain appears dead (MX and host lookup both failed):")
 		for _, id := range emailDead {
@@ -340,7 +340,7 @@ func printAuditResults(results []auditResult) {
 		}
 	}
 	if len(noChannel) > 0 {
-		sort.Strings(noChannel)
+		slices.Sort(noChannel)
 		fmt.Println()
 		fmt.Println("No working channel left (dead email, unreachable website, no opt-out URL) - consider removing:")
 		for _, id := range noChannel {
@@ -348,7 +348,7 @@ func printAuditResults(results []auditResult) {
 		}
 	}
 	if len(websiteDead) > 0 {
-		sort.Strings(websiteDead)
+		slices.Sort(websiteDead)
 		fmt.Println()
 		fmt.Println("Website appears unreachable:")
 		for _, id := range websiteDead {

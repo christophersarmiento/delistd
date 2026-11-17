@@ -1,12 +1,13 @@
 package main
 
 import (
+	"cmp"
 	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
 	"regexp"
-	"sort"
+	"slices"
 	"strings"
 
 	"github.com/drumandbytes/delistd/internal/broker"
@@ -256,7 +257,7 @@ func runGuides(dataDir string) error {
 			curated = append(curated, b)
 		}
 	}
-	sort.Slice(curated, func(i, j int) bool { return curated[i].Name < curated[j].Name })
+	slices.SortFunc(curated, func(a, b broker.Broker) int { return cmp.Compare(a.Name, b.Name) })
 
 	guides := make([]guideEntry, 0, len(curated))
 	for _, b := range curated {
@@ -301,7 +302,7 @@ func runGuides(dataDir string) error {
 			Email: b.Email, OptOut: b.OptOutURL, Curated: hasGuide(b), Notes: b.Notes,
 		})
 	}
-	sort.Slice(dir, func(i, j int) bool { return strings.ToLower(dir[i].Name) < strings.ToLower(dir[j].Name) })
+	slices.SortFunc(dir, func(a, b dirEntry) int { return cmp.Compare(strings.ToLower(a.Name), strings.ToLower(b.Name)) })
 
 	// Hugo data files must be objects, not top-level arrays.
 	for name, v := range map[string]any{"guides.json": map[string]any{"guides": guides}, "brokers.json": map[string]any{"brokers": dir}} {

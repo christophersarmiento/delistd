@@ -3,6 +3,7 @@ package browser
 import (
 	"fmt"
 	"net/url"
+	"slices"
 	"strings"
 )
 
@@ -31,10 +32,5 @@ func matchesAllowedDomain(rawURL string, allowedDomains []string) (bool, string,
 }
 
 func containsAny(text string, phrases []string) bool {
-	for _, p := range phrases {
-		if strings.Contains(text, p) {
-			return true
-		}
-	}
-	return false
+	return slices.ContainsFunc(phrases, func(p string) bool { return strings.Contains(text, p) })
 }

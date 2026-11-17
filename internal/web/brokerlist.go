@@ -1,6 +1,7 @@
 package web
 
 import (
+	"slices"
 	"strings"
 	"time"
 
@@ -124,12 +125,7 @@ func (s *Server) listBrokers(profileID string, q brokerQuery) []BrokerWithStatus
 
 // containsAnyFold reports whether needle (already lowercase) is in any field.
 func containsAnyFold(needle string, fields ...string) bool {
-	for _, f := range fields {
-		if strings.Contains(strings.ToLower(f), needle) {
-			return true
-		}
-	}
-	return false
+	return slices.ContainsFunc(fields, func(f string) bool { return strings.Contains(strings.ToLower(f), needle) })
 }
 
 // countryHidden counts the brokers the profile's country rules out, for the
