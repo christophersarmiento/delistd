@@ -11,7 +11,10 @@
 
 **Take back your privacy.** Delistd sends data removal requests to 700+ data brokers on your behalf — for free.
 
-![Delistd dashboard](.github/images/dashboard.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset=".github/images/dashboard-dark.png">
+  <img src=".github/images/dashboard-light.png" alt="Delistd dashboard" width="800">
+</picture>
 
 Sites like Spokeo, BeenVerified and Whitepages hold your home address, phone number and relatives' names. They're data brokers, and there are hundreds. Services like Incogni and DeleteMe charge $100+/year to send opt-out requests to them; Delistd does the same from your own email account, open source and free.
 
