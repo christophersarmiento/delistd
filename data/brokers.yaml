@@ -13,6 +13,7 @@ brokers:
       opt_out_url: https://www.beenverified.com/app/optout/search
       region: us
       category: people-search
+      notes: The registry also lists BeenVerified, LLC and its subsidiaries and affiliates at the same address.
       parent: BeenVerified, LLC
       verification: Runs an identity verification step before acting on rights requests; agents need proof of authorization
       response_time: Acknowledges a request within 10 days and aims to respond within 45 days
@@ -200,7 +201,7 @@ brokers:
       website: https://www.transunion.com
       region: global
       category: marketing
-      notes: TransUnion acquired Neustar in 2021; TransUnion's own privacy notices state a request via one of the related-entity notices (including Marketing Solutions) covers the others, so the separate neustar entry was merged into this one.
+      notes: TransUnion acquired Neustar in 2021; TransUnion's own privacy notices state a request via one of the related-entity notices (including Marketing Solutions) covers the others, so the separate neustar entry was merged into this one. The registry also lists TRANS UNION LLC at the same address.
     - id: lexisnexis
       name: LexisNexis Risk Solutions
       email: privacy.information.mgr@lexisnexis.com
@@ -673,7 +674,7 @@ brokers:
       website: https://www.aspire-north.com/
       region: us
       category: marketing
-      notes: Opt-out URL https://www.aspire-north.com/do-not-sell-my-personal-information--out-out-request-form.html returns 404 (2026-10-04) - cleared, needs a current form.
+      notes: Opt-out URL https://www.aspire-north.com/do-not-sell-my-personal-information--out-out-request-form.html returns 404 (2026-10-04) - cleared, needs a current form. The registry also lists AMERICAN SPIRIT DATA SOULTIONS LLC at the same address.
     - id: asset-international
       name: Asset International, Inc.
       email: dataprotectionofficer@iss-stoxx.com
@@ -847,6 +848,7 @@ brokers:
       opt_out_url: https://optout.bigdbm.com/
       region: us
       category: marketing
+      notes: The registry also lists BIGDBM at the same address.
     - id: biointelli
       name: Biointelli Corporation
       email: privacy@biointelli.net
@@ -1791,7 +1793,7 @@ brokers:
       website: https://www.erepublic.com/
       region: us
       category: marketing
-      notes: Opt-out URL https://erepublic.secure.force.com/PrivacyRequest/ returns 404 (2026-10-04) - cleared, needs a current form.
+      notes: Opt-out URL https://erepublic.secure.force.com/PrivacyRequest/ returns 404 (2026-10-04) - cleared, needs a current form. The registry also lists e.Republic, LLC at the same address.
     - id: evorra
       name: Evorra Ltd
       email: privacy@evorra.com
@@ -1813,6 +1815,7 @@ brokers:
       opt_out_url: https://www.clarityservices.com/support/opt-out-2/
       region: us
       category: marketing
+      notes: The registry also lists EXPERIAN HEALTH INC at the same address. The registry also lists EXPERIAN INFORMATION SOLUTIONS INC at the same address. The registry also lists EXPERIAN MARKETING SOLUTIONS LLC at the same address.
     - id: explorium
       name: EXPLORIUM Inc
       email: oshrat@explorium.ai
@@ -2558,6 +2561,7 @@ brokers:
       opt_out_url: https://platform.fullcontact.com/your-privacy-choices
       region: us
       category: marketing
+      notes: The registry also lists J2 Global Canada Inc. at the same address.
     - id: jdm-list-services
       name: JDM List Services, LLC
       email: chrissy@jdmlistservices.com
@@ -3746,6 +3750,7 @@ brokers:
       website: https://www.propertyreach.com/
       region: us
       category: marketing
+      notes: The registry also lists Property Reach, L.P. at the same address.
     - id: prospector-database
       name: Prospector Database, LLC
       email: ""
@@ -4525,6 +4530,7 @@ brokers:
       opt_out_url: https://360-media-direct.privacy.saymine.io/360_Media_Direct
       region: us
       category: marketing
+      notes: The registry also lists Subdirect LLC at the same address.
     - id: summit-resources
       name: Summit Resources, LLC
       email: legal@clientcommand.com
@@ -5322,3 +5328,1607 @@ brokers:
       notes: 'Added 2026-09-12 from their privacy policy - Kenyan credit bureau regulated by the Central Bank of Kenya. Data Privacy Office: data@metropol.co.ke; erasure/correction requests: disputes@metropol.co.ke (credit-bureau data may be retained per CRB Regulations).'
       countries:
         - KE
+    - id: 5x5-us-llc
+      name: 5x5 US, LLC
+      email: privacy@5x5coop.com
+      website: https://5x5data.com
+      opt_out_url: https://5x5coop.com/
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: acremaps-llc
+      name: ACREMAPS LLC
+      email: support@acres.com
+      website: https://www.acres.com/
+      opt_out_url: https://www.acres.com/
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: addapptation-inc
+      name: Addapptation, Inc.
+      email: infosec@propensity.com
+      website: https://www.propensity.com
+      opt_out_url: https://www.propensity.com/
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: adprime-media-llc
+      name: Adprime Media LLC
+      email: privacy@adprime.com
+      website: https://www.adprime.com
+      opt_out_url: https://www.adprime.com/privacy-policy
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: adstra-llc
+      name: Adstra LLC
+      email: privacy.officer@adstradata.com
+      website: https://www.adstradata.com
+      opt_out_url: https://www.adstradata.com/privacy-policy/
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: adswapper-inc
+      name: AdSwapper Inc
+      email: ops@adswapper.co
+      website: https://www.toptopleads.com
+      opt_out_url: https://www.toptopleads.com/privacy-policy
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: adswizz-inc
+      name: AdsWizz, Inc.
+      email: ccpa-drop@adswizz.com
+      website: https://www.adswizz.com
+      opt_out_url: https://www.adswizz.com
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: aggknowledge-inc
+      name: AggKnowledge Inc.
+      email: privacy@aggknowledge.ai
+      website: https://aggknowledge.ai
+      opt_out_url: https://trustsuperset.com/dsrs?orgId=e0f23855-9ef2-46de-aff1-2c7938b8c8c9
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: agile-education-marketing-llc
+      name: Agile Education Marketing, LLC
+      email: personalinforequests@agile-ed.com
+      website: https://agile-ed.com
+      opt_out_url: https://agile-ed.com/california-privacy-rights/
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: airlines-reporting-corporation
+      name: Airlines Reporting Corporation
+      email: legalteam@arccorp.com
+      website: https://arccorp.com
+      opt_out_url: https://www2.arccorp.com/site-privacy-policy/
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: allant-group-llc
+      name: Allant Group, LLC
+      email: privacy@allantgroup.com
+      website: https://allantgroup.com
+      opt_out_url: https://allantgroup.com/privacy-policy
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: alpine-digital-group-inc
+      name: Alpine Digital Group, Inc.
+      email: compliance@alpinedigitalgroup.com
+      website: https://alpinedigitalgroup.com
+      opt_out_url: https://alpinedigitalgroup.com/privacy-rights
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: altrata-inc
+      name: Altrata, Inc.
+      email: piprivacy@altrata.com
+      website: https://www.altrata.com
+      opt_out_url: https://www.altrata.com
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: aniline-inc
+      name: Aniline, Inc.
+      email: jen@aniline.io
+      website: https://www.aniline.ai
+      opt_out_url: https://salesassistiq.ai/about
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: app-science-inc
+      name: App Science, Inc
+      email: privacy@appscience.inc
+      website: https://www.appscience.ai
+      opt_out_url: https://www.appscience.ai/
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: applovin-corporation
+      name: AppLovin Corporation
+      email: dataprotection@applovin.com
+      website: https://www.applovin.com
+      opt_out_url: https://max.applovin.com/p/how-applovin-shows-you-ads
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: asl-marketing
+      name: ASL Marketing
+      email: legal@deepsync.com
+      website: https://deepsync.com
+      opt_out_url: https://deepsync.com
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: audience-mix-llc
+      name: Audience Mix LLC
+      email: privacy@audiencemix.net
+      website: https://audiencemix.net
+      opt_out_url: https://www.audiencemix.net/do-no-sell-or-share-my-personal-informat
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: awl-holdings-llc
+      name: AWL Holdings, LLC
+      email: dncrequest@awl.com
+      website: https://allwebleads.com
+      opt_out_url: https://awl.com/privacy/
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: b-i-science-2009-ltd
+      name: B.I Science (2009) Ltd
+      email: privacy@biscience.com
+      website: https://biscience.com
+      opt_out_url: https://biscience.com/privacy-policy
+      region: global
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: babel-street-inc
+      name: Babel Street, Inc.
+      email: privacy@babelstreet.com
+      website: https://www.babelstreet.com
+      opt_out_url: https://babelstreet.com
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: bachmanity-inc
+      name: Bachmanity, Inc.
+      email: contact@aviato.co
+      website: https://aviato.co
+      opt_out_url: https://www.aviato.co/legal/privacy
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: baron-app-inc
+      name: Baron App, Inc.
+      email: safety@cameo.com
+      opt_out_url: https://legal.cameo.com/privacypolicy
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: becausal-inc
+      name: BECAUSAL, INC.
+      email: privacy@becausal.com
+      website: https://www.becausal.com
+      opt_out_url: https://www.becausal.com/personal-information
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: blackbaud-inc
+      name: Blackbaud, Inc
+      email: privacy@blackbaud.com
+      website: https://www.blackbaud.com
+      opt_out_url: https://www.blackbaud.com
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: blueprint-audiences
+      name: Blueprint Audiences
+      email: jeremy@blueprintaudiences.com
+      website: https://blueprintaudiences.com
+      opt_out_url: https://blueprintaudiences.com/privacy-choices
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: bmg-services-llc
+      name: BMG Services, LLC
+      email: srumsey@bulldogmedia.com
+      website: https://www.bulldogmediagroup.com
+      opt_out_url: https://www.bulldogmediagroup.com
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: brightquery-inc
+      name: Brightquery Inc
+      email: dnguyen@brightquery.com
+      website: https://www.brightquery.com
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: businessentitysearch-com-llc
+      name: BUSINESSENTITYSEARCH.COM LLC
+      email: optout@businessregistry.com
+      website: https://businessregistry.com/opt-out
+      opt_out_url: https://businessregistry.com/opt-out
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: buyersroad-inc
+      name: BuyersRoad, Inc
+      email: privacy@experience.com
+      website: https://experience.com
+      opt_out_url: https://www.experience.com/privacy-notice
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: captiv8-inc
+      name: Captiv8 Inc.
+      email: privacy@captiv8.io
+      website: https://captiv8.io
+      opt_out_url: https://captiv8.io/policy/
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: cb-information-services-inc
+      name: CB Information Services, Inc.
+      email: privacy@cbinsights.com
+      website: https://www.cbinsights.com
+      opt_out_url: https://www.cbinsights.com/privacy-policy
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: circana-llc
+      name: Circana, LLC
+      email: privacy@circana.com
+      website: https://www.circana.com
+      opt_out_url: https://privacyportal.onetrust.com/webform/95580356-b46a-4234-8f47-d824de4dbbc6/2de05774-2e3d-45b0-a7c2-45bb6ba50ab1
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: cision-us-inc
+      name: CISION US INC
+      email: Privacy@cision.com
+      website: https://portals.dporganizer.com/fa778b0e-817f-4c96-b13d-e2b614470033
+      opt_out_url: https://portals.dporganizer.com/fa778b0e-817f-4c96-b13d-e2b614470033
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: citydata-inc
+      name: CITYDATA Inc.
+      email: business@citydata.ai
+      website: https://citydata.ai
+      opt_out_url: https://www.citydata.ai/privacy
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: civic-element-llc
+      name: CIVIC ELEMENT LLC
+      email: ""
+      website: https://www.civicelement.com/privacy-policy-request
+      opt_out_url: https://www.civicelement.com/privacy-policy-request
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: clarivate
+      name: Clarivate
+      email: drgdsr@clarivate.com
+      website: https://www.clarivate.com
+      opt_out_url: https://privacyportal.onetrust.com/webform/7636e208-dda4-4218-8026-e1bc155873fc/draft/8651c266-68d4-43a8-b7ca-7bd8398843d6
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: clarivate-analytics-us
+      name: CLARIVATE ANALYTICS (US)
+      email: data.privacy@clarivate.com
+      website: https://clarivate.com
+      opt_out_url: https://privacyportal.onetrust.com/webform/7636e208-dda4-4218-8026-e1bc155873fc/0927a3fa-add0-4dc4-8bb0-20d6e374b7cc
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them. The registry also lists DR Decision Resources, LLC at the same address.
+    - id: clearcompany-llc
+      name: ClearCompany, LLC
+      email: privacy@clearcompany.com
+      website: https://clearcompany.com
+      opt_out_url: https://clearcompany.com
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: coast-technology-llc
+      name: Coast Technology, LLC
+      email: info@dealershiptoolkit.com
+      website: https://www.coasttechnology.com
+      opt_out_url: https://coasttechnology.com/
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: commerce-signals-inc
+      name: Commerce Signals, Inc.
+      email: info@commercesignals.com
+      website: https://www.commercesignals.com
+      opt_out_url: https://service.transunion.com/dss/ccpa_optout.page
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: common-room-inc
+      name: Common Room, Inc.
+      email: support@commonroom.io
+      website: https://www.commonroom.io
+      opt_out_url: https://app.commonroom.io/remove-my-info
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: compact-information-systems-llc
+      name: Compact Information Systems, LLC
+      email: privacy.compliance@deepsync.com
+      website: https://deepsync.com
+      opt_out_url: https://www.deepsync.com
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: connatix-native-exchange-inc
+      name: Connatix Native Exchange Inc.
+      email: privacy@connatix.com
+      website: https://www.jwx.com
+      opt_out_url: https://www.connatix.com/optout
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: connection-holdings
+      name: Connection Holdings
+      email: amanda@connectionholdings.com
+      website: https://connectionholdings.com
+      opt_out_url: https://Connectionholdings.com
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: cox-automotive-inc
+      name: Cox Automotive, Inc.
+      email: consumer-privacy-ops@coxautoinc.com
+      website: https://www.coxautoinc.com
+      opt_out_url: https://www.coxautoinc.com/consumerprivacyrights/
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: crimson-hexagon
+      name: Crimson Hexagon
+      email: Privacy@brandwatch.com
+      website: https://www.brandwatch.com
+      opt_out_url: https://www.brandwatch.com
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: customer-asset-consulting-group-inc
+      name: CUSTOMER ASSET CONSULTING GROUP INC
+      email: privacy@datadelivers.com
+      website: https://datadelivers.com
+      opt_out_url: https://trustsuperset.com/dsrs?orgId=275d6c62-eb0f-4f8a-80c2-b72573902714
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: data-to-win-llc
+      name: DATA TO WIN LLC
+      email: ""
+      website: https://www.datatowin.com/do-not-sell-or-share-my-personal-info
+      opt_out_url: https://www.datatowin.com/do-not-sell-or-share-my-personal-info
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: datadesk-inc
+      name: Datadesk Inc.
+      email: privacy@datadesk.io
+      website: https://www.datadesk.io
+      opt_out_url: https://datadesk.io/help/do-not-sell-my-personal-info
+      region: global
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: dataman-group-inc
+      name: Dataman Group Inc
+      email: dale@datamangroup.com
+      website: https://www.datamangroup.com
+      opt_out_url: https://www.datamangroup.com/privacy/
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: datarate-llc
+      name: DATARATE LLC
+      email: privacy@datarate.ai
+      website: https://datarate.ai/my-privacy-choices
+      opt_out_url: https://datarate.ai/my-privacy-choices
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: db-sub-llc
+      name: DB SUB, LLC
+      email: privacy@partech.com
+      website: https://partech.com/dbsubllc/
+      opt_out_url: https://partech.com/dbsubllc/
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: dealersocket-llc-us
+      name: DealerSocket, LLC (US)
+      email: dealersocketprivacy@solera.com
+      website: https://www.dealersocket.com
+      opt_out_url: https://dealersocket.com/privacy-policy/
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: dealfront-finland-oy
+      name: Dealfront Finland Oy
+      email: dpo@leadfeeder.com
+      website: https://www.leadfeeder.com
+      opt_out_url: https://www.leadfeeder.com/privacy/privacy-notice/
+      region: global
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: dealfront-group-gmbh
+      name: Dealfront Group GmbH
+      email: legal@dealfront.com
+      website: https://www.leadfeeder.com
+      opt_out_url: https://www.leadfeeder.com/privacy/privacy-notice/
+      region: global
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: dealmachine-operations-inc
+      name: DealMachine Operations Inc.
+      email: support@dealmachine.com
+      website: https://dealmachine.com
+      opt_out_url: https://privacyrequest.dealmachine.com/remove
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: deloitte-consulting-llp
+      name: Deloitte Consulting LLP
+      email: usprivacyquestions@deloitte.com
+      website: https://www.deloitte.com
+      opt_out_url: https://datasubject.deloitte.com
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them. The registry also lists Deloitte Financial Advisory Services LLP at the same address.
+    - id: donorbureau-llc
+      name: DonorBureau LLC
+      email: CCPA@donorbureau.com
+      website: https://donorbureau.com
+      opt_out_url: https://donorbureau.com/california-privacy-rights-for-california-residents-only/
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: draup-inc
+      name: Draup, Inc.
+      email: privacy@draup.com
+      website: https://www.draup.com
+      opt_out_url: https://www.draup.com
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: elevar-llc
+      name: Elevar, LLC
+      email: privacy@getelevar.com
+      website: https://getelevar.com
+      opt_out_url: https://getelevar.com
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: elocal-usa-llc
+      name: eLocal USA, LLC
+      email: privacy@elocal.com
+      website: https://elocal.com
+      opt_out_url: https://www.elocal.com
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: endgame-labs-inc
+      name: Endgame Labs, Inc.
+      email: info@endgame.io
+      website: https://endgame.io
+      opt_out_url: https://docs.endgame.io/trust/privacy
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: enlyft-inc
+      name: Enlyft Inc.
+      email: chirag@enlyft.com
+      website: https://enlyft.com
+      opt_out_url: https://enlyft.com/tech/check-email
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: equifax-information-services-llc
+      name: EQUIFAX INFORMATION SERVICES LLC
+      email: usprivacy@equifax.com
+      website: https://www.equifax.com
+      opt_out_url: https://myprivacy.equifax.com/opt-in-opt-out/personal-info
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them. The registry also lists IXI CORPORATION at the same address. The registry also lists Knowledge Works, Inc. at the same address. The registry also lists Equifax Workforce Solutions LLC at the same address. The registry also lists AUSTIN CONSOLIDATED HOLDINGS INC at the same address.
+    - id: everview-holdco-inc
+      name: EverView HoldCo, Inc
+      email: privacy@evertrue.com
+      website: https://www.evertrue.com
+      opt_out_url: https://www.evertrue.com/privacy-policy/
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: exa-labs-inc
+      name: Exa Labs Inc.
+      email: hello@exa.ai
+      website: https://exa.ai
+      opt_out_url: https://exa.ai
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: exact-match-marketing-inc
+      name: Exact Match Marketing Inc
+      email: datarequest@exactmatch.io
+      website: https://exactmatchmarketing.com
+      opt_out_url: https://exactmatchmarketing.com/privacy-policy
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: exelate-inc
+      name: EXELATE INC
+      email: ""
+      website: https://www.nielsen.com
+      opt_out_url: https://sites.nielsen.com/legal/privacy-statement/exelate-privacy-policy/opt-in-opt-out/
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: facteus-inc
+      name: FACTEUS, INC.
+      email: info@facteus.com
+      website: https://www.facteus.com
+      opt_out_url: https://www.facteus.com
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: family-tree-now-llc
+      name: Family Tree Now, LLC
+      email: privacy@familytreenow.com
+      website: https://familytreenow.com
+      opt_out_url: https://www.familytreenow.com/privacy?removal=true
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: feedzai-inc
+      name: Feedzai, Inc.
+      email: privacy@feedzai.com
+      website: https://www.feedzai.com
+      opt_out_url: https://www.feedzai.com/legal/privacy-policy
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: fetch-rewards-llc
+      name: Fetch Rewards, LLC
+      email: privacy@fetch.com
+      website: https://fetch.com
+      opt_out_url: https://fetch.com/privacy-policy
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: fi-navigator-corporation
+      name: FI Navigator Corporation
+      email: privacy@fi-navigator.com
+      website: https://www.fi-navigator.com
+      opt_out_url: https://www.trustsuperset.com/dsrs?orgId=aff4e71a-b6d9-43a4-864e-7351e5ab2b2d
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: finthrive-healthcare-inc
+      name: FINTHRIVE HEALTHCARE INC
+      email: tuhc@finthrive.com
+      website: https://www.finthrive.com
+      opt_out_url: https://finthrive.com/privacy-policy-overview
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: firmable-inc
+      name: FIRMABLE INC
+      email: privacy@firmable.com
+      website: https://firmable.com
+      opt_out_url: https://www.trustsuperset.com/dsrs?orgId=4392fc55-6b3f-4b3d-82ca-b424aa96eb2a
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: fog-data-science-llc
+      name: Fog Data Science LLC
+      email: privacy@fogdatascience.com
+      website: https://www.fogdatascience.com
+      opt_out_url: https://www.fogdatascience.com/opt-out
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: four-corner-media-corp
+      name: Four Corner Media Corp
+      email: John@fourcornerhome.com
+      website: https://fourcornerhome.com
+      opt_out_url: https://fourcornerhome.com/data-privacy-form/
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: fullenrich-corp
+      name: FULLENRICH CORP
+      email: ""
+      website: https://fullenrich.com/optout
+      opt_out_url: https://fullenrich.com/optout
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: gather-analytics-llc
+      name: GATHER ANALYTICS LLC
+      email: privacy@gatheranalytics.co
+      website: https://gatheranalytics.co
+      opt_out_url: https://dsr.trustsuperset.com/?orgId=ddc3f557-7e66-4af0-96f3-b581b4249285
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: general-motors-llc
+      name: General Motors LLC
+      email: privacy@gm.com
+      website: https://www.gm.com
+      opt_out_url: https://www.gm.com/consumer-privacy
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: getvector-inc
+      name: GetVector, Inc.
+      email: security@vector.co
+      website: https://vector.co
+      opt_out_url: https://www.vector.co/opt-out
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: gigabite-inc
+      name: Gigabite Inc
+      email: privacy@boam.com
+      website: https://boam.ai
+      opt_out_url: https://boam.ai/privacy-policy
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: global-source-data-solutions-inc
+      name: Global Source Data Solutions Inc
+      email: privacy@gsdsi.com
+      website: https://gsdsi.com
+      opt_out_url: https://trustsuperset.com/dsrs?orgId=cf72da3d-e829-46e5-a71e-6d15b95c06ad
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: globicom-inc
+      name: Globicom Inc
+      email: aregsakanyan@gmail.com
+      website: https://recordsfinder.com
+      opt_out_url: https://recordsfinder.com/optout/
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: graph8-inc
+      name: GRAPH8 INC
+      email: compliance@graph8.com
+      website: https://graph8.com
+      opt_out_url: https://www.trustsuperset.com/dsrs?orgId=408c45e6-e16c-4fdd-b6ac-876e2e3f9d8f
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: graze-social-pbc
+      name: Graze Social PBC
+      email: legal@graze.social
+      website: https://www.graze.social
+      opt_out_url: https://www.graze.social
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: growing-libraries-llc
+      name: Growing Libraries, LLC
+      email: ian@growinglibraries.com
+      website: https://www.growinglibraries.com
+      opt_out_url: https://www.growinglibraries.com
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: growthcode-llc
+      name: GrowthCode, LLC
+      email: privacy@growthcode.io
+      website: https://www.growthcode.io
+      opt_out_url: https://www.growthcode.io/do-not-sell
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: haines-co
+      name: Haines & Co.
+      email: awilliams@haines.com
+      website: https://www.haines.com
+      opt_out_url: https://www.haines.com
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: health-union-llc
+      name: Health Union, LLC
+      email: privacy@health-union.com
+      website: https://health-union.com
+      opt_out_url: https://privacyportal.onetrust.com/webform/c402d2db-7536-4212-a23d-ed4a33c1b3b2/e3aec736-7c0a-4313-a3e7-132ff601397a
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: hubspot-inc
+      name: HubSpot, Inc.
+      email: Privacy@hubspot.com
+      website: https://www.hubspot.com
+      opt_out_url: https://legal.hubspot.com/privacy-policy
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: huge-legal-technology-company-inc
+      name: Huge Legal Technology Company, Inc
+      email: privacy@hugelegaltech.com
+      website: https://www.trustandwill.com
+      opt_out_url: https://trustandwill.com/security/privacy-policy
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: idmap-inc
+      name: IDMAP Inc
+      email: michael.belsky@idmap.ai
+      website: https://idmap.ai
+      opt_out_url: https://idmap.ai/do-not-sell.html
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: index-exchange-inc
+      name: Index Exchange Inc.
+      email: privacy@indexexchange.com
+      website: https://www.indexexchange.com
+      opt_out_url: https://www.indexexchange.com/privacy/exchange-platform-privacy-policy/
+      region: global
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: infinite-media-concepts-incorporates
+      name: INFINITE MEDIA CONCEPTS INCORPORATES
+      email: mail@mailinglists.com
+      website: https://www.mailinglists.com
+      opt_out_url: https://www.mailinglists.com
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: informa-group-limited
+      name: Informa Group Limited
+      email: groupdpo@informa.com
+      website: https://www.informa.com
+      opt_out_url: https://privacy.informa.com/policies/en/
+      region: global
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: inmar-brand-solutions-inc
+      name: Inmar Brand Solutions, Inc.
+      email: privacy@inmar.com
+      website: https://inmar.com
+      opt_out_url: https://inmar.com
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: inmar-oiq-llc
+      name: Inmar-OIQ, LLC
+      email: databroker@inmar.com
+      website: https://www.inmar.com
+      opt_out_url: https://www.inmar.com/about/privacy-policy/owneriq
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: innovation-brands-corp
+      name: Innovation Brands Corp
+      email: privacy@proxima.ai
+      website: https://www.proxima.ai
+      opt_out_url: https://www.proxima.ai
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: innovative-data-services-inc
+      name: INNOVATIVE DATA SERVICES INC
+      email: privacy@specialistsdata.com
+      website: https://www.specialistsdata.com
+      opt_out_url: https://www.specialistsdata.com
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: institutional-shareholder-services
+      name: INSTITUTIONAL SHAREHOLDER SERVICES
+      email: ""
+      website: https://www.issgovernance.com
+      opt_out_url: https://www.issgovernance.com/privacy-legal/ccpa/
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: intermedia-ventures-llc
+      name: Intermedia Ventures, LLC
+      email: compliance@intermedia.team
+      website: https://staterecords.org
+      opt_out_url: https://staterecords.org/optout
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: juicebox-app-inc
+      name: Juicebox App, Inc.
+      email: privacy@juicebox.work
+      website: https://juicebox.ai
+      opt_out_url: https://juicebox.ai/privacy-center
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: keyword-connects-llc
+      name: Keyword Connects LLC
+      email: privacy@keywordconnects.com
+      website: https://keywordconnects.com
+      opt_out_url: https://keywordconnects.com/
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: kind-skiptracing-inc
+      name: Kind Skiptracing, Inc
+      email: compliance@kindskiptracing.com
+      website: https://kindskiptracing.com
+      opt_out_url: https://kindskiptracing.com
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: kontext-data
+      name: Kontext Data
+      email: info@kontextdata.com
+      website: https://kontextdata.com
+      opt_out_url: https://www.kontextdata.com
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: lead-enhance-llc
+      name: LEAD ENHANCE LLC
+      email: info@lead-enhance.com
+      website: https://www.lead-enhance.com
+      opt_out_url: https://bathroom-remodel-today.com/privacy/
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: learnmore-llc
+      name: LearnMore, LLC
+      email: compliance@learnmore.com
+      website: https://learnmore.com
+      opt_out_url: https://learnmore.com/privacy-rights/
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: lempire-sas
+      name: Lempire SAS
+      email: privacy@lempire.co
+      website: https://www.lemlist.com
+      opt_out_url: https://www.lemlist.com/legal/privacy-policy
+      region: global
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: leverage-digital-llc
+      name: LEVERAGE DIGITAL LLC
+      email: privacy@leveragedigital.ai
+      website: https://leveragedigital.ai
+      opt_out_url: https://www.trustsuperset.com/dsrs?orgId=b46e7184-11fe-4a94-a0b4-1dce265848b0
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: lightcast-llc
+      name: Lightcast, LLC
+      email: privacy@lightcast.io
+      website: https://lightcast.io
+      opt_out_url: https://privacyportal.onetrust.com/webform/0f61f895-d08d-410f-b96d-ecfd34fd42e3/8d4dfe0d-998d-4c1d-ab6d-4357670fa8e9
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: listkit-llc
+      name: ListKit LLC
+      email: support@listkit.io
+      website: https://www.listkit.io
+      opt_out_url: https://listkit.io
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: listsonline-com-inc
+      name: ListsOnline.com, Inc.
+      email: privacy@everleads.com
+      website: https://www.everleads.com
+      opt_out_url: https://www.everleads.com/privacy
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: lob-com-inc
+      name: Lob.com, Inc.
+      email: privacy.inbox@lob.com
+      website: https://lob.com
+      opt_out_url: https://www.lob.com/privacy
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: logictree-inc
+      name: LogicTree, Inc.
+      email: marc@logictree.com
+      website: https://www.logictree.com
+      opt_out_url: https://www.data247.com/privacy
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: lp-brokering-llc
+      name: LP BROKERING LLC
+      email: ""
+      website: https://privacy.lpbrokering.com/
+      opt_out_url: https://privacy.lpbrokering.com/
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: marketing-architects-inc
+      name: Marketing Architects, Inc.
+      email: privacy@markarch.com
+      website: https://www.marketingarchitects.com
+      opt_out_url: https://www.marketingarchitects.com/privacy-policy-ProductAndService
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: marriott-international-inc
+      name: Marriott International, Inc.
+      email: privacy@marriott.com
+      website: https://marriott.com
+      opt_out_url: https://www.marriott.com/about/privacy.mi
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: mississippi-tornado-alley-llc
+      name: Mississippi Tornado Alley, LLC
+      email: privacy@mtalley.zendesk.com
+      website: https://AdvancedBackgroundChecks.com
+      opt_out_url: https://www.fastpeoplesearch.com/do-not-sell
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: mms-inc
+      name: MMS Inc
+      email: privacy@mmslists.com
+      website: https://www.mmslists.com
+      opt_out_url: https://www.mmslists.com/privacy-policy
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: mobilefuse-llc
+      name: MobileFuse LLC
+      email: compliance@mobilefuse.com
+      website: https://mobilefuse.com
+      opt_out_url: https://mobilefuse.com/privacy-policy
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: mobilemonkey-inc
+      name: MobileMonkey, Inc
+      email: invoices@customers.ai
+      website: https://customers.ai
+      opt_out_url: https://customers.ai/privacy-policy
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: monocl-ab
+      name: Monocl AB
+      email: monocldrop@definitivehc.com
+      website: https://account.monocl.com
+      opt_out_url: https://account.monocl.com
+      region: global
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: moody-s-corporation
+      name: Moody's Corporation
+      email: Privacy@moodys.com
+      website: https://www.moodys.com
+      opt_out_url: https://www.moodys.com/web/en/us/legal/privacy-policy.html
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them. The registry also lists MOODYS ANALYTICS INC at the same address.
+    - id: mv-digital-group-llc
+      name: MV Digital Group, LLC
+      email: support@cinqdi.com
+      website: https://www.cinqdi.com
+      opt_out_url: https://www.cinqdi.com/privacy-policy/?fides_modal_display=immediate
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: nachal-inc
+      name: Nachal Inc.
+      email: privacy@getliminal.com
+      website: https://www.getliminal.com
+      opt_out_url: https://getliminal.com/privacypolicy
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: neptune-ops-llc
+      name: Neptune Ops LLC
+      email: privacy@neptuneops.com
+      website: https://neptuneops.com
+      opt_out_url: https://neptuneops.com/privacy-policy
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: networx-systems-inc
+      name: Networx Systems Inc.
+      email: privacy@networx.com
+      website: https://www.networx.com
+      opt_out_url: https://www.networx.com/privacy
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: new-mexico-data-insights
+      name: New Mexico Data Insights
+      email: privacy@eleris.com
+      website: https://newmexicodatainsights.com
+      opt_out_url: https://newmexicodatainsights.com
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: nordic-data-resources-as
+      name: Nordic Data Resources AS
+      email: privacy@nordicdataresources.com
+      website: https://www.nordicdataresources.com
+      region: global
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: numlookup-llc
+      name: NumLookup LLC.
+      email: hello@numlookup.com
+      website: https://www.numlookup.com
+      opt_out_url: https://www.numlookup.com/opt_out
+      region: us
+      category: people-search
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: obra-inc
+      name: Obra, Inc.
+      email: hello@obrajobs.com
+      website: https://www.obra.co
+      opt_out_url: https://www.obra.co
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: ocean-global-inc
+      name: Ocean Global Inc
+      email: global@ocean.io
+      website: https://ocean.io
+      opt_out_url: https://www.ocean.io/privacy
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: ogury-ltd
+      name: Ogury Ltd
+      email: legal@ogury.co
+      website: https://ogury.com
+      opt_out_url: https://privacy.ogury.com/
+      region: global
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: onfocus-sas
+      name: Onfocus SAS
+      email: dpo@adagio.io
+      website: https://adagio.io
+      opt_out_url: https://adagio.io
+      region: global
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: optable-technologies-us-inc
+      name: Optable Technologies US Inc.
+      email: legal@optable.co
+      website: https://www.optable.co
+      opt_out_url: https://terms.optable.co/privacy/opt-out-and-suppression-of-brokered-data
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: ownco-llc
+      name: OWNCO LLC
+      email: privacy@monitorbase.com
+      website: https://www.monitorbase.com
+      opt_out_url: https://my.monitorbase.com/privacypolicy
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: peanuts-saas-studio-sas
+      name: Peanuts SaaS Studio SAS
+      email: valentin@findymail.com
+      website: https://www.findymail.com
+      opt_out_url: https://www.findymail.com/ccpa/
+      region: global
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: pebblepost-inc
+      name: PEBBLEPOST INC
+      email: privacy@pebblepost.com
+      website: https://www.pebblepost.com/
+      opt_out_url: https://www.pebblepost.com/
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them. The registry spelled the website pebbepost.com; corrected to pebblepost.com.
+    - id: pen-link-ltd
+      name: Pen-Link, Ltd.
+      email: privacy@penlink.com
+      website: https://www.penlink.com
+      opt_out_url: https://www.penlink.com/your-privacy-choices/
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: peoplefinders-llc
+      name: Peoplefinders, LLC
+      email: customercare@peoplefinders.com
+      website: https://peoplefinders.com
+      opt_out_url: https://www.peoplefinders.com/opt-out
+      region: us
+      category: people-search
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: phantom-data-llc
+      name: PHANTOM DATA LLC
+      email: support@phantomdata.io
+      website: https://app.phantomdata.io/
+      opt_out_url: https://app.phantomdata.io/
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: pludo-inc
+      name: Pludo Inc
+      email: privacy@cashmereai.com
+      website: https://cashmereai.com
+      opt_out_url: https://cashmereai.com
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: plug-industries
+      name: PLUG INDUSTRIES
+      email: blakehogan@plug-industries.com
+      website: https://www.plug-industries.com
+      opt_out_url: https://www.plug-industries.com
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them. The registry also lists Plug Chargers LLC at the same address.
+    - id: podible-inc
+      name: Podible Inc
+      email: privacy@podscribe.com
+      website: https://www.podscribe.com
+      opt_out_url: https://podscribe.com/privacy
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: possiblenow-inc
+      name: POSSIBLENOW INC
+      email: californiadrop@possiblenowmarketing.com
+      website: https://possiblenow.com
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: precisely-software-incorporated
+      name: Precisely Software Incorporated
+      email: privacy@precisely.com
+      website: https://www.precisely.com
+      opt_out_url: https://www.precisely.com/legal/privacy-policy/your-privacy-choices
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: project-affinity-inc
+      name: Project Affinity, Inc.
+      email: privacy@affinity.co
+      website: https://affinity.co
+      opt_out_url: https://www.affinity.co/legal/privacy-policy
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: prospectbase-uk-limited
+      name: ProspectBase UK Limited
+      email: privacy@prospectbase.com
+      website: https://www.prospectbase.com
+      opt_out_url: https://www.prospectbase.com
+      region: global
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: publicrecordcom-llc
+      name: PublicRecordCom, LLC
+      email: compliance@publicrecord.com
+      website: https://publicrecord.com
+      opt_out_url: https://publicrecord.com/privacy-rights/
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: quorum-analytics-llc
+      name: Quorum Analytics, LLC
+      email: ccpa@quorum.us
+      website: https://www.quorum.us
+      opt_out_url: https://www.quorum.us/privacy-policy/
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: quorum-data-inc
+      name: Quorum Data, Inc
+      email: privacy@quorum.inc
+      website: https://www.quorum.inc
+      opt_out_url: https://app.quorum.live/privacy-request
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: qurium-solutions-inc
+      name: Qurium Solutions, Inc.
+      email: dj.merino@supplier.io
+      website: https://www.supplier.io
+      opt_out_url: https://supplier.io/privacy-policy
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: r-l-polk-co
+      name: R.L. Polk & Co.
+      email: privacy@mobilityglobal.com
+      website: https://www.mobilityglobal.com
+      opt_out_url: https://www.mobilityglobal.com
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: rainbarrel-usa-llc
+      name: RAINBARREL USA LLC
+      email: privacy@rbarrel.com
+      website: https://knowertech.com
+      opt_out_url: https://www.rbarrel.com/privacy-policy
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: remodeling-com-llc
+      name: REMODELING.COM LLC
+      email: privacy@remodeling.com
+      website: https://www.remodeling.com
+      opt_out_url: https://remodeling.com
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: response-america-inc
+      name: Response America, Inc.
+      email: ncoa@responseamerica.net
+      website: https://ResponseAmerica.net
+      opt_out_url: https://responseamerica.net/privacy_dec.html
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them. The registry also lists RESPONSE AMERICA DATA INC at the same address.
+    - id: revenue-roll-inc
+      name: Revenue Roll Inc.
+      email: info@meettie.com
+      website: https://meettie.com
+      opt_out_url: https://meettie.com
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: ripple-effect-strategies
+      name: Ripple Effect Strategies
+      email: dylan@ripple-fx.com
+      website: https://ripple-fx.com
+      opt_out_url: https://www.ripple-roi.com/privacy-policy
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: ror-partners-llc
+      name: ROR Partners, LLC
+      email: privacy@rorpartners.com
+      website: https://rorpartners.com
+      opt_out_url: https://www.rorpartners.com/dsar
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: rushmore-labs-llc
+      name: Rushmore Labs, LLC
+      email: privacy@rushmorelabs.com
+      website: https://rushmorelabs.com
+      opt_out_url: https://rushmorelabs.com/
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: semantiq-inc
+      name: SEMANTIQ INC
+      email: privacy-inbox@semantiqhealth.com
+      website: https://semantiqhealth.com
+      opt_out_url: https://semantiqhealth.com/privacy-policy
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: senioroi-llc
+      name: SenioROI, LLC
+      email: jack.marks@senioroi.com
+      website: https://senioroi.com
+      opt_out_url: https://senioroi.com/privacy-request/
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: skydeo-inc
+      name: Skydeo Inc.
+      email: privacy@skydeo.com
+      website: https://skydeo.com
+      opt_out_url: https://skydeo.com
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: smarte-inc
+      name: SMARTe Inc
+      email: privacy@smarteprivacy.com
+      website: https://www.smarte.pro
+      opt_out_url: https://www.smarte.pro
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: sojern-inc
+      name: Sojern, Inc
+      email: sojernprivacy@sojern.com
+      website: https://www.sojern.com
+      opt_out_url: https://www.sojern.com/privacy/privacy-policy
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: solar-connect-llc
+      name: Solar Connect, LLC
+      email: legal@homeupgradepros.us
+      website: https://bluefireleads.com
+      opt_out_url: https://www.bluefireleads.com/privacy-policy.php
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: sports-innovation-lab-inc
+      name: Sports Innovation Lab, inc.
+      email: privacy@sportsilab.com
+      website: https://www.sportsilab.com
+      opt_out_url: https://www.sportsilab.com/privacy-choices
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: sprout-social-inc
+      name: Sprout Social, Inc.
+      email: dpo@sproutsocial.com
+      website: https://www.sproutsocial.com
+      opt_out_url: https://sproutsocial.com/legal/privacy-policy/
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: subgraph-inc
+      name: Subgraph, Inc
+      email: privacy@subgraph.tech
+      website: https://subgraph.tech
+      opt_out_url: https://subgraph.tech/privacy-choices
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: swarm-holdings-inc
+      name: Swarm Holdings, Inc.
+      email: privacy@theswarm.com
+      website: https://www.theswarm.com
+      opt_out_url: https://dsr.trustsuperset.com/?orgId=0ed646d6-b843-4222-b209-cd97ff3f8b73
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: swipejobs-llc
+      name: SWIPEJOBS LLC
+      email: privacy@swipejobs.com
+      website: https://www.swipejobs.com/privacy-center
+      opt_out_url: https://www.swipejobs.com/privacy-center
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: sync-me-ltd
+      name: SYNC.ME LTD.
+      email: support@sync.me
+      website: https://sync.me/unsubscribe/
+      opt_out_url: https://sync.me/unsubscribe/
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: tauxbe-data-inc
+      name: Tauxbe Data Inc.
+      email: sourcing@tauxbe.com
+      website: https://www.tauxbe.com
+      opt_out_url: https://www.tauxbe.com/privacy-policy
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: tracerfy-llc
+      name: Tracerfy LLC
+      email: compliance@tracerfy.com
+      website: https://www.tracerfy.com
+      opt_out_url: https://www.tracerfy.com
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: trending-family-inc
+      name: TRENDING FAMILY INC
+      email: support@creatorwizard.com
+      website: https://www.creatorwizard.com/
+      opt_out_url: https://www.creatorwizard.com/
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: truthed-inc
+      name: Truthed, Inc
+      email: anita@truthed.com
+      website: https://www.truthed.com
+      opt_out_url: https://www.truthed.com/optout
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: unify-ai-business-corporation
+      name: UNIFY AI BUSINESS CORPORATION
+      email: privacy@unifygtm.com
+      website: https://privacy.unifygtm.com
+      opt_out_url: https://privacy.unifygtm.com
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: upcell-llc
+      name: upcell, LLC
+      email: privacy@upcell.io
+      website: https://www.upcell.io
+      opt_out_url: https://www.upcell.io/data-claim
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: ups-capital-corporation
+      name: UPS Capital Corporation
+      email: UPSCapitalITPrivacy@ups.com
+      website: https://upscapital.com
+      opt_out_url: https://upscapital.com/opt-out/
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: upwork-inc
+      name: Upwork, Inc.
+      email: marketingtechnology@upwork.com
+      website: https://www.upwork.com
+      opt_out_url: https://www.upwork.com/legal#privacy
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: urban-cyber-security-inc
+      name: Urban Cyber Security Inc.
+      email: privacy@urban-vpn.com
+      website: https://www.urban-vpn.com
+      opt_out_url: https://www.urban-vpn.com/about-us/privacy
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: urban-science-applications-inc
+      name: Urban Science Applications, Inc.
+      email: usdatabroker@urbanscience.com
+      website: https://www.urbanscience.com
+      opt_out_url: https://www.urbanscience.com/privacy/
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: v-p-data-llc
+      name: V P DATA LLC
+      email: privacy@valpakintelligence.com
+      website: https://valpakintelligence.com/privacy-policy
+      opt_out_url: https://valpakintelligence.com/privacy-policy
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: versar-data-solutions-inc
+      name: Versar Data Solutions Inc
+      email: privacy@versium.com
+      website: https://www.versium.com
+      opt_out_url: https://versium.com/california-privacy-policy/
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: vertical-int-inc
+      name: Vertical Int, Inc.
+      email: privacy@enrichlayer.com
+      website: https://www.enrichlayer.com
+      opt_out_url: https://enrichlayer.com/privacy-policy
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: vi-technologies-inc
+      name: Vi Technologies, Inc.
+      email: privacy@vi.co
+      website: https://vi.co
+      opt_out_url: https://www.vi.co
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: victory-waves-co
+      name: VICTORY WAVES CO
+      email: info@victorywaves.com
+      website: https://www.victorywaves.com/legal/privacy-choices
+      opt_out_url: https://www.victorywaves.com/legal/privacy-choices
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: vintory-llc
+      name: VINTORY LLC
+      email: info@vintory.com
+      website: https://www.vintory.com
+      opt_out_url: https://www.vintory.com
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: vizio-services-llc
+      name: VIZIO Services, LLC
+      email: privacy@vizio.com
+      website: https://vizio.com
+      opt_out_url: https://privacyportal-cdn.onetrust.com/dsarwebform/41aebd10-58ee-4c98-9dd5-aa66c9be664a/0099df9c-c0aa-4bf7-bd5f-7f4ff46768f6.html
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: voxtur-data-services
+      name: Voxtur Data Services
+      email: chad.brown@benutech.com
+      website: https://www.benutech.com
+      opt_out_url: https://www.benutech.com
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: walla-media-llc
+      name: WALLA MEDIA LLC
+      email: privacyofficer@consumerdataprotect.com
+      website: https://consumerdataprotect.com
+      opt_out_url: https://consumerdataprotect.com
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: waypoint-metrics-llc
+      name: WAYPOINT METRICS LLC
+      email: privacy@waypointmetrics.com
+      website: https://www.waypointmetrics.com
+      opt_out_url: https://www.waypointmetrics.com
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: wurl-llc
+      name: WURL, LLC
+      email: dataprotection@wurl.com
+      website: https://www.wurl.com
+      opt_out_url: https://www.wurl.com/
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: yieldmo-inc
+      name: Yieldmo, Inc.
+      email: privacy@yieldmo.com
+      website: https://yieldmo.com
+      opt_out_url: https://yieldmo.com
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: zeetogroup-llc
+      name: ZEETOGROUP LLC
+      email: support@zeetogroup.com
+      website: https://zeeto.io
+      opt_out_url: https://zeeto.io
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: zerotoone-ai-inc
+      name: ZeroToOne.AI Inc.
+      email: legal@zerotoone.ai
+      website: https://www.zerotoone.ai
+      opt_out_url: https://www.zerotoone.ai/privacy-policy
+      region: us
+      category: marketing
+      notes: From the California data-broker registry (2026); contact details as the broker filed them.
+    - id: zeta-global
+      name: Zeta Global
+      email: privacy@zetaglobal.com
+      website: https://www.zetaglobal.com
+      opt_out_url: https://privacyportal-cdn.onetrust.com/dsarwebform/bc2d3301-11a5-4de5-b15e-ce796187a352/d0720d0f-d427-4a7d-a773-5d6793229f15.html
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
+    - id: zoom-communications-inc
+      name: ZOOM COMMUNICATIONS INC
+      email: privacy@zoom.us
+      website: https://zoom.us
+      opt_out_url: https://privacyportal.onetrust.com/webform/65962359-ef0d-4399-9db4-572d06de08aa/f277f9f7-bfee-4233-815e-80e290139bc2
+      region: us
+      category: marketing
+      notes: From the Oregon data-broker registry (2026); contact details as the broker filed them.
+    - id: zoominfo-technologies-llc
+      name: ZoomInfo Technologies, LLC
+      email: privacy@zoominfo.com
+      website: https://www.zoominfo.com
+      opt_out_url: https://www.zoominfo.com/trust-center/your-privacy
+      region: us
+      category: marketing
+      notes: From the California and Oregon data-broker registries (2026); contact details as the broker filed them.
