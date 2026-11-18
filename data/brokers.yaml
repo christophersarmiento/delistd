@@ -5087,7 +5087,7 @@ brokers:
       category: marketing
       notes: Reply says to complete this form to begin verification (2026-08-21).
     - id: zenleads
-      name: Zenleads Inc.
+      name: Zenleads Inc. (Apollo.io)
       email: privacy@apollo.io
       website: https://www.apollo.io/
       opt_out_url: https://www.apollo.io/privacy-policy/remove
@@ -6991,4 +6991,883 @@ brokers:
       parent: TransUnion International UK Limited
       sources:
         - https://www.transunion.co.uk/legal/privacy-centre
+      researched: "2026-11-18"
+    - id: inforegister-kreedix
+      name: Inforegister (Kreedix OÜ)
+      email: andmekaitse@ir.ee
+      website: https://www.inforegister.ee
+      opt_out_url: https://www.inforegister.ee/en/profile_restriction/
+      region: eu
+      category: people-search
+      notes: Estonian business and person information portal (company roles, credit and payment-default information on individuals); the policy names a separate mailbox for data-protection questions and says requests are answered within legal deadlines.
+      parent: Kreedix OÜ
+      sources:
+        - https://group.kreedix.ee/en/privacy-policy/
+      researched: "2026-11-18"
+    - id: lursoft
+      name: Lursoft IT
+      email: gdpr@lursoft.lv
+      website: https://www.lursoft.lv
+      region: eu
+      category: people-search
+      notes: Latvian company-register data portal reselling person-linked records (officers, owners, property, debt and other databases); the privacy policy gives gdpr@lursoft.lv for personal-data matters.
+      parent: SIA Lursoft IT
+      sources:
+        - https://www.lursoft.lv/lv/lursoft-privatuma-politika
+      researched: "2026-11-18"
+    - id: aripaev-infopank
+      name: Äripäev Infopank
+      email: andmekaitse@aripaev.ee
+      website: https://firma.aripaev.ee
+      region: eu
+      category: financial-b2b
+      notes: Estonian business information database with company and board-member data plus credit information; the policy lists andmekaitse@aripaev.ee for data-subject requests and a named data protection officer mailbox andmekaitseametnik@aripaev.ee.
+      parent: AS Äripäev
+      sources:
+        - https://firma.aripaev.ee/privaatsustingimused
+      researched: "2026-11-18"
+    - id: firmas-lv
+      name: Firmas.lv
+      email: serviss@firmas.lv
+      website: https://www.firmas.lv
+      region: eu
+      category: financial-b2b
+      notes: Latvian company-information service combining register data on officers and owners with data-selection products; the privacy policy names SIA Firmas.lv as controller and serviss@firmas.lv as its contact.
+      parent: SIA Firmas.lv
+      sources:
+        - https://www.firmas.lv/lv/gdpr
+      researched: "2026-11-18"
+    - id: big-infomonitor
+      name: BIG InfoMonitor
+      email: iod@big.pl
+      website: https://www.big.pl
+      region: eu
+      category: financial-b2b
+      notes: Polish economic information bureau holding debtor and payment-default records on individuals and firms; the RODO page names the data protection officer mailbox for all rights requests.
+      parent: BIG InfoMonitor S.A.
+      sources:
+        - https://www.big.pl/rodo
+      researched: "2026-11-18"
+    - id: bik-poland
+      name: Biuro Informacji Kredytowej (BIK)
+      email: iod@bik.pl
+      website: https://www.bik.pl
+      region: eu
+      category: financial-b2b
+      notes: Polish credit bureau with consumer credit histories and scoring; the RODO page names the data protection officer mailbox. Credit data is largely retained under statutory duties, so expect partial refusals of erasure.
+      parent: Biuro Informacji Kredytowej S.A.
+      sources:
+        - https://www.bik.pl/rodo
+      researched: "2026-11-18"
+    - id: crif-slovakia
+      name: CRIF Slovakia
+      email: dpo.sk@crif.com
+      website: https://www.crif.sk
+      region: eu
+      category: financial-b2b
+      notes: Slovak credit bureau and business-information provider; the privacy notice lists the data protection officer mailbox for rights requests.
+      parent: CRIF
+      sources:
+        - https://www.crif.sk/ochrana-osobnych-udajov/
+      researched: "2026-11-18"
+    - id: creditinfo-lithuania
+      name: Creditinfo Lietuva
+      email: duomenu.apsauga@creditinfo.lt
+      website: https://www.creditinfo.lt
+      region: eu
+      category: financial-b2b
+      notes: Lithuanian credit bureau; its privacy page names this mailbox for the data protection officer and info@manocreditinfo.lt for access requests via Mano Creditinfo. Credit data is held under statutory duties, so expect partial refusals of erasure.
+      parent: Creditinfo
+      sources:
+        - https://www.manocreditinfo.lt/privatumas
+      researched: "2026-11-18"
+    - id: crif-czech-republic
+      name: CRIF Czech Credit Bureau
+      email: helpdesk.cz@crif.com
+      website: https://www.crif.cz
+      region: eu
+      category: financial-b2b
+      notes: Czech credit bureau and business-information provider (CRIBIS); the data-rights page names helpdesk.cz@crif.com for access, erasure and objection requests and poverenec@crif.com for the data protection officer if unresolved. Registers it runs (BRKI, NRKI, SOLUS) have their own officers.
+      parent: CRIF
+      sources:
+        - https://www3.cribis.cz/personal-data-rights
+      researched: "2026-11-18"
+    - id: termene-ro
+      name: Termene.ro (Termene Just)
+      email: dataprotection@termene.ro
+      website: https://www.termene.ro
+      region: eu
+      category: people-search
+      notes: Romanian company and court-case portal with data on shareholders, administrators and court parties; the policy names this mailbox for data protection requests including erasure. It says data on people linked to companies is assessed case by case, so expect partial refusals.
+      parent: Termene Just S.R.L.
+      sources:
+        - https://suport.termene.ro/ro/knowledge/politica-de-confidentialitate
+      researched: "2026-11-18"
+    - id: krd-poland
+      name: Krajowy Rejestr Długów (KRD)
+      email: iod@krd.pl
+      website: https://krd.pl
+      region: eu
+      category: financial-b2b
+      notes: Polish debtor register; the RODO page gives the data protection officer mailbox for questions about processing and says erasure does not apply to data processed under statute.
+      parent: Krajowy Rejestr Długów Biuro Informacji Gospodarczej S.A.
+      sources:
+        - https://en.krd.pl/rodo
+      researched: "2026-11-18"
+    - id: creditreform-bulgaria
+      name: Creditreform Bulgaria
+      email: dpo@creditreform.bg
+      website: https://www.creditreform.bg
+      region: eu
+      category: financial-b2b
+      notes: Bulgarian debt-collection and credit-information company holding names, ID numbers, addresses and debt data; its policy names the data protection officer mailbox for objections and withdrawal of consent.
+      parent: Creditreform
+      sources:
+        - https://www.creditreform.bg/creditreform/personal-data-and-policies
+      researched: "2026-11-18"
+    - id: experian-icd-de
+      name: infoscore Consumer Data (Boniversum, Experian DE)
+      email: ICD-Datenschutz@experian.com
+      website: https://www.experian.de/
+      opt_out_url: https://www.experian.de/icd-infoblatt
+      region: eu
+      category: financial-b2b
+      notes: German consumer credit bureau (Baden-Baden) holding credit and payment-history profiles; boniversum.de redirects to experian.de, and the Art. 14 notice lists this DPO mailbox for access/erasure.
+      parent: infoscore Consumer Data GmbH
+      sources:
+        - https://de-preview.experian.com/icd-infoblatt
+      researched: "2026-11-18"
+    - id: crif-de
+      name: CRIF Bürgel (Germany)
+      email: datenschutz.de@crif.com
+      website: https://www.crif.de/
+      opt_out_url: https://www.crif.de/datenschutz/
+      region: eu
+      category: financial-b2b
+      notes: German credit bureau (Karlsruhe) with consumer and business credit data; the same page also carries an older mailto to datenschutz@crifbuergel.de, objections under Art. 21 also go by post to Victor-Gollancz-Strasse 5, 76137 Karlsruhe.
+      parent: CRIF GmbH
+      sources:
+        - https://www.crif.de/datenschutz/
+      researched: "2026-11-18"
+    - id: crif-at
+      name: CRIF Österreich
+      email: datenschutz.at@crif.com
+      website: https://www.crif.at/
+      opt_out_url: https://www.crif.at/datenschutz/
+      region: eu
+      category: financial-b2b
+      notes: Austrian credit bureau with person and business credit profiles; the page also lists auskunft@crif.com for self-disclosure requests.
+      parent: CRIF GmbH (Austria)
+      sources:
+        - https://www.crif.at/datenschutz/
+      researched: "2026-11-18"
+    - id: crif-ch
+      name: CRIF Schweiz (Teledata)
+      email: info.ch@crif.com
+      website: https://www.crif.ch/
+      opt_out_url: https://www.crif.ch/datenschutz/
+      region: eu
+      category: financial-b2b
+      notes: Swiss credit-information company (Zurich); no DPO is appointed, so the controller mailbox on the privacy page takes data-protection requests; also runs the teledata.ch person and company data platform.
+      parent: CRIF AG
+      sources:
+        - https://www.crif.ch/datenschutz/
+      researched: "2026-11-18"
+    - id: ksv1870
+      name: KSV1870
+      email: ksv1870.datenschutzbeauftragter@ksv.at
+      website: https://www.ksv.at/
+      opt_out_url: https://www.ksv.at/datenschutzerklaerung
+      region: eu
+      category: financial-b2b
+      notes: Austrian credit agency holding credit-standing data on people and companies; the privacy notice names this DPO mailbox (external DPO Putz & Rischka) and ksv.onlineservice@ksv.at for online services.
+      parent: KSV1870 Holding AG
+      sources:
+        - https://www.ksv.at/datenschutzerklaerung
+      researched: "2026-11-18"
+    - id: creditreform-ch
+      name: Creditreform Schweiz
+      email: info@creditreform.ch
+      website: https://www.creditreform.ch/
+      opt_out_url: https://www.creditreform.ch/datenschutz
+      region: eu
+      category: financial-b2b
+      notes: Swiss Creditreform association with credit-information files; the privacy page gives this one mailbox as controller and DPO contact and links a Selbstauskunft page (the Germany entity creditreform-de is separate).
+      parent: Schweizerischer Verband Creditreform Genossenschaft
+      sources:
+        - https://www.creditreform.ch/datenschutz
+      researched: "2026-11-18"
+    - id: az-direct
+      name: AZ Direct
+      email: datenschutz@az-direct.com
+      website: https://www.az-direct.com/
+      opt_out_url: https://www.az-direct.com/site/ib/
+      region: eu
+      category: marketing
+      notes: Bertelsmann address and consumer-data marketing company (Gütersloh); the privacy page lists separate mailboxes for Austria (datenschutz@bertelsmann.at) and Switzerland (datenschutzbeauftragter@az-direct.ch), and the /site/ib/ page describes how data-subject requests are processed.
+      parent: AZ Direct GmbH
+      sources:
+        - https://www.az-direct.com/site/datenschutz
+        - https://www.az-direct.com/site/ib/
+      researched: "2026-11-18"
+    - id: capaneo-de
+      name: Capaneo (formerly Schober Information Group)
+      email: datenschutz@capaneo.de
+      website: https://capaneo.de/
+      opt_out_url: https://capaneo.de/datenschutz/
+      region: eu
+      category: marketing
+      notes: Address and audience data for direct marketing (Leinfelden-Echterdingen); schober.de now redirects to capaneo.de, and the notice offers erasure, objection to direct marketing and suppression lists.
+      parent: Capaneo GmbH
+      sources:
+        - https://capaneo.de/datenschutz/
+      researched: "2026-11-18"
+    - id: dastelefonbuch
+      name: Das Telefonbuch
+      email: datenschutz@dtme.de
+      website: https://www.dastelefonbuch.de/
+      opt_out_url: https://www.dastelefonbuch.de/Datenschutz
+      region: eu
+      category: people-search
+      notes: German phone directory with name, address and number listings and reverse search; the notice sends directory-entry requests to this mailbox (shared with Gelbe Seiten) and general GDPR rights to datenschutzbeauftragter@dastelefonbuch-marketing.de; eintragsservice@dtme.de handles listing deletion or objection to reverse search.
+      parent: DTM Deutsche Tele Medien GmbH
+      sources:
+        - https://www.dastelefonbuch.de/Datenschutz
+      researched: "2026-11-18"
+    - id: dasoertliche
+      name: Das Örtliche
+      email: datenschutz@dasoertliche-marketing.de
+      website: https://www.dasoertliche.de/
+      opt_out_url: https://www.dasoertliche.de/datenschutz
+      region: eu
+      category: people-search
+      notes: German phone directory with public name, address and number listings; the notice names this DPO mailbox for access and erasure, and eintragsservice@dtme.de for listing changes.
+      parent: Das Örtliche Service- und Marketing GmbH
+      sources:
+        - https://www.dasoertliche.de/datenschutz
+      researched: "2026-11-18"
+    - id: gelbeseiten
+      name: Gelbe Seiten
+      email: datenschutz@gelbeseiten.de
+      website: https://www.gelbeseiten.de/
+      opt_out_url: https://www.gelbeseiten.de/gsservice/datenschutzhinweis
+      region: eu
+      category: people-search
+      notes: German business and private directory; the notice gives this mailbox for GDPR rights and datenschutz@dtme.de for requests about published directory entries (the same mailbox Das Telefonbuch uses).
+      parent: pdm solutions GmbH
+      sources:
+        - https://www.gelbeseiten.de/gsservice/datenschutzhinweis
+      researched: "2026-11-18"
+    - id: yasni
+      name: Yasni
+      email: datenschutz@yasni.de
+      website: https://www.yasni.de/
+      opt_out_url: https://www.yasni.de/datenschutz
+      region: eu
+      category: people-search
+      notes: German people-search engine that aggregates public web results per name; the notice says data subjects can demand deletion or blocking and names this DPO mailbox.
+      parent: yasni GmbH
+      sources:
+        - https://www.yasni.de/datenschutz
+      researched: "2026-11-18"
+    - id: north-data
+      name: North Data
+      email: privacy@northdata.de
+      website: https://www.northdata.de/
+      opt_out_url: https://www.northdata.de/_privacy
+      region: eu
+      category: financial-b2b
+      notes: Hamburg company-register aggregator that profiles managers and owners across companies; the privacy page says this mailbox reaches the data protection officer and that requests are not taken by phone.
+      parent: North Data GmbH
+      sources:
+        - https://www.northdata.de/_privacy
+      researched: "2026-11-18"
+    - id: herold
+      name: HEROLD
+      email: datenschutz@herold.at
+      website: https://www.herold.at/
+      opt_out_url: https://www.herold.at/datenschutzerklaerung/
+      region: eu
+      category: marketing
+      notes: Austrian business and phone directory and B2B marketing-data company; this controller mailbox is also named for withdrawing consent (DPO lichtenstrasser@hhle.at is listed too).
+      parent: HEROLD Business Data GmbH
+      sources:
+        - https://www.herold.at/datenschutzerklaerung/
+      researched: "2026-11-18"
+    - id: oesterreichische-post
+      name: Österreichische Post (marketing data)
+      email: team-datenschutz@post.at
+      website: https://www.post.at/
+      opt_out_url: https://www.post.at/k/f/kontaktformular?category=datenschutz
+      region: eu
+      category: marketing
+      notes: Austrian postal operator that sells address and target-group marketing data (the Post was fined over party-affinity profiling); the notice names this DPO mailbox, a web form and a postal address, and requires proof of identity.
+      parent: Österreichische Post AG
+      sources:
+        - https://www.post.at/datenschutz
+      researched: "2026-11-18"
+    - id: localsearch
+      name: localsearch (local.ch, search.ch)
+      email: dataprivacy@localsearch.ch
+      website: https://www.localsearch.ch/
+      opt_out_url: https://www.localsearch.ch/de/datenschutz/
+      region: eu
+      category: people-search
+      notes: Swiss phone and business directory (local.ch, search.ch, tel.search.ch brands) with public name, address and number listings; the notice names this mailbox for privacy requests.
+      parent: Swisscom Directories AG
+      sources:
+        - https://www.localsearch.ch/de/datenschutz/
+      researched: "2026-11-18"
+    - id: moneyhouse
+      name: Moneyhouse
+      email: contact@moneyhouse.ch
+      website: https://www.moneyhouse.ch/
+      opt_out_url: https://www.moneyhouse.ch/de/privacy
+      region: eu
+      category: people-search
+      notes: Swiss portal with person and company profiles from the commercial register plus other sources; the notice says private data not in the register can be deleted, access requests need an ID copy, and the mailbox is Cloudflare-obfuscated on the page.
+      parent: Neue Zürcher Zeitung AG
+      sources:
+        - https://www.moneyhouse.ch/de/privacy
+      researched: "2026-11-18"
+    - id: payback-de
+      name: PAYBACK
+      email: datenschutz@payback.de
+      website: https://www.payback.de/
+      opt_out_url: https://www.payback.de/info/datenschutz
+      region: eu
+      category: marketing
+      notes: German loyalty programme holding purchase and profile data across partner retailers; the privacy page names this DPO mailbox.
+      parent: PAYBACK GmbH
+      sources:
+        - https://www.payback.de/info/datenschutz
+      researched: "2026-11-18"
+    - id: deutschlandcard
+      name: DeutschlandCard
+      email: datenschutz@deutschlandcard.de
+      website: https://www.deutschlandcard.de/
+      opt_out_url: https://www.deutschlandcard.de/datenschutz/datenschutz-hinweise-datenschutzkorrespondenz
+      region: eu
+      category: marketing
+      notes: German loyalty programme with member purchase and profile data; the data-subject-correspondence notice names this mailbox for rights requests and the DPO.
+      parent: DeutschlandCard GmbH
+      sources:
+        - https://www.deutschlandcard.de/datenschutz/datenschutz-hinweise-datenschutzkorrespondenz
+      researched: "2026-11-18"
+    - id: intrum-de
+      name: Intrum Deutschland
+      email: ""
+      website: https://www.intrum.de/
+      opt_out_url: https://www.intrum.de/zahlungserinnerung-erhalten/uber-intrum/datenschutz/rechte-der-betroffenen-person/
+      region: eu
+      category: financial-b2b
+      notes: Debt-collection and credit-management company holding debtor profiles; data-subject requests go through an online identity-checked form (Intrum Austria has its own form at https://www.intrum.at/konsumentinnen/uber-intrum/datenschutz/rechte-der-betroffenen-person/).
+      parent: Intrum Deutschland GmbH
+      sources:
+        - https://www.intrum.de/datenschutz/
+      researched: "2026-11-18"
+    - id: dealfront
+      name: Dealfront (Leadfeeder)
+      email: privacy@dealfront.com
+      website: https://www.dealfront.com/
+      opt_out_url: https://www.leadfeeder.com/de/privacy/privacy-notice/
+      region: eu
+      category: marketing
+      notes: B2B sales-intelligence and lead platform that links website visits and business contacts to companies and people; the notice names this mailbox for rights requests and dpo@dealfront.com for the group DPO.
+      parent: Dealfront Group
+      sources:
+        - https://www.leadfeeder.com/de/privacy/privacy-notice/
+      researched: "2026-11-18"
+    - id: experian-espana
+      name: Experian Spain
+      email: dpospain@experian.com
+      website: https://www.experian.es
+      opt_out_url: https://www.experian.es/legal/marketing-preferences.html
+      region: eu
+      category: financial-b2b
+      notes: Spanish arm of Experian (credit bureau/business data); notice lists erasure and objection and says to write to the DPO mailbox, which Axesor shares; the marketing-preferences page only covers business marketing email.
+      parent: Experian Bureau de Crédito, S.A.U.
+      sources:
+        - https://www.experian.es/politica-de-privacidad
+      researched: "2026-11-18"
+    - id: axesor
+      name: Axesor
+      email: bcatcliente@experian.com
+      website: https://www.axesor.es
+      region: eu
+      category: financial-b2b
+      notes: Spanish business-information and credit-risk database (now Experian-run); rights requests in writing with ID copy, the shared DPO mailbox dpospain@experian.com is covered by the experian-espana entry.
+      parent: Axesor Conocer para Decidir, S.A.U.
+      sources:
+        - https://www.axesor.es/politica-privacidad.aspx
+      researched: "2026-11-18"
+    - id: informa-db-es
+      name: Informa D&B Spain (eInforma)
+      email: clientes@informa.es
+      website: https://www.informa.es
+      region: eu
+      category: financial-b2b
+      notes: Business database listing sole traders, directors, shareholders and contacts; put 'Protección de Datos' in the subject; the eInforma notice for sole traders uses clientes@einforma.com instead and DPO complaints go to dpo@informa.es.
+      parent: Informa D&B, S.A.U. (S.M.E.)
+      sources:
+        - https://www.informa.es/politica-privacidad
+        - https://www.einforma.com/politicas-privacidad
+      researched: "2026-11-18"
+    - id: equifax-iberica
+      name: Equifax Ibérica (ASNEF-Equifax)
+      email: ""
+      website: https://soluciones.equifax.es
+      opt_out_url: https://www2.equifax.es/consumidores/
+      region: eu
+      category: financial-b2b
+      notes: Spanish credit bureau (ASNEF-Equifax files); rights go through its consumer portal (eDerechos) after registering, and the business contact form explicitly does not handle them.
+      parent: Equifax Ibérica, S.L.
+      sources:
+        - https://soluciones.equifax.es/consumidores/
+      researched: "2026-11-18"
+    - id: informa-db-pt
+      name: Informa D&B Portugal (eInforma)
+      email: protecaodedados@informadb.pt
+      website: https://www.einforma.pt
+      region: eu
+      category: financial-b2b
+      notes: Portuguese business database built mostly from public sources; email the DPO attaching ID to exercise access, objection or erasure.
+      parent: Informa D&B (Serviços de Gestão de Empresas), Sociedade Unipessoal, Lda.
+      sources:
+        - https://www.einforma.pt/politica-privacidade
+        - https://www.einforma.pt/informacao-titulares
+      researched: "2026-11-18"
+    - id: iberinform-pt
+      name: Iberinform Portugal
+      email: infoprotecaodados@iberinform.pt
+      website: https://www.iberinform.pt
+      region: eu
+      category: financial-b2b
+      notes: Credit/business-information provider (Atradius group); rights requests by email, the Atradius DPO is dpo@atradius.com.
+      parent: Iberinform Internacional, S.A. (Sucursal em Portugal)
+      sources:
+        - https://www.iberinform.pt/declara--o-de-privacidade-rgpd
+      researched: "2026-11-18"
+    - id: cerved
+      name: Cerved
+      email: dpo@cerved.com
+      website: https://www.cerved.com
+      region: eu
+      category: financial-b2b
+      notes: Italian business-information and credit-risk group; the notice I read covers site users, so the DPO mailbox is verified but the commercial-information notice (separate PDF) was not readable; subject 'Richiesta esercizio diritti privacy'.
+      parent: Cerved Group S.p.A.
+      sources:
+        - https://www.cerved.com/en/privacy/privacy-policy-website
+      researched: "2026-11-18"
+    - id: experian-italia
+      name: Experian Italia
+      email: dpoItaly@experian.com
+      website: https://www.experian.it
+      opt_out_url: https://www.experian.it/consumatori
+      region: eu
+      category: financial-b2b
+      notes: Italian credit bureau (SIC); the notice names the DPO mailbox for GDPR questions and sends access requests through the Servizio Consumatori area.
+      parent: Experian Italia S.p.A.
+      sources:
+        - https://www.experian.it/consumatori/Informativa-SIC
+      researched: "2026-11-18"
+    - id: tiresias
+      name: Tiresias
+      email: customerservice@tiresias.gr
+      website: https://www.tiresias.gr
+      opt_out_url: https://mytiresiasdata.tiresias.gr/el
+      region: eu
+      category: financial-b2b
+      notes: Greek bank-owned credit and risk bureau; online portal accepts access and erasure requests, email route needs a signed or e-dilosi form.
+      parent: Tiresias S.A. (Bank Information Systems)
+      sources:
+        - http://www.tiresias.gr/el/
+      researched: "2026-11-18"
+    - id: italiaonline
+      name: Italiaonline (PagineGialle / PagineBianche)
+      email: info@italiaonline.it
+      website: https://www.paginegialle.it
+      opt_out_url: https://privacy.italiaonline.it/dpo/form-contatto-dpo
+      region: eu
+      category: people-search
+      notes: Operator of the Italian phone and business directories; rights under GDPR arts. 15-21 via the info mailbox or the DPO contact form.
+      parent: Italiaonline S.p.A.
+      sources:
+        - https://www.italiaonline.it/archivio/wp-content/uploads/sites/3/2026/05/Informativa-privacy-corporate-Italiaonline_05.2026.pdf
+      researched: "2026-11-18"
+    - id: experian-ireland
+      name: Experian Ireland
+      email: info@experian.ie
+      website: https://www.experian.ie
+      opt_out_url: https://www.experian.ie/legal/information-notice
+      region: eu
+      category: financial-b2b
+      notes: Irish credit reference agency; objection and restriction go to this contact (deletion is not guaranteed), Central Credit Register data is handled separately by the CCR.
+      parent: Experian Ireland Limited
+      sources:
+        - https://www.experian.ie/legal/information-notice
+      researched: "2026-11-18"
+    - id: altares-db
+      name: Altares (Altares - D&B)
+      email: dpo@altares.com
+      website: https://www.altares.com
+      region: eu
+      category: financial-b2b
+      notes: Business-information and credit data on companies and their managers; its privacy notice says access, erasure and objection to marketing are exercised by email to the DPO with proof of identity. Separate mailbox from the existing Dun & Bradstreet EU entry.
+      parent: Altares D&B
+      sources:
+        - https://www.altares.nl/en/legal/privacy-policy/
+      researched: "2026-11-18"
+    - id: graydoncreditsafe-belgium
+      name: GraydonCreditsafe Belgium
+      email: gyd-gdpr-be@graydoncreditsafe.be
+      website: https://www.graydoncreditsafe.be
+      opt_out_url: https://www.creditsafe.com/be/nl/legal/uw-onderneming-uw-privacy.html
+      region: eu
+      category: financial-b2b
+      notes: Former Graydon Belgium; holds company data including names of directors and offers access, erasure and objection to direct marketing via this mailbox. Different mailbox from the existing Creditsafe EU DPO entry.
+      parent: GraydonCreditsafe Belgium NV
+      sources:
+        - https://www.creditsafe.com/be/nl/legal/uw-onderneming-uw-privacy.html
+        - https://www.creditsafe.com/be/nl/legal/transparantieverklaringen.html
+      researched: "2026-11-18"
+    - id: focum
+      name: Focum
+      email: info@focum.nl
+      website: https://www.focum.nl
+      opt_out_url: https://www.focum.nl/consumenten/inzageverzoeken/
+      region: eu
+      category: financial-b2b
+      notes: Dutch credit-information bureau; its privacy statement says rights requests go to info@focum.nl (DPO dpo@focum.nl, access requests inzage@focum.nl). Credit registrations may be kept for legal or creditor-protection reasons.
+      parent: Focum Commerciele Informatie B.V.
+      sources:
+        - https://www.focum.nl/privacyverklaring-focum-uitgebreid/
+        - https://www.focum.nl/over-ons/privacy-statement-focum/
+      researched: "2026-11-18"
+    - id: creditreform-luxembourg
+      name: Creditreform Luxembourg
+      email: protectiondesdonnees@luxembourg.creditreform.lu
+      website: https://www.creditreform.lu
+      opt_out_url: https://www.creditreform.lu/datenschutz
+      region: eu
+      category: financial-b2b
+      notes: Credit and business information bureau; its data-protection page lists access, rectification, erasure and restriction rights and the DPO mailbox. Objection is limited because processing is justified by creditor protection.
+      parent: Creditreform Luxembourg
+      sources:
+        - https://www.creditreform.lu/datenschutz
+      researched: "2026-11-18"
+    - id: places-telefoonboek
+      name: Places Nummerinformatie (Telefoonboek, Places.nl)
+      email: info@places.nl
+      website: https://www.telefoonboek.nl
+      opt_out_url: https://www.places.nl/verwijderverzoek/
+      region: eu
+      category: people-search
+      notes: Phone and business directory network (Telefoonboek, Koos, 1822, Places); the removal-request page says to email info@places.nl to delete personal data.
+      parent: Places Nummerinformatie B.V.
+      sources:
+        - https://www.places.nl/verwijderverzoek/
+        - https://telefoonboek.nl/privacy-statement
+      researched: "2026-11-18"
+    - id: youvia-telefoongids
+      name: Youvia (De Telefoongids)
+      email: privacy@youvia.nl
+      website: https://www.detelefoongids.nl
+      opt_out_url: https://www.detelefoongids.nl/privacy/
+      region: eu
+      category: people-search
+      notes: Dutch phone directory; the DPO mailbox handles removal requests, but private numbers are removed only through mijnnummervermelding.nl (the central number-listing database).
+      parent: Youvia
+      sources:
+        - https://www.detelefoongids.nl/privacy/
+      researched: "2026-11-18"
+    - id: kompass
+      name: Kompass
+      email: dpo@kompass.com
+      website: https://www.kompass.com
+      region: eu
+      category: marketing
+      notes: B2B directory and lead database holding professional contact details; the data-use policy says rights, including objection and erasure, are exercised by email to the DPO with identity details.
+      parent: Kompass (Sevres, France)
+      sources:
+        - https://gb.kompass.com/l/general-data-use-policy
+      researched: "2026-11-18"
+    - id: cegedim
+      name: Cegedim (professional health-sector database CEGDB)
+      email: cnil@cegedim.fr
+      website: https://www.cegedim.fr
+      opt_out_url: https://www.cegedim.fr/RGPD/Notice_information_CEGDB.pdf
+      region: eu
+      category: marketing
+      notes: Holds professional data of healthcare practitioners (sourced largely from the RPPS directory) for prospecting and prescription studies; notice gives cnil@cegedim.fr for objection and erasure, answered within one month. Subsidiaries Gers and Medexact have their own DPO mailboxes in the same notice.
+      parent: Cegedim
+      sources:
+        - https://www.cegedim.fr/RGPD/Notice_information_CEGDB.pdf
+        - https://www.cegedim.com/Pages/data-privacy.aspx
+      researched: "2026-11-18"
+    - id: kaspr
+      name: Kaspr
+      email: privacy@kaspr.io
+      website: https://www.kaspr.io
+      opt_out_url: https://www.kaspr.io/privacy
+      region: eu
+      category: marketing
+      notes: French contact-data tool whose policy says business profiles of non-users are shared with customers; opt-out is by a form linked in section 3 of the policy or by email.
+      parent: KASPR SAS
+      sources:
+        - https://www.kaspr.io/privacy
+      researched: "2026-11-18"
+    - id: zecible
+      name: Zecible
+      email: confidentialite@zecible.fr
+      website: https://www.zecible.fr
+      region: eu
+      category: marketing
+      notes: French list broker renting B2C and B2B prospecting files (about 38 million consumer records); legal notice names the DPO mailbox for access, rectification and deletion.
+      parent: Zecible
+      sources:
+        - https://www.zecible.fr/mentions-legales/
+      researched: "2026-11-18"
+    - id: avanci
+      name: Avanci (Profilia, Corpia)
+      email: dpo@avanci.fr
+      website: https://www.avanci.fr
+      region: eu
+      category: marketing
+      notes: French marketing-data firm renting the Profilia (consumer) and Corpia (business) prospect databases; its privacy policy names the DPO mailbox for rights requests.
+      parent: AVANCI
+      sources:
+        - https://www.avanci.fr/politique-de-confidentialite/
+        - https://www.avanci.fr/expertises/data-activation/acquisition/
+      researched: "2026-11-18"
+    - id: mkd-groupe
+      name: MKD Groupe
+      email: dpo@mkdgroupe.com
+      website: https://mkdgroupe.com
+      opt_out_url: https://rgpd.mkdgroupe.dev/droits
+      region: eu
+      category: marketing
+      notes: French list broker marketing a B2C file built from partners' e-commerce, sweepstake and co-registration data; has an online rights portal (access, erasure, objection) plus the DPO mailbox.
+      parent: MKD Groupe
+      sources:
+        - https://mkdgroupe.com/mentions-legales/
+        - https://mkdgroupe.com/protection-des-donnees/
+      researched: "2026-11-18"
+    - id: fonecta
+      name: Fonecta Oy
+      email: tietosuoja@fonecta.com
+      website: https://www.fonecta.fi
+      region: eu
+      category: people-search
+      notes: 'Finnish directory and decision-maker database: subscriber name, address, phone and operator, plus company decision-makers'' business contact data used for direct marketing; the data protection officer mailbox takes access, erasure and objection requests. A direct-marketing refusal is kept on file so it can be honoured.'
+      parent: Fonecta Oy
+      sources:
+        - https://tuki.fonecta.com/tietosuojaseloste
+      researched: "2026-11-18"
+    - id: suomen-asiakastieto
+      name: Suomen Asiakastieto Oy
+      email: omatieto@asiakastieto.fi
+      website: https://www.asiakastieto.fi
+      region: eu
+      category: financial-b2b
+      notes: Finnish credit bureau holding credit data and company role/ownership data on individuals; the policy lists this mailbox for information and rectification requests (consumer advice line 010 270 7300). Credit-information registers have statutory retention, so erasure may be refused for lawfully held entries.
+      parent: Enento Group Plc
+      sources:
+        - https://www.asiakastieto.fi/web/fi/asiakastieto-yrityksena/tietosuoja/tutustu-tietosuojakaytantoomme.html
+      researched: "2026-11-18"
+    - id: enin
+      name: Enin AS
+      email: privacy@enin.ai
+      website: https://enin.ai
+      region: eu
+      category: financial-b2b
+      notes: Norwegian company-intelligence provider that structures public registry data on role holders, owners and property owners; the policy says errors are normally corrected at the source (Bronnoysundregistrene) and requests go to this mailbox, answered within one month.
+      parent: Enin AS
+      sources:
+        - https://enin.ai/privacy
+      researched: "2026-11-18"
+    - id: proff-no
+      name: Proff AS (proff.no, forvalt.no)
+      email: support@proff.no
+      website: https://www.proff.no
+      region: eu
+      category: financial-b2b
+      notes: Publishes Norwegian company role holders, owners and shareholders with name, email, phone, birth year, gender and postal code (forvalt.no shows addresses for all). Access, rectification and erasure requests go to this mailbox; the group DPO is dpo@enento.com.
+      parent: Enento Group Plc
+      sources:
+        - https://www.proff.no/info/privacy-notice-business/
+      researched: "2026-11-18"
+    - id: proff-dk
+      name: Proff ApS (proff.dk)
+      email: proff@proff.dk
+      website: https://www.proff.dk
+      region: eu
+      category: financial-b2b
+      notes: Publishes Danish company role holders and legal owners (name, role title, address only for sole traders) and links them to companies; erasure and other rights requests go to this mailbox.
+      parent: Enento Group Plc
+      sources:
+        - https://www.proff.dk/info/privacy-notice-business/
+      researched: "2026-11-18"
+    - id: uc-sweden
+      name: UC AB
+      email: info@uc.se
+      website: https://www.uc.se
+      region: eu
+      category: financial-b2b
+      notes: Swedish credit bureau whose register covers every person registered in Sweden over 15 plus companies; the policy names this mailbox for access, rectification and erasure requests and the DPO at dpo@enento.com. UC says objection does not apply to data processed under the Credit Information Act, so erasure is only granted where no statutory basis remains.
+      parent: Enento Group Plc
+      sources:
+        - https://www.uc.se/integritetspolicy
+        - https://www.uc.se/globalassets/pdfer/integritetspolicys/swedish/intergritetspolicy-for-samtliga-folkbokforda-privatpersoner-i-sverige-over-15-ar-samt-registrerade-som-har-emigrerat.pdf
+      researched: "2026-11-18"
+    - id: creditinfo-iceland
+      name: Creditinfo Lanstraust hf. (Creditinfo Iceland)
+      email: personuverndarfulltrui@creditinfo.is
+      website: https://www.creditinfo.is
+      region: eu
+      category: financial-b2b
+      notes: Icelandic credit bureau (default records, credit scores, company roles and political-exposure links on individuals); the data protection officer mailbox is the contact for data protection requests. Registers kept under credit-information rules may be refused erasure.
+      parent: Creditinfo Group
+      sources:
+        - https://www.creditinfo.is/um-creditinfo/personuverndarfulltrui
+      researched: "2026-11-18"
+    - id: experian-denmark
+      name: Experian A/S (Denmark)
+      email: dpodenmark@experian.com
+      website: https://www.experian.dk
+      region: eu
+      category: financial-b2b
+      notes: Danish credit bureau and marketing data provider (RKI debt register, business data, target-group data); the DPO mailbox takes data protection queries, and access can also be requested through dininfo.dk. As a credit bureau Experian says an objection does not necessarily lead to deletion.
+      parent: Experian plc
+      sources:
+        - https://www.experian.dk/gyldige/forretningsvilkaar/brug-af-personlige-oplysninger
+      researched: "2026-11-18"
+    - id: experian-norway
+      name: Experian Norge AS
+      email: dponorway@experian.com
+      website: https://www.experian.no
+      region: eu
+      category: financial-b2b
+      notes: Norwegian credit information company (debt, credit scores, company roles); the DPO mailbox handles questions on data subject rights including erasure and restriction, but processing under the credit-information licence may continue.
+      parent: Experian plc
+      sources:
+        - https://www.experian.no/lovlig/vilkaar-og-rettigheter/bruk-av-personopplysninger
+      researched: "2026-11-18"
+    - id: 1881-no
+      name: 1881 Group (1881.no)
+      email: personvern@1881.no
+      website: https://www.1881.no
+      opt_out_url: https://kundeservice.1881.no/support/tickets/new
+      region: eu
+      category: people-search
+      notes: Norwegian number-information directory fed by telecom operators and checked against Folkeregisteret and postal data; the policy says to request access, rectification or erasure at the privacy mailbox, and that hiding a listing in practice means reserving it with your telecom provider as well.
+      parent: 1881 Group
+      sources:
+        - https://min.1881.no/vilkaar-personvern/personvernerklaring
+      researched: "2026-11-18"
+    - id: mia-sweden
+      name: Marknadsinformation Analys MIA AB (Dun & Bradstreet Sweden)
+      email: dininfo.se@dnb.com
+      website: https://www.dnb.com/sv-se/
+      region: eu
+      category: marketing
+      notes: MIA is a Swedish consumer database (name, address, phone, personal ID number, household, board roles) sold for direct marketing and list updating; the notice says to email this address for a register extract and a marketing block (DM-spärr). D&B claims the database is covered by a voluntary utgivningsbevis, so it argues GDPR erasure does not apply and offers a block instead.
+      parent: Dun & Bradstreet
+      sources:
+        - https://www.dnb.com/sv-se/dataskydd/personuppgifter/behandlingar-i-sverige/personuppgifter-mia.html
+      researched: "2026-11-18"
+    - id: albacross-nordic
+      name: Albacross Nordic AB
+      email: support@albacross.com
+      website: https://albacross.com
+      region: eu
+      category: marketing
+      notes: Swedish B2B lead-generation platform that identifies companies and contacts from website visits (IP address, company name) for sales teams; the policy says to email support with your IP address and company name to exercise access, erasure or objection rights.
+      parent: Albacross Nordic AB
+      sources:
+        - https://albacross.com/privacy-policy/
+      researched: "2026-11-18"
+    - id: truecaller
+      name: Truecaller International LLP (Truecaller AB)
+      email: ""
+      website: https://www.truecaller.com
+      opt_out_url: https://www.truecaller.com/unlisting
+      region: eu
+      category: people-search
+      notes: Stockholm-founded caller-ID and reverse phone lookup service that makes names and phone numbers searchable, including for people who never installed the app; the policy offers an unlisting form (processed within about 24 hours, keeps the number on a suppression list). The only email in the policy is an Indian grievance officer, so use the form.
+      parent: Truecaller AB
+      sources:
+        - https://www.truecaller.com/privacy-policy
+        - https://www.truecaller.com/unlisting
+      researched: "2026-11-18"
+    - id: ja-iceland
+      name: Ja hf. (Ja.is)
+      email: ja@ja.is
+      website: https://ja.is
+      opt_out_url: https://um.ja.is/osk-um-eydingu-gagna
+      region: eu
+      category: people-search
+      notes: Icelandic phone and address directory with person and company listings plus contact-data products; the policy's erasure page says to email the privacy mailbox from the address tied to your Ja account with the subject line it gives, and a separate bannmerkingar (direct-marketing block) page exists. The erasure page speaks of web/app users, so ask explicitly for your directory listing too.
+      parent: Syn hf.
+      sources:
+        - https://um.ja.is/osk-um-eydingu-gagna
+        - https://um.ja.is/personuverndarstefna-ja
+      researched: "2026-11-18"
+    - id: vainu
+      name: Vainu Oy
+      email: privacy@vainu.io
+      website: https://www.vainu.com
+      region: eu
+      category: marketing
+      notes: Finnish B2B sales-data platform covering Nordic companies and their decision-makers, built from public sources; the database privacy statement directs access, rectification and erasure requests to this mailbox (DPO dpo@vainu.io) and says data removed at the original source is removed from Vainu shortly after.
+      parent: Vainu Oy
+      sources:
+        - https://www.vainu.com/legal-stuff/database-privacy-statement/
+      researched: "2026-11-18"
+    - id: dun-bradstreet-denmark
+      name: Dun & Bradstreet Denmark (Debitor Registret)
+      email: customercare.dk@dnb.com
+      website: https://www.dnb.com/da-dk/
+      opt_out_url: https://www.dnb.com/da-dk/hvorfor-dnb/data-gennemsigtighed/privatpersoner.html
+      region: eu
+      category: financial-b2b
+      notes: Danish credit bureau that runs the Debitor Registret debtor register and also sells marketing data on private individuals; the privacy page names this mailbox for access, objection, rectification and erasure, with an access form on the page. Payment remarks stay for up to five years, so erasure of those is usually refused.
+      parent: Dun & Bradstreet
+      sources:
+        - https://www.dnb.com/da-dk/hvorfor-dnb/data-gennemsigtighed/privatpersoner.html
+      researched: "2026-11-18"
+    - id: caci-limited
+      name: CACI Limited
+      email: compliance@caci.co.uk
+      website: https://www.caci.co.uk
+      opt_out_url: https://www.caci.co.uk/data-privacy/consumer-hub
+      region: eu
+      category: marketing
+      notes: Holds UK consumer name-and-address data with actual, modelled and inferred attributes (Acorn segmentation, edited electoral register copy); compliance mailbox handles opt-out, erasure and objection, and the DPO is dpo@caci.co.uk; you stay on a suppression list after erasure.
+      parent: CACI Limited
+      sources:
+        - https://www.caci.co.uk/data-privacy/consumer-hub
+      researched: "2026-11-18"
+    - id: prospeo
+      name: Prospeo
+      email: privacy@prospeo.io
+      website: https://www.prospeo.io
+      opt_out_url: https://prospeo.io/opt-out
+      region: eu
+      category: marketing
+      notes: B2B email and phone finder with its own contact dataset; the notice cites GDPR Art. 14(5)(b) and offers an opt-out/deletion form or email, honouring Art. 21 objections.
+      parent: Prospeo
+      sources:
+        - https://www.prospeo.io/privacy-policy
+      researched: "2026-11-18"
+    - id: veeva-opendata
+      name: Veeva OpenData
+      email: eudpo@veeva.com
+      website: https://www.veeva.com
+      region: global
+      category: marketing
+      notes: Maintains reference profiles of healthcare professionals and organisations for pharma customers; the privacy notice names the EU DPO and a Chief Privacy Officer (privacy@veeva.com).
+      parent: Veeva Systems Inc.
+      sources:
+        - https://www.veeva.com/privacy/
       researched: "2026-11-18"
