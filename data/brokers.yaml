@@ -7871,3 +7871,276 @@ brokers:
       sources:
         - https://www.veeva.com/privacy/
       researched: "2026-11-18"
+    - id: equifax-canada
+      name: Equifax Canada Co.
+      email: chief.privacy.officer@equifax.com
+      website: https://www.equifax.ca
+      region: global
+      category: financial-b2b
+      notes: Canadian credit bureau; the privacy page names the Chief Privacy Officer mailbox for privacy questions. Access requests must be made in writing by post with two IDs, and credit file data is retained under law.
+      parent: Equifax
+      sources:
+        - https://www.equifax.ca/privacy/
+      researched: "2026-11-18"
+    - id: equifax-new-zealand
+      name: Equifax New Zealand
+      email: publicaccess.nz@equifax.com
+      website: https://www.equifax.co.nz
+      region: global
+      category: financial-b2b
+      notes: New Zealand credit bureau; its Public Access Team handles access, correction and complaints. It says credit information is not used for marketing.
+      parent: Equifax
+      sources:
+        - https://www.equifax.co.nz/privacy
+      researched: "2026-11-18"
+    - id: equifax-chile
+      name: Equifax Chile
+      email: equifax@equifax.cl
+      website: https://soluciones.equifax.cl
+      region: global
+      category: financial-b2b
+      notes: Chilean credit bureau (Servicios Equifax Chile Limitada); the policy gives this mailbox and contactanos@equifax.cl for exercising rights, with no separate erasure address.
+      parent: Equifax
+      sources:
+        - https://soluciones.equifax.cl/legal/terminos-y-condiciones/
+      researched: "2026-11-18"
+    - id: equifax-australia-marketing
+      name: Equifax Australia Marketing Services (Data-driven Marketing)
+      email: customercomplaintsAU@equifax.com
+      website: https://www.equifax.com.au
+      region: global
+      category: marketing
+      notes: Australian marketing-data arm holding public records plus email address and mobile number; the privacy policy gives this mailbox for the personal information it holds.
+      parent: Equifax
+      sources:
+        - https://www.equifax.com.au/privacy
+      researched: "2026-11-18"
+    - id: serasa-experian
+      name: Serasa Experian
+      email: dpo@br.experian.com
+      website: https://www.serasaexperian.com.br
+      opt_out_url: https://www.serasa.com.br/protecao-dados-pessoais/conheca-seus-direitos
+      region: global
+      category: financial-b2b
+      notes: Brazilian credit bureau; the terms page names the encarregado (DPO) mailbox for access, correction and deletion requests under the LGPD and links an online rights form. Credit data is kept under statutory duties.
+      parent: Experian
+      sources:
+        - https://www.serasaexperian.com.br/termos-de-uso-e-politicas-de-privacidade/
+      researched: "2026-11-18"
+    - id: quod
+      name: Quod
+      email: encarregado.dedados@quod.com.br
+      website: https://www.quod.com.br
+      opt_out_url: https://consumidor.quod.com.br
+      region: global
+      category: financial-b2b
+      notes: Brazilian credit bureau; the privacy policy names the encarregado mailbox and a consumer portal for access and disputes.
+      parent: Quod
+      sources:
+        - https://www.quod.com.br/politica-de-privacidade
+      researched: "2026-11-18"
+    - id: experian-australia
+      name: Experian Australia (illion)
+      email: pacaustral@illion.com.au
+      website: https://www.experian.com.au
+      region: global
+      category: financial-b2b
+      notes: Australian credit and business-information bureau (illion is now part of Experian); the Public Access Centre handles access and correction requests.
+      parent: Experian
+      sources:
+        - https://www.experian.com.au/privacy-policy-terms-conditions/software-solutions-privacy-policy
+      researched: "2026-11-18"
+    - id: experian-new-zealand
+      name: Experian New Zealand (illion)
+      email: pacnz@illion.co.nz
+      website: https://www.experian.co.nz
+      region: global
+      category: financial-b2b
+      notes: New Zealand credit bureau (illion is now part of Experian); the Public Access Centre handles access and correction requests.
+      parent: Experian
+      sources:
+        - https://www.experian.com.au/privacy-policy-terms-conditions/software-solutions-privacy-policy
+      researched: "2026-11-18"
+    - id: experian-south-africa
+      name: Experian South Africa
+      email: informationofficerafrica@experian.com
+      website: https://www.experian.co.za
+      region: global
+      category: financial-b2b
+      notes: South African credit bureau; its consumer trust centre names the Information Officer mailbox for POPIA data-subject rights and complaints. National Credit Act requests go to eza.consumer@experian.com.
+      parent: Experian
+      sources:
+        - https://www.experian.co.za/legal/trust-centre/consumer-trust-centre
+      researched: "2026-11-18"
+    - id: experian-india
+      name: Experian Credit Information Company of India
+      email: consumer.support@in.experian.com
+      website: https://www.experian.in
+      region: global
+      category: financial-b2b
+      notes: Indian credit bureau; the privacy page gives this customer-support mailbox for privacy feedback and grievances (it does not say it handles deletion). Credit data is kept under RBI rules.
+      parent: Experian
+      sources:
+        - https://www.experian.in/privacy-policy
+      researched: "2026-11-18"
+    - id: signalhire
+      name: SignalHire
+      email: support@signalhire.com
+      website: https://www.signalhire.com
+      opt_out_url: https://www.signalhire.com/opt-out
+      region: global
+      category: marketing
+      notes: B2B contact database built from public web sources (name, location, work history, phone, email); the policy offers an opt-out form for the people it indexes and this mailbox for access, deletion and DPO contact.
+      parent: SignalHire Sp. z o.o.
+      sources:
+        - https://www.signalhire.com/privacy
+      researched: "2026-11-18"
+    - id: getcontact
+      name: Getcontact
+      email: support@getcontact.com
+      website: https://getcontact.com
+      region: global
+      category: people-search
+      notes: Caller-ID app that keeps names and numbers uploaded from users' contact lists, including people who never installed it; the policy says non-users can send rights requests to this mailbox.
+      parent: Getverify LDA
+      sources:
+        - https://getcontact.com/en/privacy
+      researched: "2026-11-18"
+    - id: callapp
+      name: CallApp
+      email: support@callapp.com
+      website: https://www.callapp.com
+      opt_out_url: https://www.callapp.com/unlist
+      region: global
+      category: people-search
+      notes: 'Caller-ID app with a database of names, numbers and public-source data on non-users; the policy offers an unlist page and a deletion route via this mailbox (DPO: dpo@callapp.com).'
+      parent: CallApp Software Ltd
+      sources:
+        - https://callapp.com/privacy
+      researched: "2026-11-18"
+    - id: eyecon
+      name: Eyecon
+      email: privacy@instabridge.com
+      website: https://www.eyecon-app.com
+      region: global
+      category: people-search
+      notes: Caller-ID app that stores names, numbers and photos taken from users' address books, including non-users; the policy gives this mailbox for rights requests and for making a number invisible to other users.
+      parent: Instabridge Sweden AB
+      sources:
+        - https://www.eyecon-app.com/privacy-policy/
+      researched: "2026-11-18"
+    - id: whoscall
+      name: Whoscall
+      email: privacy@gogolook.com
+      website: https://whoscall.com
+      region: global
+      category: people-search
+      notes: 'Caller-ID and scam-detection app; the policy says non-users'' numbers and SMS can be passed to it by users and are kept only when tied to fraud. Erasure requests go to this mailbox (DPO: dpo@gogolook.com).'
+      parent: Gogolook Co., Ltd.
+      sources:
+        - https://web.whoscall.com/en/privacy
+      researched: "2026-11-18"
+    - id: tapad
+      name: Tapad
+      email: ""
+      website: https://www.tapad.com
+      opt_out_url: https://crportal.tapad.com
+      region: global
+      category: device-id-only
+      notes: Cross-device identity graph of cookies, mobile ad IDs and hashed emails (no names); requests for access, deletion and opt-out go through its consumer portal, not the privacy mailbox.
+      parent: Experian
+      sources:
+        - https://www.tapad.com/global-privacy-notice
+      researched: "2026-11-18"
+    - id: emetriq
+      name: emetriq
+      email: datenschutz@emetriq.com
+      website: https://www.emetriq.com
+      opt_out_url: https://www.emetriq.com/opt-out/
+      region: global
+      category: device-id-only
+      notes: German audience-data marketplace holding pseudonymous cookie and ad-ID browsing profiles (no names or addresses); the policy lists erasure among the rights via this mailbox and an opt-out cookie page.
+      parent: Deutsche Telekom
+      sources:
+        - https://www.emetriq.com/datenschutz/
+      researched: "2026-11-18"
+    - id: sirdata
+      name: Sirdata
+      email: dpo@sirdata.fr
+      website: https://www.sirdata.com
+      opt_out_url: https://www.sirdata.com/en/Privacy
+      region: global
+      category: device-id-only
+      notes: French data-management platform holding pseudonymous browsing, hashed email and modelled audience segments; requests need a cookie ID or email plus a statement that you control the device, via its rights form.
+      parent: Sirdata SAS
+      sources:
+        - https://www.sirdata.com/en/Privacy
+      researched: "2026-11-18"
+    - id: dun-bradstreet-hong-kong
+      name: Dun & Bradstreet Hong Kong
+      email: enquiryhk@dnb.com
+      website: https://www.dnb.com.hk
+      opt_out_url: https://www.dnb.com.hk/privacy-policy
+      region: global
+      category: financial-b2b
+      notes: Business-information database including personal data on individuals; the privacy policy sends data-subject requests to this mailbox and has a rights web form. bcr_enquiry@dnb.com covers the China credit reports.
+      parent: Dun & Bradstreet
+      sources:
+        - https://www.dnb.com.hk/privacy-policy
+      researched: "2026-11-18"
+    - id: dun-bradstreet-singapore
+      name: Dun & Bradstreet Singapore
+      email: csc@dnb.com.sg
+      website: https://dnb.com.sg
+      opt_out_url: https://dnb.com.sg/privacy/
+      region: global
+      category: financial-b2b
+      notes: Business-information provider; the privacy page gives this mailbox for questions and a copy of your data, and names Data Protection Officers for complaints.
+      parent: Dun & Bradstreet
+      sources:
+        - https://dnb.com.sg/privacy/
+      researched: "2026-11-18"
+    - id: dun-bradstreet-india
+      name: Dun & Bradstreet India
+      email: privacyofficerin@dnb.com
+      website: https://www.dnb.co.in
+      region: global
+      category: financial-b2b
+      notes: India privacy contact in the group's 2026 transparency statement.
+      parent: Dun & Bradstreet
+      sources:
+        - https://www.dnb.com/content/dam/web/company/about/content/pdaits/DnB_Privacy-Data-AI-Transparency-Statement.pdf
+      researched: "2026-11-18"
+    - id: dun-bradstreet-china
+      name: Dun & Bradstreet China
+      email: PrivacyOfficerCH@dnb.com
+      website: https://www.dnb.com.cn
+      region: global
+      category: financial-b2b
+      notes: Mainland China privacy contact in the group's 2026 transparency statement.
+      parent: Dun & Bradstreet
+      sources:
+        - https://www.dnb.com/content/dam/web/company/about/content/pdaits/DnB_Privacy-Data-AI-Transparency-Statement.pdf
+      researched: "2026-11-18"
+    - id: dun-bradstreet-taiwan
+      name: Dun & Bradstreet Taiwan
+      email: eservice@dnb.com
+      website: https://www.dnb.com.tw
+      region: global
+      category: financial-b2b
+      notes: Taiwan privacy contact in the group's 2026 transparency statement.
+      parent: Dun & Bradstreet
+      sources:
+        - https://www.dnb.com/content/dam/web/company/about/content/pdaits/DnB_Privacy-Data-AI-Transparency-Statement.pdf
+      researched: "2026-11-18"
+    - id: dun-bradstreet-canada-asia
+      name: Dun & Bradstreet Canada, Japan and Malaysia
+      email: complianceofficer@dnb.com
+      website: https://www.dnb.ca
+      region: global
+      category: financial-b2b
+      notes: One compliance mailbox listed for Canada, Japan and Malaysia in the group's 2026 transparency statement.
+      parent: Dun & Bradstreet
+      sources:
+        - https://www.dnb.com/content/dam/web/company/about/content/pdaits/DnB_Privacy-Data-AI-Transparency-Statement.pdf
+      researched: "2026-11-18"
