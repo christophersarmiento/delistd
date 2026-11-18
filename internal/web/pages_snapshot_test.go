@@ -123,7 +123,7 @@ func fingerprint(rec *httptest.ResponseRecorder) pageFingerprint {
 	}
 	fp.Text = undate(strings.Join(text, " | "))
 	for l := range links {
-		fp.Links = append(fp.Links, l)
+		fp.Links = append(fp.Links, undate(l)) // the mailto: body carries today's date
 	}
 	for f := range forms {
 		fp.Forms = append(fp.Forms, f)
@@ -301,7 +301,8 @@ func undate(s string) string {
 	s = strings.ReplaceAll(s, today, "<today>")
 	long := time.Now().Format("January 2, 2006") // template {{.Date}}
 	s = strings.ReplaceAll(s, long, "<today>")
-	return strings.ReplaceAll(s, url.PathEscape(long), "<today>") // the same date inside a mailto: link
+	encoded := strings.ReplaceAll(url.QueryEscape(long), "+", "%20") // the same date inside a mailto: link
+	return strings.ReplaceAll(s, encoded, "<today>")
 }
 
 func clip(s string) string {
